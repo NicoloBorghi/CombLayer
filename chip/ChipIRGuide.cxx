@@ -97,8 +97,7 @@ ChipIRGuide::ChipIRGuide(const std::string& Key) :
   attachSystem::TwinComp(Key,7),
   attachSystem::ContainedGroup("inner","outer","leftwall","rightwall"),
   guideIndex(ModelSupport::objectRegister::Instance().cell(Key)),
-  cellIndex(guideIndex+1),populated(0),
-  Filter("chipFilter"),nLayers(0)
+  cellIndex(guideIndex+1),Filter("chipFilter"),nLayers(0)
   /*!
     Constructor BUT ALL variable are left unpopulated.
     \param Key :: KeyName
@@ -108,7 +107,7 @@ ChipIRGuide::ChipIRGuide(const std::string& Key) :
 ChipIRGuide::ChipIRGuide(const ChipIRGuide& A) : 
   attachSystem::TwinComp(A),attachSystem::ContainedGroup(A),
   guideIndex(A.guideIndex),cellIndex(A.cellIndex),
-  populated(A.populated),Filter(A.Filter),beamAngle(A.beamAngle),
+  Filter(A.Filter),beamAngle(A.beamAngle),
   sideBeamAngle(A.sideBeamAngle),shutterAngle(A.shutterAngle),
   gLen(A.gLen),hYStart(A.hYStart),hFWallThick(A.hFWallThick),
   xShift(A.xShift),zShift(A.zShift),xBeamShift(A.xBeamShift),
@@ -152,7 +151,6 @@ ChipIRGuide::operator=(const ChipIRGuide& A)
       attachSystem::TwinComp::operator=(A);
       attachSystem::ContainedGroup::operator=(A);
       cellIndex=A.cellIndex;
-      populated=A.populated;
       Filter=A.Filter;
       beamAngle=A.beamAngle;
       sideBeamAngle=A.sideBeamAngle;
@@ -221,15 +219,13 @@ ChipIRGuide::~ChipIRGuide()
 
 
 void
-ChipIRGuide::populate(const Simulation& System)
+ChipIRGuide::populate(const FuncDataBase& Control)
   /*!
     Populate all the variables
-    \param System :: Simulation to use
+    \param Control :: DataBase
   */
 {
   ELog::RegMethod RegA("ChipIRGuide","populate");
-
-  const FuncDataBase& Control=System.getDataBase();
 
   beamAngle=Control.EvalVar<double>(keyName+"Angle");
   sideBeamAngle=Control.EvalVar<double>(keyName+"SideAngle");
@@ -319,7 +315,6 @@ ChipIRGuide::populate(const Simulation& System)
   // ModelSupport::populateDivide(Control,nLayers,
   // 			       keyName+"SteelFrac_",guideFrac);
 
-  populated=1;
   return;
 }
 
@@ -367,6 +362,45 @@ ChipIRGuide::createUnitVector(const shutterSystem::BulkShield& BS,
 }
 
 void
+ChipIRGuide::createUnitVector(const attachSystem::FixedComp& WO)
+  /*!
+    Create the unit vectors
+    \param WO :: Fixed Unit (Base origin)
+  */
+{
+  ELog::RegMethod RegA("ChipIRGuide","createUnitVector(Fixed)");
+
+  const masterRotate& MR=masterRotate::Instance();
+
+  FixedComp::createUnitVector(WO);
+  bEnter=Origin;
+  Z*=-1.0;
+  bZ=Z;
+  bY=Y;
+  bX=X;
+  
+  ELog::EM<<"Z == "<<X<<":"<<Y<<":"<<Z<<ELog::endDiag;
+  // Rotate beamAxis to the final angle
+  Geometry::Quaternion::calcQRotDeg(beamAngle,-X).rotate(bZ);
+  Geometry::Quaternion::calcQRotDeg(beamAngle,-X).rotate(bY);
+
+  Geometry::Quaternion::calcQRotDeg(sideBeamAngle,Z).rotate(bX);
+  Geometry::Quaternion::calcQRotDeg(sideBeamAngle,Z).rotate(bY);
+
+  // Now calculate Cent
+  gLen=hYStart;
+
+  // Output Datum [beam centre]
+  // Distance to Y Plane [ gLen / (beamAxis . Y )
+  setExit(bEnter+bY*(hYStart/fabs(bY.dotProd(Y))),bY);
+  chipIRDatum::chipDataStore& CS=chipIRDatum::chipDataStore::Instance();
+  CS.setDNum(chipIRDatum::guideExit,MR.calcRotate(getExit()));
+  CS.setDNum(chipIRDatum::floodC,MR.calcRotate(getExit()-bY*210.0));
+  
+  return;
+}
+
+void
 ChipIRGuide::createLiner(const int index,const double offset)
   /*!
     Create an inner section with an offset
@@ -378,7 +412,6 @@ ChipIRGuide::createLiner(const int index,const double offset)
 
   const int GI(guideIndex+index);
   // INNER VOID CORE [+ve X : +ve z]
-
   ModelSupport::buildPlane(SMap,GI+3,
 			   bEnter-bX*(innerALWall+offset),
 			   bEnter-bX*(innerALWall+offset)+bY*gLen,
@@ -408,11 +441,40 @@ ChipIRGuide::createSurfaces(const shutterSystem::GeneralShutter& GS)
     \param GS :: GeneralShutter [for divide]
   */
 {
-  ELog::RegMethod RegA("ChipIRGuide","createSurface");
+  ELog::RegMethod RegA("ChipIRGuide","createSurface(GeneralShutter)");
  
   SMap.addMatch(guideIndex+100,GS.getDivideSurf());
-
   SMap.addMatch(guideIndex+1,monoWallSurf);
+  createSurfacesCommon();
+
+  return;
+}
+
+void
+ChipIRGuide::createSurfaces()
+  /*!
+    Create All the surfaces :
+    \param FC :: FixedComp unit
+  */
+{
+  ELog::RegMethod RegA("ChipIRGuide","createSurface(void)");
+  const double surfRadius(200.0);
+  ModelSupport::buildPlane(SMap,guideIndex+100,Origin-Y*surfRadius,-Y);
+  ModelSupport::buildCylinder(SMap,guideIndex+1,
+			      Origin-Y*surfRadius,Z,surfRadius);
+  createSurfacesCommon();
+
+  return;
+}
+
+void
+ChipIRGuide::createSurfacesCommon()
+  /*!
+    Create All the surfaces :
+  */
+{
+  ELog::RegMethod RegA("ChipIRGuide","createSurfaceCommon");
+ 
   ModelSupport::buildPlane(SMap,guideIndex+2,Origin+Y*gLen,Y);
 
   ModelSupport::buildPlane(SMap,guideIndex+1002,
@@ -421,7 +483,6 @@ ChipIRGuide::createSurfaces(const shutterSystem::GeneralShutter& GS)
   createLiner(0,0.0); // Inner vacuum
   for(size_t i=0;i<LThick.size();i++)
     createLiner(static_cast<int>(i+1)*20,LThick[i]);
-
 
   // Steel Work:
   //  [sides]
@@ -526,6 +587,7 @@ ChipIRGuide::createObjects(Simulation& System)
     \param System :: Simulation to create objects in
   */
 {
+  ELog::RegMethod RegA("ChipIRGuide","createObjects");
   std::string Out;
   // Inner void:
   Out=ModelSupport::getComposite(SMap,guideIndex,"-100 1 -2 3 -4 5 -6");
@@ -672,7 +734,7 @@ ChipIRGuide::layerProcess(Simulation& System)
   */
 {
   ELog::RegMethod RegA("ChipIRGuide","LayerProcess");
-  
+  return;
 
   // Steel layers
   if (nLayers>1)
@@ -795,7 +857,7 @@ ChipIRGuide::writeMasterPoints()
       PtOut.erase(vc,PtOut.end());
       Out.push_back(PtOut.front());
     }  
-  
+
   // Calculate the points at the guides [BackSurf]
   for(size_t i=0;i<4;i++)
     {
@@ -908,7 +970,7 @@ ChipIRGuide::createAll(Simulation& System,
   ELog::RegMethod RegA("ChipIRGuide","createAll");
   
   const shutterSystem::GeneralShutter* GPtr=BS.getShutter(GIndex);
-  populate(System);
+  populate(System.getDataBase());
   createUnitVector(BS,*GPtr);
   createSurfaces(*GPtr);
   createObjects(System);  
@@ -922,6 +984,32 @@ ChipIRGuide::createAll(Simulation& System,
   writeMasterPoints();
   return;
 }
+
+void
+ChipIRGuide::createAll(Simulation& System,
+		       const attachSystem::FixedComp& FC)
+  /*!
+    Generic function to create everything
+    \param System :: Simulation item
+    \param FC :: FixedComp for origin
+  */
+{
+  ELog::RegMethod RegA("ChipIRGuide","createAll[FC]");
   
-}  // NAMESPACE shutterSystem
+  populate(System.getDataBase());
+  createUnitVector(FC);
+  createSurfaces();
+  createObjects(System);  
+  createLinks();
+
+  addInsertPlate(System);
+  addFilter(System);
+  layerProcess(System);
+  insertObjects(System);   
+  
+  writeMasterPoints();
+  return;
+}
+  
+}  // NAMESPACE hutchSystem
 

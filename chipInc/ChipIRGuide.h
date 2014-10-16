@@ -60,7 +60,6 @@ class ChipIRGuide : public attachSystem::TwinComp,
   
   const int guideIndex;         ///< Index of surface offset
   int cellIndex;                ///< Cell index
-  int populated;                ///< populated or not
 
   ChipIRFilter Filter;          ///< Filter component
   
@@ -141,11 +140,14 @@ class ChipIRGuide : public attachSystem::TwinComp,
   std::vector<int> voidCells;    ///< Liners/Steel etc
   std::vector<int> layerCells;   ///< Layered cells
 
-  void populate(const Simulation&);
+  void populate(const FuncDataBase&);
   void createUnitVector(const shutterSystem::BulkShield&,
 			const shutterSystem::GeneralShutter&);
+  void createUnitVector(const attachSystem::FixedComp&);
   
   void createSurfaces(const shutterSystem::GeneralShutter&);
+  void createSurfaces();
+  void createSurfacesCommon();
   void createObjects(Simulation&);
   void createLinks();
   void addInsertPlate(Simulation&);
@@ -162,8 +164,6 @@ class ChipIRGuide : public attachSystem::TwinComp,
 
   /// Set surface
   void setMonoSurface(const int M) { monoWallSurf=M; }
-  void createAll(Simulation&,const shutterSystem::BulkShield&,
-		 const size_t);
 
   /// Access beam angle
   double getBeamAngle() const { return beamAngle; }
@@ -173,6 +173,10 @@ class ChipIRGuide : public attachSystem::TwinComp,
 
   int calcTallyPlanes(const int,std::vector<int>&) const;
   void writeMasterPoints();
+
+  void createAll(Simulation&,const shutterSystem::BulkShield&,
+		 const size_t);
+  void createAll(Simulation&,const attachSystem::FixedComp&);
 
 };
 

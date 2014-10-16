@@ -115,6 +115,13 @@ makeTS2::build(Simulation* SimPtr,
   zoomSystem::makeZoom zoomObj;
   imatSystem::makeIMat imatObj;
   
+
+  if (IParam.flag("isolate") && IParam.compValue("I",std::string("chipIR")))
+    {
+      chipObj.buildIsolated(*SimPtr,IParam);
+      return;
+    }
+
   bulkObj.build(SimPtr,IParam);
   if (!IParam.flag("exclude") ||
       (!IParam.compValue("E",std::string("Bulk"))) ) 

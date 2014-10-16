@@ -208,8 +208,8 @@ setDefRotation(const mainSystem::inputParam& IParam)
 	retFlag=AItem;
     }
 
-  if (IParam.compValue("I",std::string("chipIR")))
-    MR.addDisplace(Geometry::Vec3D(-1175.0,0,0));
+  // if (IParam.compValue("isolate",std::string("chipIR")))
+  //   MR.addDisplace(Geometry::Vec3D(-1175.0,0,0));
 
   return retFlag;
 }
