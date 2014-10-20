@@ -100,6 +100,42 @@ HeadRule::~HeadRule()
   delete HeadNode;
 }
 
+bool
+HeadRule::operator==(const HeadRule& A) const
+  /*!
+    Determine if a rule is equal
+    The principle is to test each level 
+    \param A :: Head rule to test
+  */
+{
+  ELog::RegMethod RegA("HeadRule","operator==");
+  if (&A==this) return 1;
+
+  std::vector<const Rule*> AVec=
+    findTopNodes();
+  std::vector<const Rule*> BVec=
+    A.findTopNodes();
+  
+  if (AVec.size()!=BVec.size()) 
+    return 0;
+ 
+  // all NON-equals
+  std::set<HeadRule> ASet;
+  std::set<HeadRule> BSet;
+  std::set<int> ASurf;
+  std::set<int> BSurf;
+  // Process This:
+  for(const Rule* APtr : AVec)
+    {
+      const SurfPoint* SurPtr=
+	dynamic_cast<const SurfPoint*>(APtr);
+      if (SurPtr->
+    }
+ 
+  return 0;
+}
+  
+
 void
 HeadRule::reset() 
   /*!
@@ -526,7 +562,7 @@ HeadRule::findNode(const size_t LN,const size_t Index) const
   /*!
     Return a head rule based on level and Index
     \param LN :: Level Number
-    \param Index :: Index Number [1-> NL]
+    \param Index :: Index Number [+1 -- 0 is all]
     \return HeaRule item [this/pointer?]
   */
 {
@@ -579,6 +615,53 @@ HeadRule::findNode(const size_t LN,const size_t Index) const
 	}
     }
   return 0; 
+}
+
+std::vector<const Rule*>
+HeadRule::findTopNodes() const
+  /*!
+    Return a head rule nodes at first level
+    \return headnotesf
+  */
+{
+  ELog::RegMethod RegA("HeadRule","findTopNodes");
+
+  std::vector<const Rule*> Out;
+  if (!HeadNode) return Out;
+
+  std::stack<Rule*> TreeLine;
+  std::stack<size_t> TreeLevel;
+  TreeLine.push(HeadNode);
+  while(!TreeLine.empty())
+    {
+      Rule* tmpA=TreeLine.top();
+      size_t activeLevel=0;
+      TreeLine.pop();
+      TreeLevel.pop();
+      
+      if (tmpA->getParent() && 
+	  tmpA->getParent()->type()!=tmpA->type())
+	{
+	  activeLevel++;
+	  Out.push_back(tmpA);
+	}
+      Rule* tmpB=tmpA->leaf(0);
+      Rule* tmpC=tmpA->leaf(1);
+      if (activeLevel && (tmpB || tmpC))
+	{
+	  if (tmpB)
+	    {
+	      TreeLevel.push(activeLevel);
+	      TreeLine.push(tmpB);
+	    }
+	  if (tmpC)
+	    {
+	      TreeLevel.push(activeLevel);
+	      TreeLine.push(tmpC);
+	    }
+	}
+    }
+  return Out; 
 }
 
 HeadRule

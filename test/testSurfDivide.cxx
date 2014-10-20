@@ -143,6 +143,10 @@ testSurfDivide::createSurfaces()
   SurI.createSurface(4,"py 1");
   SurI.createSurface(5,"pz -1");
   SurI.createSurface(6,"pz 1");
+  Geometry::Plane Pn(7,0);
+  Pn.setPlane(Geometry::Vec3D(-0.5,1,0),Geometry::Vec3D(-1,0.5,0),
+	      Geometry::Vec3D(-0.5,1,1),Geometry::Vec3D(0,1,0));
+  SurI.insertSurface(Pn.clone());
 
   // Second box  [corner intersect ]:
   SurI.createSurface(11,"px -3");
@@ -151,10 +155,10 @@ testSurfDivide::createSurfaces()
   SurI.createSurface(14,"py 3");
   SurI.createSurface(15,"pz -3");
   SurI.createSurface(16,"pz 3");
-  Geometry::Plane Pn(17,0);
-  Pn.setPlane(Geometry::Vec3D(-3,2,0),Geometry::Vec3D(-2,3,0),
+  Geometry::Plane PnX(17,0);
+  PnX.setPlane(Geometry::Vec3D(-3,2,0),Geometry::Vec3D(-2,3,0),
 	      Geometry::Vec3D(-3,2,1));
-  SurI.insertSurface(Pn.clone());
+  SurI.insertSurface(PnX.clone());
 
   // Far box :
   SurI.createSurface(21,"px 10");
@@ -184,6 +188,9 @@ testSurfDivide::createObjects()
   ASim.addCell(MonteCarlo::Qhull(cellIndex++,3,0.0,Out));      // steel object
 
   Out=ModelSupport::getComposite(surIndex,"11 -12 13 -14 15 -16 -17");
+  ASim.addCell(MonteCarlo::Qhull(cellIndex++,3,0.0,Out));      // steel object
+
+  Out=ModelSupport::getComposite(surIndex,"1 -2 3 -4 5 -6 -7");
   ASim.addCell(MonteCarlo::Qhull(cellIndex++,3,0.0,Out));      // steel object
 
   return;
@@ -430,9 +437,15 @@ testSurfDivide::testTemplate()
 
   // Test Cell 1:
   DA.init(); 
-  DA.setCellN(2);   // Cube cell
+  DA.setCellN(4);   // Cube cell
   DA.setOutNum(11,8001);
-  DA.makeTemplate<Geometry::Plane>(3,4);
+  
+  mergeTemplate<Geometry::Plane,Geometry::Plane> tempRule;
+  tempRule.setSurfPair(3,4);
+  tempRule.setSurfPair(3,7);
+  tempRule.setInnerRule(" 3 ");
+  tempRule.setOuterRule(" -4 -7 ");
+  DA.addRule(&tempRule);
   DA.activeDivide(ASim);
   
   int resTest=checkResults(11,"1 -2 3 -8001 5 -6");

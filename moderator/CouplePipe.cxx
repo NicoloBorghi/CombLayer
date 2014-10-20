@@ -262,19 +262,18 @@ CouplePipe::insertPipes(Simulation& System,const VacVessel& VC)
 {
   ELog::RegMethod RegA("CouplePipe","insertPipes");
 
-
   const masterRotate& MR=masterRotate::Instance();
   // Hydrogen inner
-  HInner.addPoint(VC.getSurfacePoint(4,4)+X*Xoffset+Y*Yoffset-Z*fullLen);
+  HInner.addPoint(VC.getSurfacePoint(4,3)+X*Xoffset+Y*Yoffset-Z*fullLen);
   // added
-  HInner.addPoint(VC.getSurfacePoint(4,4)+X*Xoffset+Y*Yoffset+Z*20.0);
+  HInner.addPoint(VC.getSurfacePoint(4,3)+X*Xoffset+Y*Yoffset+Z*20.0);
 
   ELog::EM<<"Point == "
-	  <<MR.calcRotate(VC.getSurfacePoint(4,4)+
-			  X*Xoffset+Y*Yoffset+Z*20.0)<<ELog::endDebug;
+	  <<MR.calcRotate(VC.getSurfacePoint(4,3)+
+			  X*Xoffset+Y*Yoffset+Z*20.0)<<ELog::endDiag;
   ELog::EM<<"Point B == "
-	  <<MR.calcRotate(VC.getSurfacePoint(4,4)+
-			  X*Xoffset+Y*Yoffset-Z*fullLen)<<ELog::endDebug;
+	  <<MR.calcRotate(VC.getSurfacePoint(4,3)+
+			  X*Xoffset+Y*Yoffset-Z*fullLen)<<ELog::endDiag;
   //  HInner.addPoint(Origin+X*hXoffset+Y*hYoffset);
   //  HInner.addPoint(Origin+X*hXoffset+Y*hYoffset+Z*hLen);
 

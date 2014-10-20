@@ -2,8 +2,8 @@
   CombLayer : MNCPX Input builder
  
  * File:   monteInc/Rules.h
-*
- * Copyright (c) 2004-2013 by Stuart Ansell
+ *
+ * Copyright (c) 2004-2014 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ class Rule
   Rule& operator=(const Rule&);
   virtual ~Rule();
   virtual Rule* clone() const=0;  ///< abstract clone object
+  bool operator==(const Rule&) const;
 
   /// No leaf for a base rule
   virtual Rule* leaf(const int =0) const { return 0; }  

@@ -39,13 +39,10 @@ class mergeTemplate : public surfDBase
 {
  private:
 
+  int surfN;                     ///< Surface number
+
   HeadRule InTemplate;           ///< Inner template
   HeadRule OutTemplate;          ///< Outer template
-
-  HeadRule InRule;               ///< Inner Rule 
-  HeadRule OutRule;              ///< Outer Rule
-
-  HeadRule BaseUnit;             ///< Immutable base unit
 
   std::vector<int> pSurf;        ///< Primary surfaces 
   std::vector<int> sSurf;        ///< Secondary surfaces [signed]
@@ -54,10 +51,17 @@ class mergeTemplate : public surfDBase
   std::vector<const U*> secSPtr;        ///< Second planes
   
   // Created as managed [No del required]
+  std::vector<Geometry::Surface*> PSPtr;   ///< Previous surfaces 
   std::vector<Geometry::Surface*> OSPtr;   ///< Output surfaces 
 
   void clearRules();
   void addRules();
+
+  HeadRule makeOuter() const;
+  HeadRule makeOuterComp() const;
+  
+  bool containInnerRules(const Rule*) const;
+  bool containOuterRules(const Rule*) const;
 
 
  public:
@@ -68,18 +72,19 @@ class mergeTemplate : public surfDBase
   virtual mergeTemplate<T,U>* clone() const;
   virtual ~mergeTemplate();
 
+  /// set surface number
+  void setOutSurfNummber(const int I) { surfN=I; }
   // SETTING METHODS
   void setSurfPair(const int,const int);
-
-  void setPrimarySurf(const int,const int);
-  void addSecondarySurf(const int);
+  void setInnerRule(const std::string&);
+  void setOuterRule(const std::string&);
 
   void setDirection(const std::vector<int>&);
 
   virtual void populate();
-  virtual int createSurf(const double,int&);
+  int createSurfaces(const double);
   virtual void processInnerOuter(const int,std::vector<Token>&) const;
-  virtual void process(const HeadRule&) const;
+  virtual void process(const double,const double,HeadRule&);
 
   virtual void write(std::ostream&) const;
 

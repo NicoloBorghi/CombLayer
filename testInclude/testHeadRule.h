@@ -40,6 +40,7 @@ private:
   //Tests 
   int testAddInterUnion();
   int testCountLevel();
+  int testFindTopNodes();
   int testGetComponent();
   int testLevel();
   int testRemoveSurf();

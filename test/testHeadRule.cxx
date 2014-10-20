@@ -115,6 +115,7 @@ testHeadRule::applyTest(const int extra)
     {
       &testHeadRule::testAddInterUnion,
       &testHeadRule::testCountLevel,
+      &testHeadRule::testFindTopNodes,
       &testHeadRule::testGetComponent,
       &testHeadRule::testLevel,
       &testHeadRule::testRemoveSurf
@@ -123,6 +124,7 @@ testHeadRule::applyTest(const int extra)
     {
       "AddUnterUnion",
       "CountLevel",
+      "FindTopNodes",
       "GetComponent",
       "Level",
       "RemoveSurf"
@@ -227,6 +229,47 @@ testHeadRule::testCountLevel()
 	{
 	  ELog::EM<<"A == "<<tmp.display()<<ELog::endDebug;
 	  ELog::EM<<"Res["<<tc.get<2>()<<"] == "<<Res<<ELog::endDebug;
+	  return -1;
+	}
+    }
+  return 0;
+}
+
+int
+testHeadRule::testFindTopNodes()
+  /*!
+    Check the validity of a head rule level 
+    \return 0 :: success / -ve on error
+   */
+{
+  ELog::RegMethod RegA("testHeadRule","testFindTopNods");
+
+  createSurfaces();
+
+  typedef boost::tuple<std::string,size_t,size_t,std::string> TTYPE;
+  std::vector<TTYPE> Tests;
+  Tests.push_back(TTYPE("1 -2 3 -4 (5:-6) ",5,4,"5:-6"));
+  
+
+  std::vector<TTYPE>::const_iterator tc;
+  for(TTYPE& tc : Tests)
+    {
+      HeadRule tmp;
+      if (!tmp.procString(tc.get<0>()))
+	{
+	  ELog::EM<<"Failed to set tmp :"<<tc.get<0>()
+		  <<ELog::endDebug;
+	  return -1;
+	}
+      std::vector<const Rule*> Res=
+	tmp.findTopNodes();
+      if (Res.size()!=tc.get<1>() ||
+	  Res[tc.get<2>()!=tc.get<3>())
+	{
+	  ELog::EM<<"A == "<<tmp.display()<<ELog::endDebug;
+	  ELog::EM<<"N == "<<Res.size()<<ELog::endDebug;
+	  for(const Rule* SPtr : Res)
+	    ELog::EM<<*SPtr<<ELog::endDebug;
 	  return -1;
 	}
     }

@@ -63,6 +63,7 @@ class HeadRule
   HeadRule(const HeadRule&);
   HeadRule& operator=(const HeadRule&);
   ~HeadRule();
+  bool operator==(const HeadRule&) const;
 
   const Rule* getTopRule() const { return HeadNode; }
 
@@ -89,6 +90,7 @@ class HeadRule
   std::vector<int> getTopSurfaces() const;
 
   const Rule* findNode(const size_t,const size_t) const;
+  std::vector<const Rule*> findTopNodes() const;
   HeadRule getComponent(const size_t,const size_t) const;
 
   int removeItems(const int);

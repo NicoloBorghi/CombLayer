@@ -85,16 +85,15 @@ class surfDivide
 
   void init();
   
-  // Specials two functions for makeRule:
-  void makeRule(const std::string&,const std::string&);
-  void addRule(const int,const int);
-
   template<typename T> void makePair(const int,const int);
   template<typename T> void makeMulti(const int,const int,const int);
   template<typename T> void makeSignPair(const int,const int,const int);
 
   template<typename T> void makeTemplate(const int,const int);
   template<typename T> void makeTemplate(const int,const int,const int);
+  void addRule(const surfDBase*);
+
+  void addPair(const int,const int);
 
 
   template<typename T,typename U> void makePair(const int,const int);
@@ -110,6 +109,7 @@ class surfDivide
   void divideAction(std::vector<Token>&,std::vector<Token>&);
 
   void activeDivide(Simulation&);
+  void activeDivideTemplate(Simulation&);
   
 };
 

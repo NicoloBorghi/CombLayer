@@ -163,6 +163,7 @@ Intersection::clone() const
   return new Intersection(*this);
 }
 
+
 int
 Intersection::isComplementary() const 
   /*!

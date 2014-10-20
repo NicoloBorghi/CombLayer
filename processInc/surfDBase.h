@@ -68,7 +68,7 @@ class surfDBase
   virtual void populate() =0;
   virtual int createSurf(const double,int&) =0;
   virtual void processInnerOuter(const int,std::vector<Token>&) const =0;
-  virtual void process(const HeadRule&) const {}
+  virtual void process(const double,const double,const HeadRule&) {}
   ///\endcond ABSTRACT
   virtual void write(std::ostream&) const { }
 };

@@ -72,47 +72,12 @@ namespace ModelSupport
 {
 
 template<typename T,typename U>
-mergeTemplate<T,U>::mergeTemplate() : surfDBase()
+mergeTemplate<T,U>::mergeTemplate() : 
+  surfDBase(),surfN(0)
   /*!
     Constructor
   */
 {}
-
-template<typename T,typename U>
-mergeTemplate<T,U>::mergeTemplate(const mergeTemplate& A) : 
-  surfDBase(A),
-  InTemplate(A.InTemplate),OutTemplate(A.OutTemplate),
-  InRule(A.InRule),OutRule(A.OutRule),BaseUnit(A.BaseUnit),
-  pSurf(A.pSurf),sSurf(A.sSurf),primSPtr(A.primSPtr),
-  secSPtr(A.secSPtr),OSPtr(A.OSPtr)
-  /*!
-    Copy constructor
-    \param A :: mergeTemplate to copy
-  */
-{}
-
-template<typename T,typename U>
-mergeTemplate<T,U>&
-mergeTemplate<T,U>::operator=(const mergeTemplate& A)
-  /*!
-    Assignment operator
-    \param A :: mergeTemplate to copy
-    \return *this
-  */
-{
-  if (this!=&A)
-    {
-      surfDBase::operator=(A);
-      InTemplate=A.InTemplate;
-      OutTemplate=A.OutTemplate;
-      InRule=A.InRule;
-      OutRule=A.OutRule;
-      BaseUnit=A.BaseUnit;
-      pSurf=A.pSurf;
-      sSurf=A.sSurf;
-    }
-  return *this;
-}
 
 
 template<typename T,typename U>
@@ -141,9 +106,7 @@ mergeTemplate<T,U>::clearRules()
   /*!
     Simple helper function to remove old rules
   */
-{
-  InRule.reset();
-  OutRule.reset();
+{  
   return;
 }
 
@@ -173,20 +136,18 @@ mergeTemplate<T,U>::addRules()
 
 template<typename T,typename U>
 int
-mergeTemplate<T,U>::createSurf(const double fraction,
-			       int& newItem)
+mergeTemplate<T,U>::createSurfaces(const double fraction)
   /*!
     Create all the surfaces needed for this template 
     \param fraction :: Weight between the two surface
-    \param newItem :: Plane number to start with
   */
 {
-  ELog::RegMethod RegA("mergeTemplate","createSurf");
+  ELog::RegMethod RegA("mergeTemplate","createSurfaces");
 
   OSPtr.clear();
   for(size_t i=0;i<pSurf.size();i++)
     OSPtr.push_back
-      (surfDBase::createSurf(primSPtr[i],secSPtr[i],fraction,newItem));
+      (surfDBase::createSurf(primSPtr[i],secSPtr[i],fraction,surfN));
   
   return OSPtr.back()->getName();
 }
@@ -240,13 +201,13 @@ mergeTemplate<T,U>::populate()
 
 template<typename T,typename U>
 void
-mergeTemplate<T,U>::processInnerOuter(const int outerFlag,
-				 std::vector<Token>& Cell) const
-/*!
-    Process the cells 
-    \param outerFlag :: Decide if outer/inner process.
-    \param Cell :: Cell to process
-   */
+mergeTemplate<T,U>::processInnerOuter(const int ,
+				      std::vector<Token>& ) const
+ /*!
+   Process the cells 
+   \param outerFlag :: Decide if outer/inner process.
+   \param Cell :: Cell to process
+ */
 {
   ELog::RegMethod RegA("mergeTemplate","processInnerOuter");
   return;
@@ -255,17 +216,118 @@ mergeTemplate<T,U>::processInnerOuter(const int outerFlag,
 
 template<typename T,typename U>
 void
-mergeTemplate<T,U>::process(const HeadRule& HR) const 
+mergeTemplate<T,U>::setInnerRule(const std::string& iStr) 
+  /*!
+    Process the cells 
+    \param iSTr :: Inner Head Rule
+   */
+{
+  ELog::RegMethod RegA("mergeTemplate","setInnerRule");
+  if (!InTemplate.procString(iStr))
+    throw ColErr::InvalidLine(iStr,"iStr value",0);
+  return;
+}
+
+template<typename T,typename U>
+void
+mergeTemplate<T,U>::setOuterRule(const std::string& iStr) 
+  /*!
+    Process the cells 
+    \param iSTr :: Inner Head Rule
+   */
+{
+  ELog::RegMethod RegA("mergeTemplate","setInnerRule");
+  if (!OutTemplate.procString(iStr))
+    throw ColErr::InvalidLine(iStr,"iStr value",0);
+  return;
+}
+
+template<typename T,typename U>
+void
+mergeTemplate<T,U>::process(const double fA,const double fB,
+			    HeadRule& HR) 
   /*!
     Process the cells 
     \param HR :: Head Rule
    */
 {
   ELog::RegMethod RegA("mergeTemplate","process");
+
+  // transfer old to new and make surfaces
+  PSPtr=OSPtr;
+  if (fB<1.0)
+    createSurfaces(fB);
+
+  // Divide at level 1:
+  std::vector<const Rule*> RefItems;
+  const size_t NL=HR.countNLevel(0);
+  for(size_t i=1;i<=NL;i++)
+    RefItems.push_back(HR.findNode(0,i));
+
+  HeadRule Result=HR;
+  // Create Inner/Outer Units:
+
+  bool replacedInner(0);
+  bool replacedOuter(0);
+  for(const Rule* PR : RefItems)
+    {
+      if (!replacedInner && fA>Geometry::zeroTol &&
+	  containInnerRules(PR))
+	{
+	  HR.addIntersection(makeOuterComp());
+	  replacedInner=1;
+	}
+      else
+	HR.addIntersection(PR);
+
+      if (!replacedOuter && (1.0-fB)>Geometry::zeroTol && 
+	  containOuterRules(PR))
+	{
+	  HR.addIntersection(makeOuter());
+	  replacedOuter=1;
+	}
+      else
+	HR.addIntersection(PR);
+    }
+
   return;
 }
 
 
+
+template<typename T,typename U>
+bool
+mergeTemplate<T,U>::containInnerRules(const Rule* PR) const
+  /*!
+    Determine in the PR rule is a containing rule for the
+    inner system
+    \param PR :: Rule to test 
+  */
+{
+  const size_t NL=InTemplate.countNLevel(0);
+  for(size_t i=1;i<=NL;i++)
+    if (*PR== (*InTemplate.findNode(0,i)))
+      return 1;
+ 
+  return 0;
+}
+
+template<typename T,typename U>
+bool
+mergeTemplate<T,U>::containOuterRules(const Rule* PR) const
+  /*!
+    Determine in the PR rule is a containing rule for the
+    outer System
+    \param PR :: Rule to test 
+  */
+{
+  const size_t NL=OutTemplate.countNLevel(0);
+  for(size_t i=1;i<=NL;i++)
+    if (*PR==OutTemplate.findNode(0,i))
+      return 1;
+ 
+  return 0;
+}
 
 template<typename T,typename U>
 void
@@ -275,8 +337,8 @@ mergeTemplate<T,U>::write(std::ostream& OX) const
     \param OX :: output stream
   */
 {
-  OX<<"In Rule == "<<InRule.display()<<std::endl;
-  OX<<"Out Rule == "<<OutRule.display()<<std::endl;
+  OX<<"In Rule == "<<InTemplate.display()<<std::endl;
+  OX<<"Out Rule == "<<OutTemplate.display()<<std::endl;
   return;
 }
 

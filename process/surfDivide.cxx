@@ -154,6 +154,18 @@ surfDivide::init()
   return;
 }
 
+void
+surfDivide::addRule(const surfDBase* SBase)
+  /*!
+    Adds a rule to the mainsystem
+    \param SBase :: Main rule.
+  */
+{
+  if (SBase)
+    PRules.push_back(SBase->clone());    
+  return;
+}
+
 template<typename T>
 void
 surfDivide::makeSignPair(const int iPt,const int oPt,const int dir)
@@ -334,6 +346,47 @@ surfDivide::populateSurfaces()
     PRules[i]->populate();
   return;
 }
+
+
+void
+surfDivide::activeDivideTemplate(Simulation& System)
+  /*!
+    This assumes that mergeTemplate objects are being 
+    used exclusively.
+    \param System :: Simulation to use
+   */
+{
+  ELog::RegMethod RegA("surfDivide","activeDivideTemplate");
+
+  preDivide(System);
+  populateSurfaces();
+
+  for(size_t i=0;i<=frac.size();i++)
+    {      
+      // Create outer object
+
+
+      // Process Rules:
+      const double fA=(i) ? frac[i-1] : -1.0;
+      const double fB=(i!=frac.size()) ? frac[i] : 2.0;
+      HeadRule cell(BaseObj->getHeadRule());
+      
+      for(size_t rN=0;rN<PRules.size();rN++)
+	PRules[rN]->process(fA,fB,cell);
+
+      // Set cell:
+      MonteCarlo::Qhull NewObj(*BaseObj);
+      NewObj.setName(outCellN++);
+      NewObj.setMaterial(material[i]);
+      NewObj.procString(cell.display());
+      System.addCell(NewObj);
+
+    }
+  // Remove Original Cell
+  System.removeCell(cellNumber);
+  return;  
+}
+
 
 void
 surfDivide::activeDivide(Simulation& System)
