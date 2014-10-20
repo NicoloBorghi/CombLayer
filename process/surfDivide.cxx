@@ -67,6 +67,7 @@
 #include "Token.h"
 #include "surfDBase.h"
 #include "mergeMulti.h"
+#include "mergeTemplate.h"
 #include "surfDivide.h"
 
 namespace ModelSupport
@@ -212,19 +213,6 @@ surfDivide::makePair(const int iPt,const int oPt)
   return;
 }
 
-void
-surfDivide::makeRule(const std::string& searchRule,
-		       const std::string& outRule)
-{
-  return;
-}
-
-void
-surfDivide::addRule(const int,const int)
-{
-  return;
-}
-
 template<typename T>
 void
 surfDivide::makeMulti(const int iPt,const int oPtA,const int oPtB)
@@ -236,12 +224,51 @@ surfDivide::makeMulti(const int iPt,const int oPtA,const int oPtB)
     \param oPtB :: outer Point (secondary)
   */
 {
-  ELog::RegMethod RegA("surfDivide","makePair");
+  ELog::RegMethod RegA("surfDivide","makeMulti");
 
   mergeMulti<T,T>* DR=new mergeMulti<T,T>();
   DR->setPrimarySurf(((iPt>0) ? 1 : 0),iPt);
   DR->addSecondarySurf(oPtA);
   DR->addSecondarySurf(oPtB);
+  PRules.push_back(DR);  
+  return;
+}
+
+template<typename T>
+void
+surfDivide::makeTemplate(const int iPt,const int oPtA)
+  /*!
+    Creates a simple three surface system. All surfaces
+    must take a sign
+    \param iPt :: inner Point 
+    \param oPtA :: outer Point (primary) 
+  */
+{
+  ELog::RegMethod RegA("surfDivide","makeTemplate");
+
+  mergeTemplate<T,T>* DR=new mergeTemplate<T,T>();
+  DR->setSurfPair(iPt,oPtA);
+  PRules.push_back(DR);  
+  return;
+}
+
+template<typename T>
+void
+surfDivide::makeTemplate(const int iPt,const int oPtA,const int oPtB)
+  /*!
+    Creates a simple three surface system. All surfaces
+    must take a sign
+    \param iPt :: inner Point 
+    \param oPtA :: outer Point (primary) 
+    \param oPtB :: outer Point (secondary)
+  */
+{
+  ELog::RegMethod RegA("surfDivide","makeTemplate");
+
+  mergeTemplate<T,T>* DR=new mergeTemplate<T,T>();
+  DR->setSurfPair(iPt,oPtA);  
+  DR->setSurfPair(iPt,oPtB);
+
   PRules.push_back(DR);  
   return;
 }
@@ -343,6 +370,7 @@ surfDivide::activeDivide(Simulation& System)
 	    {
 	      // Process
 	      PRules[rN]->createSurf(frac[i],outSurfN);
+	      PRules[rN]->process(BaseObj->getHeadRule());
 	      PRules[rN]->processInnerOuter(1,outerCell);
 	      PRules[rN]->processInnerOuter(0,innerCell);
 	    }
@@ -378,6 +406,10 @@ template void surfDivide::makePair<Geometry::Cylinder>(const int,const int);
 template void surfDivide::makeMulti<Geometry::Plane>(const int,const int,const int);
 template void surfDivide::makeSignPair<Geometry::Plane>(const int,const int,const int);
 template void surfDivide::makePair<Geometry::Cylinder,Geometry::Plane>(const int,const int);
+
+
+template void surfDivide::makeTemplate<Geometry::Plane>(const int,const int);
+template void surfDivide::makeTemplate<Geometry::Plane>(const int,const int,const int);
 
 
 ///\endcond TEMPLATE

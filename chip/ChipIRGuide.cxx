@@ -330,7 +330,7 @@ ChipIRGuide::createUnitVector(const shutterSystem::BulkShield& BS,
   ELog::RegMethod RegA("ChipIRGuide","createUnitVector");
   const masterRotate& MR=masterRotate::Instance();
 
-  bZ=Z=Geometry::Vec3D(-1,0,0);         // Gravity axis [up]
+  bZ=Z;                                 // Gravity axis [up]
   bY=Y=GS.getXYAxis();                  // forward axis [centre line]  
   bX=X= Z*GS.getXYAxis();               // horrizontal axis [across]
 
@@ -726,6 +726,7 @@ ChipIRGuide::addInsertPlate(Simulation& System)
   return;
 }
 
+
 void 
 ChipIRGuide::layerProcess(Simulation& System)
   /*!
@@ -733,10 +734,12 @@ ChipIRGuide::layerProcess(Simulation& System)
     \param System :: Simulation to work on
   */
 {
-  ELog::RegMethod RegA("ChipIRGuide","LayerProcess");
+  ELog::RegMethod RegA("ChipIRGuide","layerProcess");
+  // Steel layers
+  ELog::EM<<"CAlling test SPECIAL"<<ELog::endDiag;
+  //  layerSpecial(System);
   return;
 
-  // Steel layers
   if (nLayers>1)
     {
       ModelSupport::surfDivide DA;
@@ -808,10 +811,10 @@ ChipIRGuide::layerProcess(Simulation& System)
       // 				   SMap.realSurf(guideIndex+213));
 
       DA.makeMulti<Geometry::Plane>(SMap.realSurf(guideIndex+213),
-       				    SMap.realSurf(guideIndex+13),
-       				    SMap.realSurf(guideIndex+113));
-      //      DA.activeDivide(System);
-
+				    SMap.realSurf(guideIndex+13),
+                                    SMap.realSurf(guideIndex+113));
+      DA.activeDivide(System);
+      
       cellIndex=DA.getCellNum();
     }
 

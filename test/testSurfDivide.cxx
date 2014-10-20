@@ -48,7 +48,6 @@
 #include "BaseModVisit.h"
 #include "mathSupport.h"
 #include "support.h"
-#include "version.h"
 #include "MapSupport.h"
 #include "MatrixBase.h"
 #include "Matrix.h"
@@ -56,14 +55,6 @@
 #include "Quaternion.h"
 #include "localRotate.h"
 #include "masterRotate.h"
-#include "Triple.h"
-#include "NList.h"
-#include "NRange.h"
-#include "Tally.h"
-#include "cellFluxTally.h"
-#include "pointTally.h"
-#include "heatTally.h"
-#include "tallyFactory.h"
 #include "Transform.h"
 #include "Surface.h"
 #include "surfIndex.h"
@@ -97,6 +88,7 @@
 #include "Simulation.h"
 #include "surfDBase.h"
 #include "mergeMulti.h"
+#include "mergeTemplate.h"
 #include "surfDivide.h"
 #include "surfCompare.h"
 
@@ -211,14 +203,17 @@ testSurfDivide::applyTest(const int extra)
     {
       &testSurfDivide::testBasicPair,
       &testSurfDivide::testMultiOuter,
-      &testSurfDivide::testStatic
+      &testSurfDivide::testStatic,
+      &testSurfDivide::testTemplate
+
     };
 
   const std::string TestName[]=
     {
       "BasicPair",
       "MultiOuter",
-      "Static"
+      "Static",
+      "Template"
     };
 
   const size_t TSize(sizeof(TPtr)/sizeof(testPtr));
@@ -323,7 +318,6 @@ testSurfDivide::testBasicPair()
   DA.addMaterial(5);
   DA.addMaterial(6);
 
-
   // Test Cell 2:
   DA.init(); 
   DA.setCellN(2);   // Cube cell
@@ -418,5 +412,38 @@ testSurfDivide::checkResults(const int CN,const std::string& strTest) const
       ELog::EM<<"Expect: "<<strTest<<ELog::endCrit;
       return -1;
     }
+  return 0;
+}
+
+int
+testSurfDivide::testTemplate()
+  /*!
+    Placeholder for testing mergeTemplate object.
+    \return 0 
+  */
+{
+  ModelSupport::surfDivide DA;
+  DA.addFrac(0.6);
+  DA.addMaterial(4);
+  DA.addMaterial(6);
+
+
+  // Test Cell 1:
+  DA.init(); 
+  DA.setCellN(2);   // Cube cell
+  DA.setOutNum(11,8001);
+  DA.makeTemplate<Geometry::Plane>(3,4);
+  DA.activeDivide(ASim);
+  
+  int resTest=checkResults(11,"1 -2 3 -8001 5 -6");
+  resTest+=checkResults(12,"1 -2 8001 -8002 5 -6");
+  resTest+=checkResults(13,"1 -2 8002 -4 5 -6");
+  resTest+=checkSurfaceEqual(8001,"8001 py 0.2");
+  resTest+=checkSurfaceEqual(8002,"8002 py 0.6");
+
+  if (resTest) return -1;
+
+  
+
   return 0;
 }

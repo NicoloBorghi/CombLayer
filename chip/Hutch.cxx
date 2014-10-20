@@ -1314,7 +1314,6 @@ ChipIRHutch::createCommonAll(Simulation& System,
   */
 {
   ELog::RegMethod RegA("Hutch","createCommonAll");
-  ELog::EM<<"ASDFASDF "<<ELog::endDiag;
   Trimmer->createSurf(System,Guide);
   createWallSurfaces(Guide);
 

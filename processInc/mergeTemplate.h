@@ -1,9 +1,9 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   processInc/mergeMulti.h
-*
- * Copyright (c) 2004-2013 by Stuart Ansell
+ * File:   processInc/mergeTemplate.h
+ *
+ * Copyright (c) 2004-2014 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,70 +19,67 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  ****************************************************************************/
-#ifndef ModelSupport_mergeMulti_h
-#define ModelSupport_mergeMulti_h
+#ifndef ModelSupport_mergeTemplate_h
+#define ModelSupport_mergeTemplate_h
 
 namespace ModelSupport
 {
 
 /*!
-  \class mergeMulti
+  \class mergeTemplate
   \version 1.0
   \author S. Ansell
-  \date June 2011
+  \date June 2014
   \brief Fractionally splits several semi-parallel surface
+  with full key templating for output control
 */
 
 template<typename T,typename U>
-class mergeMulti : public surfDBase
+class mergeTemplate : public surfDBase
 {
  private:
 
-  int InOutFlag;              ///< Swap sense of systems
-  int signSurfReplace;        ///< Replace surface as a signed surface
-  
+  HeadRule InTemplate;           ///< Inner template
+  HeadRule OutTemplate;          ///< Outer template
+
   HeadRule InRule;               ///< Inner Rule 
   HeadRule OutRule;              ///< Outer Rule
 
-  int pSurf;                     ///< Primary Surf [signed]
-  std::vector<int> sSurf;        ///< Secondary surfaces [signed]
-  std::vector<int> secDir;       ///< Second direction 
+  HeadRule BaseUnit;             ///< Immutable base unit
 
-  const T* PB;                  ///< Base surface
-  std::vector<const U*> PS;     ///< Second planes
+  std::vector<int> pSurf;        ///< Primary surfaces 
+  std::vector<int> sSurf;        ///< Secondary surfaces [signed]
+
+  std::vector<const T*> primSPtr;       ///< Base surface
+  std::vector<const U*> secSPtr;        ///< Second planes
   
   // Created as managed [No del required]
-  std::vector<Geometry::Surface*> OSPtr;   ///< Output surface 
+  std::vector<Geometry::Surface*> OSPtr;   ///< Output surfaces 
 
   void clearRules();
   void addRules();
 
-  void getInner(std::vector<Token>&) const;
-  void getOuter(std::vector<Token>&) const;
-  std::vector<int> getInnerRemove() const; 
-  std::vector<int> getOuterRemove() const;
-
-  void processInnerOuterWithSign(const int,std::vector<Token>&) const;
 
  public:
   
-  mergeMulti();
-  mergeMulti(const mergeMulti<T,U>&);
-  mergeMulti<T,U>& operator=(const mergeMulti<T,U>&);
-  virtual mergeMulti<T,U>* clone() const;
-  virtual ~mergeMulti();
+  mergeTemplate();
+  mergeTemplate(const mergeTemplate<T,U>&);
+  mergeTemplate<T,U>& operator=(const mergeTemplate<T,U>&);
+  virtual mergeTemplate<T,U>* clone() const;
+  virtual ~mergeTemplate();
 
   // SETTING METHODS
+  void setSurfPair(const int,const int);
+
   void setPrimarySurf(const int,const int);
   void addSecondarySurf(const int);
 
   void setDirection(const std::vector<int>&);
-  /// Set sign replacement 
-  void setSignReplace(const int F) { signSurfReplace=F; }
 
   virtual void populate();
   virtual int createSurf(const double,int&);
   virtual void processInnerOuter(const int,std::vector<Token>&) const;
+  virtual void process(const HeadRule&) const;
 
   virtual void write(std::ostream&) const;
 

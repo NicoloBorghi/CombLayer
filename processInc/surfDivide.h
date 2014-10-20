@@ -93,6 +93,10 @@ class surfDivide
   template<typename T> void makeMulti(const int,const int,const int);
   template<typename T> void makeSignPair(const int,const int,const int);
 
+  template<typename T> void makeTemplate(const int,const int);
+  template<typename T> void makeTemplate(const int,const int,const int);
+
+
   template<typename T,typename U> void makePair(const int,const int);
 
   void addInnerSingle(const int);

@@ -170,8 +170,8 @@ makeChipIR::buildIsolated(Simulation& System,
   HObj->addInsertCell(74123);
 
 
-  //  HObj->createAll(System,World::masterOrigin(),*GObj,
-  //		  GObj->getKey("inner"));
+  HObj->createAll(System,World::masterTS2Origin(),*GObj,
+  		  GObj->getKey("inner"));
 	  
   //  FB.createAll(System,*HObj);
   

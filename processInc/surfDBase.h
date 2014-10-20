@@ -2,8 +2,8 @@
   CombLayer : MNCPX Input builder
  
  * File:   processInc/surfDBase.h
-*
- * Copyright (c) 2004-2013 by Stuart Ansell
+ *
+ * Copyright (c) 2004-2014 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
  ****************************************************************************/
 #ifndef ModelSupport_surfDBase_h
 #define ModelSupport_surfDBase_h
+
+class HeadRule;
 
 namespace ModelSupport
 {
@@ -49,7 +51,11 @@ class surfDBase
 				  const std::vector<Token>&,
 				  const std::vector<Token>&);
   static void removeToken(std::vector<Token>&,const int);
- 
+
+  template<typename T,typename U>
+    static Geometry::Surface* createSurf(const T*,const U*,
+			const double,int&);
+
  public:  
 
   ///\cond ABSTRACT
@@ -62,9 +68,13 @@ class surfDBase
   virtual void populate() =0;
   virtual int createSurf(const double,int&) =0;
   virtual void processInnerOuter(const int,std::vector<Token>&) const =0;
+  virtual void process(const HeadRule&) const {}
   ///\endcond ABSTRACT
+  virtual void write(std::ostream&) const { }
 };
 
+std::ostream&
+operator<<(std::ostream&,const surfDBase&);
 
 }
 
