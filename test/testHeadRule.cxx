@@ -264,12 +264,12 @@ testHeadRule::testFindTopNodes()
       std::vector<const Rule*> Res=
 	tmp.findTopNodes();
       if (Res.size()!=tc.get<1>() ||
-	  Res[tc.get<2>()!=tc.get<3>())
+	  Res[tc.get<2>()]->display()!=tc.get<3>())
 	{
 	  ELog::EM<<"A == "<<tmp.display()<<ELog::endDebug;
 	  ELog::EM<<"N == "<<Res.size()<<ELog::endDebug;
 	  for(const Rule* SPtr : Res)
-	    ELog::EM<<*SPtr<<ELog::endDebug;
+	    ELog::EM<<SPtr->display()<<ELog::endDebug;
 	  return -1;
 	}
     }

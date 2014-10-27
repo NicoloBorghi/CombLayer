@@ -82,6 +82,7 @@ class mergeTemplate : public surfDBase
   void setDirection(const std::vector<int>&);
 
   virtual void populate();
+  int createSurf(const double,int&) { return 0; };
   int createSurfaces(const double);
   virtual void processInnerOuter(const int,std::vector<Token>&) const;
   virtual void process(const double,const double,HeadRule&);

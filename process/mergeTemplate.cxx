@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   process/mergeMulti.cxx
+ * File:   process/mergeTemplate.cxx
  *
  * Copyright (c) 2004-2014 by Stuart Ansell
  *
@@ -78,6 +78,39 @@ mergeTemplate<T,U>::mergeTemplate() :
     Constructor
   */
 {}
+
+template<typename T,typename U>
+mergeTemplate<T,U>::mergeTemplate(const mergeTemplate<T,U>& A) : 
+  surfDBase(A),
+  surfN(A.surfN),InTemplate(A.InTemplate),OutTemplate(A.OutTemplate),
+  pSurf(A.pSurf),sSurf(A.sSurf),primSPtr(A.primSPtr),
+  secSPtr(A.secSPtr),PSPtr(A.PSPtr),OSPtr(A.OSPtr)
+  /*!
+    Copy constructor
+    \param A :: mergeTemplate to copy
+  */
+{}
+
+template<typename T,typename U>
+mergeTemplate<T,U>&
+  mergeTemplate<T,U>::operator=(const mergeTemplate<T,U>& A)
+  /*!
+    Assignment operator
+    \param A :: mergeTemplate to copy
+    \return *this
+  */
+{
+  if (this!=&A)
+    {
+      surfDBase::operator=(A);
+      surfN=A.surfN;
+      InTemplate=A.InTemplate;
+      OutTemplate=A.OutTemplate;
+      pSurf=A.pSurf;
+      sSurf=A.sSurf;
+    }
+  return *this;
+}
 
 
 template<typename T,typename U>
@@ -274,22 +307,22 @@ mergeTemplate<T,U>::process(const double fA,const double fB,
       if (!replacedInner && fA>Geometry::zeroTol &&
 	  containInnerRules(PR))
 	{
-	  HR.addIntersection(makeOuterComp());
+	  Result.addIntersection(makeOuterComp());
 	  replacedInner=1;
 	}
       else
-	HR.addIntersection(PR);
+	Result.addIntersection(PR);
 
       if (!replacedOuter && (1.0-fB)>Geometry::zeroTol && 
 	  containOuterRules(PR))
 	{
-	  HR.addIntersection(makeOuter());
+	  Result.addIntersection(makeOuter());
 	  replacedOuter=1;
 	}
       else
-	HR.addIntersection(PR);
+	Result.addIntersection(PR);
     }
-
+  HR=Result;
   return;
 }
 
@@ -306,7 +339,7 @@ mergeTemplate<T,U>::containInnerRules(const Rule* PR) const
 {
   const size_t NL=InTemplate.countNLevel(0);
   for(size_t i=1;i<=NL;i++)
-    if (*PR== (*InTemplate.findNode(0,i)))
+    if (HeadRule(PR) == HeadRule((InTemplate.findNode(0,i))))
       return 1;
  
   return 0;
@@ -322,11 +355,48 @@ mergeTemplate<T,U>::containOuterRules(const Rule* PR) const
   */
 {
   const size_t NL=OutTemplate.countNLevel(0);
+  const HeadRule baseComp(PR);
   for(size_t i=1;i<=NL;i++)
-    if (*PR==OutTemplate.findNode(0,i))
-      return 1;
- 
+    {
+      const HeadRule HR(OutTemplate.findNode(0,i));
+      if (baseComp==HR)
+	return 1;
+    }
   return 0;
+}
+
+template<typename T,typename U>
+HeadRule
+mergeTemplate<T,U>::makeOuter() const
+  /*!
+    Get the outer layer from the outer template by subsitution
+    \param OX :: output stream
+    \return Outer template object 
+  */
+{
+  ELog::RegMethod RegA("mergetTempalte","makeOuter");
+  HeadRule HR(OutTemplate);
+  for(size_t i=0;i<pSurf.size();i++)
+    HR.substituteSurf(pSurf[i],OSPtr[i]->getName(),OSPtr[i]);
+  return HR;
+}
+
+template<typename T,typename U>
+HeadRule
+mergeTemplate<T,U>::makeOuterComp() const
+  /*!
+    Get the outer layer in complement from the 
+    outer template by subsitution
+    \param OX :: output stream
+    \return Outer Complement template object 
+  */
+{
+  ELog::RegMethod RegA("mergetTempalte","makeOuter");
+  HeadRule HR(OutTemplate);
+  for(size_t i=0;i<pSurf.size();i++)
+    HR.substituteSurf(pSurf[i],PSPtr[i]->getName(),PSPtr[i]);
+  HR.makeComplement();
+  return HR;
 }
 
 template<typename T,typename U>
