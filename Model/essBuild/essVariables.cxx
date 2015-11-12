@@ -748,7 +748,7 @@ EssVariables(FuncDataBase& Control)
   Control.addVariable("BeRefWallThick",0.3);
   Control.addVariable("BeRefWallThickLow",0.0);
   Control.addVariable("BeRefTargetSepThick",13.0);
-  Control.addVariable("BeRefLowVoidThick",2.3);
+  Control.addVariable("BeRefLowVoidThick",0.0);
   Control.addVariable("BeRefTopVoidThick",2.3);
   Control.addVariable("BeRefRefMat","Be5H2O");
   //  Control.addVariable("BeRefRefMat","Be300K");
@@ -850,7 +850,7 @@ EssVariables(FuncDataBase& Control)
   Control.addVariable("ShutterBayRadius",550.0);
   Control.addVariable("ShutterBayHeight",400.0);
   Control.addVariable("ShutterBayDepth",400.0);
-  Control.addVariable("ShutterBayMat","CastIron");
+  Control.addVariable("ShutterBayMat",0);
 
   // Guide BAY [ All 4 same ]
   Control.addVariable("GuideBayXStep",0.0);  

@@ -218,7 +218,7 @@ makeESS::createGuides(Simulation& System)
   ModelSupport::objectRegister& OR=
     ModelSupport::objectRegister::Instance();
 
-  for(size_t i=0;i<4;i++)
+  for(size_t i=2;i<4;i++)
     {
       std::shared_ptr<GuideBay> GB(new GuideBay("GuideBay",i+1));
       OR.addObject(GB);
@@ -490,15 +490,15 @@ makeESS::buildPreWings(Simulation& System)
   TopCapWing->createAll(System, *TopCapMod, 10, false, false, *TopMod);
   attachSystem::addToInsertSurfCtrl(System, *TopCapMod, *TopCapWing);
 
-  LowPreWing = std::shared_ptr<PreModWing>(new PreModWing("LowPreWing"));
-  OR.addObject(LowPreWing);
-  LowPreWing->createAll(System, *LowPreMod, 9, true, false, *LowMod);
-  attachSystem::addToInsertSurfCtrl(System, *LowPreMod, *LowPreWing);
+  // LowPreWing = std::shared_ptr<PreModWing>(new PreModWing("LowPreWing"));
+  // OR.addObject(LowPreWing);
+  // LowPreWing->createAll(System, *LowPreMod, 9, true, false, *LowMod);
+  // attachSystem::addToInsertSurfCtrl(System, *LowPreMod, *LowPreWing);
 
-  LowCapWing = std::shared_ptr<PreModWing>(new PreModWing("LowCapWing"));
-  OR.addObject(LowCapWing);
-  LowCapWing->createAll(System, *LowCapMod, 10, true, true, *LowMod);
-  attachSystem::addToInsertSurfCtrl(System, *LowCapMod, *LowCapWing);
+  // LowCapWing = std::shared_ptr<PreModWing>(new PreModWing("LowCapWing"));
+  // OR.addObject(LowCapWing);
+  // LowCapWing->createAll(System, *LowCapMod, 10, true, true, *LowMod);
+  // attachSystem::addToInsertSurfCtrl(System, *LowCapMod, *LowCapWing);
 }
 
   
@@ -540,26 +540,24 @@ makeESS::build(Simulation& System,
   Reflector->globalPopulate(System.getDataBase());
 
   // lower moderator
-  LowPreMod->createAll(System,World::masterOrigin(),0,true,
-		       Target->wheelHeight()/2.0,
-		       Reflector->getRadius(), false);
+  // LowPreMod->createAll(System,World::masterOrigin(),0,true,
+  // 		       Target->wheelHeight()/2.0,
+  // 		       Reflector->getRadius(), false);
 
   TopPreMod->createAll(System,World::masterOrigin(),0,false,
 		       Target->wheelHeight()/2.0,
 		       Reflector->getRadius(), true);
 
-  buildLowButterfly(System);
+  //buildLowButterfly(System);
   buildTopButterfly(System);
-  const double LMHeight=attachSystem::calcLinkDistance(*LowMod,5,6);
+  //  const double LMHeight=attachSystem::calcLinkDistance(*LowMod,5,6);
   const double TMHeight=attachSystem::calcLinkDistance(*TopMod,5,6);
   // Cap moderator DOES not span whole unit
-  LowCapMod->createAll(System,*LowMod,6,false,
-   		       0.0,Reflector->getRadius(), true);
   TopCapMod->createAll(System,*TopMod,6,false,
    		       0.0,Reflector->getRadius(), false);
   Reflector->createAll(System,World::masterOrigin(),
 		       Target->wheelHeight(),
-		       LowPreMod->getHeight()+LMHeight+LowCapMod->getHeight(),
+		       0.0,
 		       TopPreMod->getHeight()+TMHeight+TopCapMod->getHeight());
 
   buildPreWings(System);
@@ -574,13 +572,13 @@ makeESS::build(Simulation& System,
   TopAFL->createAll(System,*TopMod,0,*Reflector,4,*Bulk,-3);
   TopBFL->createAll(System,*TopMod,0,*Reflector,3,*Bulk,-3);
 
-  LowAFL->createAll(System,*LowMod,0,*Reflector,4,*Bulk,-3);
-  LowBFL->createAll(System,*LowMod,0,*Reflector,3,*Bulk,-3);   
+  //  LowAFL->createAll(System,*LowMod,0,*Reflector,4,*Bulk,-3);
+  // LowBFL->createAll(System,*LowMod,0,*Reflector,3,*Bulk,-3);   
 
   attachSystem::addToInsertSurfCtrl(System,*Bulk,Target->getCC("Wheel"));
   attachSystem::addToInsertForced(System,*Bulk,Target->getCC("Shaft"));
-  attachSystem::addToInsertForced(System,*Bulk,LowAFL->getCC("outer"));
-  attachSystem::addToInsertForced(System,*Bulk,LowBFL->getCC("outer"));
+  //  attachSystem::addToInsertForced(System,*Bulk,LowAFL->getCC("outer"));
+  //  attachSystem::addToInsertForced(System,*Bulk,LowBFL->getCC("outer"));
   attachSystem::addToInsertForced(System,*Bulk,TopAFL->getCC("outer"));
   attachSystem::addToInsertForced(System,*Bulk,TopBFL->getCC("outer"));
 
@@ -598,8 +596,8 @@ makeESS::build(Simulation& System,
 				  Target->getCC("Shaft"));
 
 
-  createGuides(System);
-  makeBunker(System,bunker);
+  // createGuides(System);
+  //  makeBunker(System,bunker);
 
   // PROTON BEAMLINE
   
@@ -613,7 +611,7 @@ makeESS::build(Simulation& System,
   attachSystem::addToInsertSurfCtrl(System,*Bulk,
 				    PBeam->getCC("Full"));
 
-  makeBeamLine(System,IParam);
+  //  makeBeamLine(System,IParam);
 
   //  buildF5Collimator(System, nF5);
   buildF5Collimator(System, IParam);
