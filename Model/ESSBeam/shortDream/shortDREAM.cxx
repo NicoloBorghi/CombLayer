@@ -415,7 +415,8 @@ shortDREAM::build(Simulation& System,
   // Make bunker insert
   const attachSystem::FixedComp& GFC(FocusFinal->getKey("Guide0"));
   BInsert->createAll(System,GFC,-1,bunkerObj);
-  attachSystem::addToInsertSurfCtrl(System,bunkerObj,"MainWall",*BInsert);  
+  ELog::EM<<"Bunker == "<<bunkerObj.getKeyName()<<ELog::endDiag;
+  attachSystem::addToInsertSurfCtrl(System,bunkerObj,"frontWall",*BInsert);  
 
   FocusWall->addInsertCell(BInsert->getCell("Void"));
   FocusWall->createAll(System,*BInsert,-1,
