@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   visit/Visit.cxx
  *
- * Copyright (c) 2004-2014 by Stuart Ansell
+ * Copyright (c) 2004-2015 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,13 +44,8 @@
 #include "MatrixBase.h"
 #include "Matrix.h"
 #include "Vec3D.h"
-#include "Quaternion.h"
 #include "objectRegister.h"
-#include "localRotate.h"
-#include "masterRotate.h"
 #include "Triple.h"
-#include "NRange.h"
-#include "NList.h"
 #include "Rules.h"
 #include "varList.h"
 #include "Code.h"
