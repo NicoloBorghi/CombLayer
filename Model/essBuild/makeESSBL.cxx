@@ -82,6 +82,8 @@
 #include "shortDREAM.h"
 #include "shortODIN.h"
 #include "VOR.h"
+#include "simplebeamTube.h"
+#include "makesimplebeam.h"
 
 #include "beamlineConstructor.h"
 #include "makeESSBL.h"
@@ -222,6 +224,13 @@ makeESSBL::build(Simulation& System,
       DREAM dreamBL("dream");
       dreamBL.build(System,*mainGIPtr,bunkerObj,voidCell);
     }
+  else if (beamName=="SIMPLE")
+    {
+      simplebeamSystem::makesimplebeam simpleBL;
+      simpleBL.build(&System);
+   
+    }
+
   else if (beamName=="SHORTDREAM")
     {
       // short sector dream

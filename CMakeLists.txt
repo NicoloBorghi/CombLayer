@@ -57,6 +57,7 @@ include_directories("${PROJECT_SOURCE_DIR}/Model/moderatorInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/muonInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/photonInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/pipeBuildInc")
+include_directories("${PROJECT_SOURCE_DIR}/Model/simplebox_comblayer1BuildInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/sinbadBuildInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/snsBuildInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/t1BuildInc")
@@ -73,6 +74,7 @@ include_directories("${PROJECT_SOURCE_DIR}/Model/ESSBeam/odinInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/ESSBeam/shortDreamInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/ESSBeam/shortNMXInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/ESSBeam/shortOdinInc")
+include_directories("${PROJECT_SOURCE_DIR}/Model/ESSBeam/simpleInc")
 include_directories("${PROJECT_SOURCE_DIR}/Model/ESSBeam/vorInc")
 ## END INCLUDES 
 
@@ -91,6 +93,8 @@ file(GLOB estia "${PROJECT_SOURCE_DIR}/Model/ESSBeam/estia/*.cxx")
 add_library(libestia SHARED ${estia})
 file(GLOB snsBuild "${PROJECT_SOURCE_DIR}/Model/snsBuild/*.cxx")
 add_library(libsnsBuild SHARED ${snsBuild})
+file(GLOB simple "${PROJECT_SOURCE_DIR}/Model/ESSBeam/simple/*.cxx")
+add_library(libsimple SHARED ${simple})
 file(GLOB odin "${PROJECT_SOURCE_DIR}/Model/ESSBeam/odin/*.cxx")
 add_library(libodin SHARED ${odin})
 file(GLOB source "${PROJECT_SOURCE_DIR}/System/source/*.cxx")
@@ -117,6 +121,8 @@ file(GLOB t1Build "${PROJECT_SOURCE_DIR}/Model/t1Build/*.cxx")
 add_library(libt1Build SHARED ${t1Build})
 file(GLOB loki "${PROJECT_SOURCE_DIR}/Model/ESSBeam/loki/*.cxx")
 add_library(libloki SHARED ${loki})
+file(GLOB simplebox_comblayer1Build "${PROJECT_SOURCE_DIR}/Model/simplebox_comblayer1Build/*.cxx")
+add_library(libsimplebox_comblayer1Build SHARED ${simplebox_comblayer1Build})
 file(GLOB filter "${PROJECT_SOURCE_DIR}/Model/filter/*.cxx")
 add_library(libfilter SHARED ${filter})
 file(GLOB d4cModel "${PROJECT_SOURCE_DIR}/Model/d4cModel/*.cxx")
@@ -296,6 +302,7 @@ target_link_libraries(ess  libestia)
 target_link_libraries(ess  libshortDream)
 target_link_libraries(ess  libshortOdin)
 target_link_libraries(ess  liblongLoki)
+target_link_libraries(ess  libsimple)
 target_link_libraries(ess boost_regex)
 target_link_libraries(ess stdc++)
  target_link_libraries(ess gsl)
@@ -707,6 +714,7 @@ set(ALLCXX
      ./Model/imat/*.cxx 
      ./Model/ESSBeam/estia/*.cxx 
      ./Model/snsBuild/*.cxx 
+     ./Model/ESSBeam/simple/*.cxx 
      ./Model/ESSBeam/odin/*.cxx 
      ./System/source/*.cxx 
      ./transport/*.cxx 
@@ -720,6 +728,7 @@ set(ALLCXX
      ./Model/gammaBuild/*.cxx 
      ./Model/t1Build/*.cxx 
      ./Model/ESSBeam/loki/*.cxx 
+     ./Model/simplebox_comblayer1Build/*.cxx 
      ./Model/filter/*.cxx 
      ./Model/d4cModel/*.cxx 
      ./instrument/*.cxx 
@@ -817,6 +826,7 @@ set(ALLHXX
      ./Model/muonInc/*.h 
      ./Model/photonInc/*.h 
      ./Model/pipeBuildInc/*.h 
+     ./Model/simplebox_comblayer1BuildInc/*.h 
      ./Model/sinbadBuildInc/*.h 
      ./Model/snsBuildInc/*.h 
      ./Model/t1BuildInc/*.h 
@@ -833,6 +843,7 @@ set(ALLHXX
      ./Model/ESSBeam/shortDreamInc/*.h 
      ./Model/ESSBeam/shortNMXInc/*.h 
      ./Model/ESSBeam/shortOdinInc/*.h 
+     ./Model/ESSBeam/simpleInc/*.h 
      ./Model/ESSBeam/vorInc/*.h 
       )
 set(ASRC ${ALLHXX} ${ALLCXX} )
@@ -845,6 +856,7 @@ add_custom_target(words  COMMAND grep -v -e '^[[:space:][:cntrl:]]*$$'
      ./Model/imat/*.cxx 
      ./Model/ESSBeam/estia/*.cxx 
      ./Model/snsBuild/*.cxx 
+     ./Model/ESSBeam/simple/*.cxx 
      ./Model/ESSBeam/odin/*.cxx 
      ./System/source/*.cxx 
      ./transport/*.cxx 
@@ -858,6 +870,7 @@ add_custom_target(words  COMMAND grep -v -e '^[[:space:][:cntrl:]]*$$'
      ./Model/gammaBuild/*.cxx 
      ./Model/t1Build/*.cxx 
      ./Model/ESSBeam/loki/*.cxx 
+     ./Model/simplebox_comblayer1Build/*.cxx 
      ./Model/filter/*.cxx 
      ./Model/d4cModel/*.cxx 
      ./instrument/*.cxx 
@@ -953,6 +966,7 @@ add_custom_target(words  COMMAND grep -v -e '^[[:space:][:cntrl:]]*$$'
      ./Model/muonInc/*.h 
      ./Model/photonInc/*.h 
      ./Model/pipeBuildInc/*.h 
+     ./Model/simplebox_comblayer1BuildInc/*.h 
      ./Model/sinbadBuildInc/*.h 
      ./Model/snsBuildInc/*.h 
      ./Model/t1BuildInc/*.h 
@@ -969,6 +983,7 @@ add_custom_target(words  COMMAND grep -v -e '^[[:space:][:cntrl:]]*$$'
      ./Model/ESSBeam/shortDreamInc/*.h 
      ./Model/ESSBeam/shortNMXInc/*.h 
      ./Model/ESSBeam/shortOdinInc/*.h 
+     ./Model/ESSBeam/simpleInc/*.h 
      ./Model/ESSBeam/vorInc/*.h 
      ./Main/*.cxx 
      ./CMake.pl  
@@ -983,6 +998,7 @@ add_custom_target(tar  COMMAND tar zcvf ${PROJECT_SOURCE_DIR}/CombLayer.tgz
      ./Model/imat/*.cxx 
      ./Model/ESSBeam/estia/*.cxx 
      ./Model/snsBuild/*.cxx 
+     ./Model/ESSBeam/simple/*.cxx 
      ./Model/ESSBeam/odin/*.cxx 
      ./System/source/*.cxx 
      ./transport/*.cxx 
@@ -996,6 +1012,7 @@ add_custom_target(tar  COMMAND tar zcvf ${PROJECT_SOURCE_DIR}/CombLayer.tgz
      ./Model/gammaBuild/*.cxx 
      ./Model/t1Build/*.cxx 
      ./Model/ESSBeam/loki/*.cxx 
+     ./Model/simplebox_comblayer1Build/*.cxx 
      ./Model/filter/*.cxx 
      ./Model/d4cModel/*.cxx 
      ./instrument/*.cxx 
@@ -1091,6 +1108,7 @@ add_custom_target(tar  COMMAND tar zcvf ${PROJECT_SOURCE_DIR}/CombLayer.tgz
      ./Model/muonInc/*.h 
      ./Model/photonInc/*.h 
      ./Model/pipeBuildInc/*.h 
+     ./Model/simplebox_comblayer1BuildInc/*.h 
      ./Model/sinbadBuildInc/*.h 
      ./Model/snsBuildInc/*.h 
      ./Model/t1BuildInc/*.h 
@@ -1107,6 +1125,7 @@ add_custom_target(tar  COMMAND tar zcvf ${PROJECT_SOURCE_DIR}/CombLayer.tgz
      ./Model/ESSBeam/shortDreamInc/*.h 
      ./Model/ESSBeam/shortNMXInc/*.h 
      ./Model/ESSBeam/shortOdinInc/*.h 
+     ./Model/ESSBeam/simpleInc/*.h 
      ./Model/ESSBeam/vorInc/*.h 
      ./Main/*.cxx 
      ./CMake.pl  
@@ -1121,6 +1140,7 @@ add_custom_target(tags  COMMAND etags
      ${PROJECT_SOURCE_DIR}/Model/imat/*.cxx 
      ${PROJECT_SOURCE_DIR}/Model/ESSBeam/estia/*.cxx 
      ${PROJECT_SOURCE_DIR}/Model/snsBuild/*.cxx 
+     ${PROJECT_SOURCE_DIR}/Model/ESSBeam/simple/*.cxx 
      ${PROJECT_SOURCE_DIR}/Model/ESSBeam/odin/*.cxx 
      ${PROJECT_SOURCE_DIR}/System/source/*.cxx 
      ${PROJECT_SOURCE_DIR}/transport/*.cxx 
@@ -1134,6 +1154,7 @@ add_custom_target(tags  COMMAND etags
      ${PROJECT_SOURCE_DIR}/Model/gammaBuild/*.cxx 
      ${PROJECT_SOURCE_DIR}/Model/t1Build/*.cxx 
      ${PROJECT_SOURCE_DIR}/Model/ESSBeam/loki/*.cxx 
+     ${PROJECT_SOURCE_DIR}/Model/simplebox_comblayer1Build/*.cxx 
      ${PROJECT_SOURCE_DIR}/Model/filter/*.cxx 
      ${PROJECT_SOURCE_DIR}/Model/d4cModel/*.cxx 
      ${PROJECT_SOURCE_DIR}/instrument/*.cxx 
@@ -1229,6 +1250,7 @@ add_custom_target(tags  COMMAND etags
      ${PROJECT_SOURCE_DIR}/Model/muonInc/*.h 
      ${PROJECT_SOURCE_DIR}/Model/photonInc/*.h 
      ${PROJECT_SOURCE_DIR}/Model/pipeBuildInc/*.h 
+     ${PROJECT_SOURCE_DIR}/Model/simplebox_comblayer1BuildInc/*.h 
      ${PROJECT_SOURCE_DIR}/Model/sinbadBuildInc/*.h 
      ${PROJECT_SOURCE_DIR}/Model/snsBuildInc/*.h 
      ${PROJECT_SOURCE_DIR}/Model/t1BuildInc/*.h 
@@ -1245,6 +1267,7 @@ add_custom_target(tags  COMMAND etags
      ${PROJECT_SOURCE_DIR}/Model/ESSBeam/shortDreamInc/*.h 
      ${PROJECT_SOURCE_DIR}/Model/ESSBeam/shortNMXInc/*.h 
      ${PROJECT_SOURCE_DIR}/Model/ESSBeam/shortOdinInc/*.h 
+     ${PROJECT_SOURCE_DIR}/Model/ESSBeam/simpleInc/*.h 
      ${PROJECT_SOURCE_DIR}/Model/ESSBeam/vorInc/*.h 
  )
 

@@ -189,13 +189,14 @@ setESSSingle(defaultConfig& A,
      {"SHORTDREAM","G4BLine9"},
      {"SHORTODIN","G4BLine6"},
      {"DREAM","G4BLine17"},
+     {"SIMPLE","G4BLine13"},
      {"VOR","G4BLine2"},   // also 17  
      {"LOKI","G4BLine4"},
      {"ODIN","G4BLine13"},
      {"ESTIA","G4BLine11"}
     };     
   const std::set<std::string> beamFilled=
-    {"NMX","DREAM","VOR","SHORTDREAM","LOKI"};
+    {"NMX","DREAM","VOR","SHORTDREAM","LOKI","SIMPLE"};
   
   std::map<std::string,std::string>::const_iterator mc=
     beamDef.find(beamItem);

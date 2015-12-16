@@ -1,9 +1,9 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   imatInc/makeImat.h
-*
- * Copyright (c) 2004-2013 by Stuart Ansell
+ * File:   imatInc/makeIMat.h
+ *
+ * Copyright (c) 2004-2014 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,30 +19,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  ****************************************************************************/
-#ifndef imatSystem_makeImat_h
-#define imatSystem_makeImat_h
+#ifndef imatSystem_makeIMat_h
+#define imatSystem_makeIMat_h
 
 namespace imatSystem
 {
 
+  class IMatGuide;
+  class IMatChopper;
+
   /*!
-    \class makeImat 
+    \class makeIMat 
     \version 1.0
     \author S. Ansell
     \date June 2011
+    \brief Construct IMat from Insert to beamstop
   */
 
-class makeImat
+class makeIMat
 {
  private:
-
+  
+  std::shared_ptr<IMatGuide> G1Obj;    ///< First Guide section
+  //  std::shared_ptr<IMatChopper> TZero;  ///< Chopper pit
+  //  std::shared_ptr<IMatGuide> G2Ibj;    ///< Second Guide section
 
  public:
   
-  makeImat();
-  makeImat(const makeImat&);
-  makeImat& operator=(const makeImat&);
-  ~makeImat();
+  makeIMat();
+  makeIMat(const makeIMat&);
+  makeIMat& operator=(const makeIMat&);
+  ~makeIMat();
   
   void build(Simulation* SimPtr,
 	     const mainSystem::inputParam& IParam,

@@ -78,6 +78,7 @@ namespace setVariable
   void DelftCoreType(mainSystem::inputParam&,FuncDataBase&);
 
   void siSimulation(FuncDataBase&);
+  void simplebeamVariables(FuncDataBase&);
 
 }
 

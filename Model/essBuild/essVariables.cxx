@@ -609,6 +609,7 @@ EssVariables(FuncDataBase& Control)
   LOKIvariables(Control);
   NMXvariables(Control);
   VORvariables(Control);
+  simplebeamVariables(Control);
       
   EssButterflyModerator(Control);
   EssWheel(Control);
