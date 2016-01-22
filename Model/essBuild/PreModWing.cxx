@@ -229,7 +229,9 @@ PreModWing::createSurfaces()
   ModelSupport::buildPlane(SMap,modIndex+6,Origin+Z*(thick+wallThick)*tiltSign,Z*tiltSign);  
   if (tiltAngle>Geometry::zeroTol)
     {
+      ModelSupport::buildPlane(SMap, modIndex+81, Origin+Z*(thick+h)*tiltSign, Z*tiltSign); // dummy plane to pass --validCheck
       ModelSupport::buildCone(SMap, modIndex+8, Origin+Z*(thick+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
+      ModelSupport::buildPlane(SMap, modIndex+91, Origin+Z*(thick+wallThick+h)*tiltSign, Z*tiltSign); // dummy plane to pass --validCheck
       ModelSupport::buildCone(SMap, modIndex+9, Origin+Z*(thick+wallThick+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
     }
   else
@@ -294,23 +296,23 @@ PreModWing::createObjects(Simulation& System,
   Out=ModelSupport::getComposite(SMap,modIndex," 5 -6 -7 ");// + PreString;
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out+excludeBM));
   
-  Out=ModelSupport::getComposite(SMap,modIndex," 7 -8 ") + PreString;
+  Out=ModelSupport::getComposite(SMap,modIndex," 7 -8 -81 ") + PreString;
   // Originally I excluded all moderator by +excludeBM string, but actually this particular cell
   // only crosses its left+right water cells, so I use +BM->getLeftRightWaterSideRule()
   System.addCell(MonteCarlo::Qhull(cellIndex++,mat,0.0,
 				   Out+excludeBMLeftRightWater+BMouterCyl));
 
-  Out=ModelSupport::getComposite(SMap,modIndex," 7 8 -9 ") + PreString;
+  Out=ModelSupport::getComposite(SMap,modIndex," 7 (8:81) -9 -91 ") + PreString;
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,
 				   Out + excludeBMLeftRightWater + BMouterCyl)); // same trick with excludeBMLeftRightWater as in the previous cell
 
   HeadRule wingExclude;
-  Out=ModelSupport::getComposite(SMap,modIndex," (-6 -7):(7 -9) ") + PreString;
+  Out=ModelSupport::getComposite(SMap,modIndex," (-6 -7):(7 -9 -91) ") + PreString;
   wingExclude.procString(Out);
   wingExclude.makeComplement();
   AmbientVoid->addSurfString(wingExclude.display());
 
-  Out=ModelSupport::getComposite(SMap,modIndex," -9 ") + PreString+excludeBM+BMouterCyl;
+  Out=ModelSupport::getComposite(SMap,modIndex," -9 -91 ") + PreString+excludeBM+BMouterCyl;
   addOuterSurf(Out);
   return; 
 }
