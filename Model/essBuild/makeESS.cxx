@@ -639,12 +639,12 @@ makeESS::buildPreWings(Simulation& System)
   OR.addObject(TopPreWing);
   TopPreWing->createAll(System, *TopPreMod, 9, false, top, *TopMod);
   attachSystem::addToInsertSurfCtrl(System, *TopPreMod, *TopPreWing);
-  return;
 
   TopCapWing = std::shared_ptr<PreModWing>(new PreModWing("TopCapWing"));
   OR.addObject(TopCapWing);
   TopCapWing->createAll(System, *TopCapMod, 10, false, bottom, *TopMod);
   attachSystem::addToInsertSurfCtrl(System, *TopCapMod, *TopCapWing);
+  return;
 
   LowPreWing = std::shared_ptr<PreModWing>(new PreModWing("LowPreWing"));
   OR.addObject(LowPreWing);

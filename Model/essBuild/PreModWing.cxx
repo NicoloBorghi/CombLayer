@@ -217,22 +217,26 @@ PreModWing::createSurfaces()
 
   const double h = tiltRadius * tan(tiltAngle*M_PI/180.0); // cone must be shifted for the tilting to start at Y=tiltRadius
 
+
   // Divide plane
-  ModelSupport::buildPlane(SMap,modIndex+1,Origin,X);  
-  ModelSupport::buildPlane(SMap,modIndex+2,Origin,Y);  
+  ELog::EM << "remove me " << ELog::endDiag;
+  //  ModelSupport::buildPlane(SMap,modIndex+1,Origin,X);  
+  //  ModelSupport::buildPlane(SMap,modIndex+2,Origin,Y);  
 
   ModelSupport::buildCylinder(SMap,modIndex+7,Origin,Z,tiltRadius);  
 
   const int tiltSign = tiltSide ? 1 : -1;
+
+  ELog::EM<< keyName <<  ": Origin: " << Origin << " h: " << Origin+Z*(thick+h)*tiltSign << ELog::endDiag;
 
   ModelSupport::buildPlane(SMap,modIndex+5,Origin+Z*(thick)*tiltSign,Z*tiltSign);  
   ModelSupport::buildPlane(SMap,modIndex+6,Origin+Z*(thick+wallThick)*tiltSign,Z*tiltSign);  
   if (tiltAngle>Geometry::zeroTol)
     {
       ModelSupport::buildPlane(SMap, modIndex+81, Origin+Z*(thick+h)*tiltSign, Z*tiltSign); // dummy plane to pass --validCheck
-      ModelSupport::buildCone(SMap, modIndex+8, Origin+Z*(thick+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
+      ModelSupport::buildCone(SMap,  modIndex+8,  Origin+Z*(thick+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
       ModelSupport::buildPlane(SMap, modIndex+91, Origin+Z*(thick+wallThick+h)*tiltSign, Z*tiltSign); // dummy plane to pass --validCheck
-      ModelSupport::buildCone(SMap, modIndex+9, Origin+Z*(thick+wallThick+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
+      ModelSupport::buildCone(SMap,  modIndex+9,  Origin+Z*(thick+wallThick+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
     }
   else
     {
@@ -302,7 +306,8 @@ PreModWing::createObjects(Simulation& System,
   System.addCell(MonteCarlo::Qhull(cellIndex++,mat,0.0,
 				   Out+excludeBMLeftRightWater+BMouterCyl));
 
-  Out=ModelSupport::getComposite(SMap,modIndex," 7 (8:81) -9 -91 ") + PreString;
+  Out=ModelSupport::getComposite(SMap,modIndex," 7 (8:81) -9 -91 ") + PreString; // works
+  //  Out=ModelSupport::getComposite(SMap,modIndex," 7 8 -81 -9 -91 ") + PreString;
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,
 				   Out + excludeBMLeftRightWater + BMouterCyl)); // same trick with excludeBMLeftRightWater as in the previous cell
 
