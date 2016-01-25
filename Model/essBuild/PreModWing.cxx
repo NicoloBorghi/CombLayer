@@ -234,9 +234,9 @@ PreModWing::createSurfaces()
   if (tiltAngle>Geometry::zeroTol)
     {
       ModelSupport::buildPlane(SMap, modIndex+81, Origin+Z*(thick+h)*tiltSign, Z*tiltSign); // dummy plane to pass --validCheck
-      ModelSupport::buildCone(SMap,  modIndex+8,  Origin+Z*(thick+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
+      ModelSupport::buildCone(SMap,  modIndex+8,  Origin+Z*(thick+h)*tiltSign, Z, 90.0-tiltAngle, -tiltSign);
       ModelSupport::buildPlane(SMap, modIndex+91, Origin+Z*(thick+wallThick+h)*tiltSign, Z*tiltSign); // dummy plane to pass --validCheck
-      ModelSupport::buildCone(SMap,  modIndex+9,  Origin+Z*(thick+wallThick+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
+      ModelSupport::buildCone(SMap,  modIndex+9,  Origin+Z*(thick+wallThick+h)*tiltSign, Z, 90.0-tiltAngle, -tiltSign);
     }
   else
     {
