@@ -216,18 +216,9 @@ PreModWing::createSurfaces()
   ELog::RegMethod RegA("PreModWing","createSurfaces");
 
   const double h = tiltRadius * tan(tiltAngle*M_PI/180.0); // cone must be shifted for the tilting to start at Y=tiltRadius
-
-
-  // Divide plane
-  ELog::EM << "remove me " << ELog::endDiag;
-  //  ModelSupport::buildPlane(SMap,modIndex+1,Origin,X);  
-  //  ModelSupport::buildPlane(SMap,modIndex+2,Origin,Y);  
-
-  ModelSupport::buildCylinder(SMap,modIndex+7,Origin,Z,tiltRadius);  
-
   const int tiltSign = tiltSide ? 1 : -1;
 
-  ELog::EM<< keyName <<  ": Origin: " << Origin << " h: " << Origin+Z*(thick+h)*tiltSign << ELog::endDiag;
+  ModelSupport::buildCylinder(SMap,modIndex+7,Origin,Z,tiltRadius);  
 
   ModelSupport::buildPlane(SMap,modIndex+5,Origin+Z*(thick)*tiltSign,Z*tiltSign);  
   ModelSupport::buildPlane(SMap,modIndex+6,Origin+Z*(thick+wallThick)*tiltSign,Z*tiltSign);  
