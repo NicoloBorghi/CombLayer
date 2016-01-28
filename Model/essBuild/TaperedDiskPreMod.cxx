@@ -242,10 +242,6 @@ TaperedDiskPreMod::createSurfaces()
 {
   ELog::RegMethod RegA("TaperedDiskPreMod","createSurfaces");
 
-  // Divide plane
-  ModelSupport::buildPlane(SMap,modIndex+1,Origin,X);  
-  ModelSupport::buildPlane(SMap,modIndex+2,Origin,Y);  
-
   const double h = tiltRadius * tan(tiltAngle*M_PI/180.0); // cone must be shifted for the tilting to start at Y=tiltRadius
   const int tiltSign = tiltSide ? 1 : -1;
 
