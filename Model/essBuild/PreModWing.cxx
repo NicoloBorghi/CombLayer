@@ -291,24 +291,28 @@ PreModWing::createObjects(Simulation& System,
   Out=ModelSupport::getComposite(SMap,modIndex," 5 -6 -7 ");// + PreString;
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out+excludeBM));
   
-  Out=ModelSupport::getComposite(SMap,modIndex," 7 -8 -81 ") + PreString;
+  
+  Out = (tiltAngle>Geometry::zeroTol) ? ModelSupport::getComposite(SMap,modIndex," 7 -8 -81 ") : ModelSupport::getComposite(SMap,modIndex," 7 -8 ");
+  Out += PreString;
   // Originally I excluded all moderator by +excludeBM string, but actually this particular cell
   // only crosses its left+right water cells, so I use +BM->getLeftRightWaterSideRule()
   System.addCell(MonteCarlo::Qhull(cellIndex++,mat,0.0,
 				   Out+excludeBMLeftRightWater+BMouterCyl));
 
-  Out=ModelSupport::getComposite(SMap,modIndex," 7 (8:81) -9 -91 ") + PreString; // works
-  //  Out=ModelSupport::getComposite(SMap,modIndex," 7 8 -81 -9 -91 ") + PreString;
+  Out = (tiltAngle>Geometry::zeroTol) ? ModelSupport::getComposite(SMap,modIndex," 7 (8:81) -9 -91 ") : ModelSupport::getComposite(SMap,modIndex," 7 8 -9 ");
+  Out += PreString; // works
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,
 				   Out + excludeBMLeftRightWater + BMouterCyl)); // same trick with excludeBMLeftRightWater as in the previous cell
 
   HeadRule wingExclude;
-  Out=ModelSupport::getComposite(SMap,modIndex," (-6 -7):(7 -9 -91) ") + PreString;
+  Out = (tiltAngle>Geometry::zeroTol) ? ModelSupport::getComposite(SMap,modIndex," (-6 -7):(7 -9 -91) ") : ModelSupport::getComposite(SMap,modIndex," (-6 -7):(7 -9) ");
+  Out += PreString;
   wingExclude.procString(Out);
   wingExclude.makeComplement();
   AmbientVoid->addSurfString(wingExclude.display());
 
-  Out=ModelSupport::getComposite(SMap,modIndex," -9 -91 ") + PreString+excludeBM+BMouterCyl;
+  Out = (tiltAngle>Geometry::zeroTol) ? ModelSupport::getComposite(SMap,modIndex," -9 -91 ") : ModelSupport::getComposite(SMap,modIndex," -9 ");
+  Out += PreString+excludeBM+BMouterCyl;
   addOuterSurf(Out);
   return; 
 }
