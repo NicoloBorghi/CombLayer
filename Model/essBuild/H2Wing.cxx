@@ -404,6 +404,11 @@ H2Wing::createSurfaces()
   // Surfaces 11-16 are the outer blades etc
 
   //  const double PSteps[]={wallThick,flatClearance,0.0};  
+
+  // Divider
+  ModelSupport::buildPlane(SMap,wingIndex+3,Origin+Y*(fabs(xStep)),Y);
+
+
   
   int triOffset(wingIndex+100);
   std::array<Geometry::Vec3D,3> CPts;
@@ -495,7 +500,7 @@ H2Wing::createObjects(Simulation& System)
       InnerB.makeComplement();
       InnerC.makeComplement();
 
-      OutA=ModelSupport::getComposite(SMap,triOffset,"-1 -3 5 -6 (21:-7)");
+      OutA=ModelSupport::getComposite(SMap,triOffset,wingIndex, "-3M -1 -3 5 -6 (21:-7)");
       OutB=ModelSupport::getComposite(SMap,triOffset,"-1 -2 5 -6 (22:-8)");
       OutC=ModelSupport::getComposite(SMap,triOffset,"-2 -3 5 -6 (23:-9) ");
 
@@ -652,7 +657,7 @@ H2Wing::getLayerString(const size_t layerIndex,
     case 5:
       return StrFunc::makeString(SMap.realSurf(triOffset+6));
     case 6:
-      return ModelSupport::getComposite(SMap,triOffset,"-1 -3 (21:-7) ");
+      return ModelSupport::getComposite(SMap,triOffset,wingIndex, "-3M -1 -3 (21:-7) ");
     case 7:
       return ModelSupport::getComposite(SMap,triOffset,"-1 -2 (22:-8) ");
     case 8:
