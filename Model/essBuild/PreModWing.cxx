@@ -224,6 +224,7 @@ PreModWing::createSurfaces()
   ModelSupport::buildPlane(SMap,modIndex+6,Origin+Z*(thick+wallThick)*tiltSign,Z*tiltSign);  
   if (tiltAngle>Geometry::zeroTol)
     {
+      ELog::EM << "FIXME: Duplicated planes: 81=8, 91=9 (also remove 'else')" << ELog::endDiag;
       ModelSupport::buildPlane(SMap, modIndex+81, Origin+Z*(thick+h)*tiltSign, Z*tiltSign); // dummy plane to pass --validCheck
       ModelSupport::buildCone(SMap,  modIndex+8,  Origin+Z*(thick+h)*tiltSign, Z, 90.0-tiltAngle, -tiltSign);
       ModelSupport::buildPlane(SMap, modIndex+91, Origin+Z*(thick+wallThick+h)*tiltSign, Z*tiltSign); // dummy plane to pass --validCheck
