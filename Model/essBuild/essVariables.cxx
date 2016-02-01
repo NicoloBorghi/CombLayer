@@ -1081,10 +1081,10 @@ EssButterflyModerator(FuncDataBase& Control)
   Control.addVariable("TopFlyWallDepth",0.0);
   Control.addVariable("TopFlyWallHeight",0.3);
 
-  Control.addVariable("TopFlyLeftLobeXStep",1.0);  
+  Control.addVariable("TopFlyLeftLobeXStep",-2.0);   // BF2: 1
   Control.addVariable("TopFlyLeftLobeYStep",0.0);  
 
-  Control.addVariable("TopFlyLeftLobeCorner1",Geometry::Vec3D(0, 5.0, 0));
+  Control.addVariable("TopFlyLeftLobeCorner1",Geometry::Vec3D(0, 1.0, 0));
   Control.addVariable("TopFlyLeftLobeCorner2",Geometry::Vec3D(-14.4,-13.2,0));
   Control.addVariable("TopFlyLeftLobeCorner3",Geometry::Vec3D(14.4,-13.2,0));
   
@@ -1125,10 +1125,10 @@ EssButterflyModerator(FuncDataBase& Control)
   Control.addVariable("TopFlyFlowGuideWallMat","Aluminium20K");
   Control.addVariable("TopFlyFlowGuideWallTemp",20.0);
   
-  Control.addVariable("TopFlyRightLobeXStep",-1.0);  
+  Control.addVariable("TopFlyRightLobeXStep",2.0);   // BF2: -1
   Control.addVariable("TopFlyRightLobeYStep",0.0);  
 
-  Control.addVariable("TopFlyRightLobeCorner1",Geometry::Vec3D(0,5,0));
+  Control.addVariable("TopFlyRightLobeCorner1",Geometry::Vec3D(0,1,0));
   Control.addVariable("TopFlyRightLobeCorner2",Geometry::Vec3D(-14.4,-13.2,0));
   Control.addVariable("TopFlyRightLobeCorner3",Geometry::Vec3D(14.4,-13.2,0));
 
@@ -1161,7 +1161,7 @@ EssButterflyModerator(FuncDataBase& Control)
 
 
   Control.addVariable("TopFlyMidWaterCutLayer",3);
-  Control.addVariable("TopFlyMidWaterMidYStep",4.635);
+  Control.addVariable("TopFlyMidWaterMidYStep",6.635);
   Control.addVariable("TopFlyMidWaterMidAngle",90);
   Control.addVariable("TopFlyMidWaterLength",10.98);
  

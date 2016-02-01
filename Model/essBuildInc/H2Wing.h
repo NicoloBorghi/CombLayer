@@ -77,7 +77,7 @@ class H2Wing :
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&);
 
-  void createSurfaces();
+  void createSurfaces(const attachSystem::FixedComp&);
   void createObjects(Simulation&);
   void createLinks();
 

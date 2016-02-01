@@ -393,7 +393,7 @@ H2Wing::midNorm(const size_t index) const
   
 
 void
-H2Wing::createSurfaces()
+H2Wing::createSurfaces(const attachSystem::FixedComp& FC)
   /*!
     Create All the surfaces
   */
@@ -406,9 +406,7 @@ H2Wing::createSurfaces()
   //  const double PSteps[]={wallThick,flatClearance,0.0};  
 
   // Divider
-  ModelSupport::buildPlane(SMap,wingIndex+3,Origin+Y*(fabs(xStep)),Y);
-
-
+  ModelSupport::buildPlane(SMap,wingIndex+3,FC.getCentre(),Y);
   
   int triOffset(wingIndex+100);
   std::array<Geometry::Vec3D,3> CPts;
@@ -687,7 +685,7 @@ H2Wing::createAll(Simulation& System,
 
   populate(System.getDataBase());
   createUnitVector(FC);
-  createSurfaces();
+  createSurfaces(FC);
   createObjects(System);
 
   createLinks();
