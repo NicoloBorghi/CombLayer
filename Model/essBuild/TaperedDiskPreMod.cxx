@@ -67,6 +67,7 @@
 #include "LinkUnit.h"
 #include "FixedComp.h"
 #include "LayerComp.h"
+#include "BaseMap.h"
 #include "CellMap.h"
 #include "ContainedComp.h"
 #include "CylFlowGuide.h"
@@ -421,7 +422,6 @@ TaperedDiskPreMod::getSurfacePoint(const size_t layerIndex,
       return Origin+Y*(radius[layerIndex]);
     case 2:
       throw ColErr::AbsObjMethod("Not implemented yet. Width should have been here.");
-      return 0;
     case 3:
       return Origin+X*(radius[layerIndex]);
     case 4:
