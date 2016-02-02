@@ -772,8 +772,8 @@ makeESS::build(Simulation& System,
   buildF5Collimator(System, IParam);
 
 
-  buildTopPipes(System,"");
-  buildLowPipes(System,"");
+  //  buildTopPipes(System,"");
+  //  buildLowPipes(System,"");
   return;
 }
 
