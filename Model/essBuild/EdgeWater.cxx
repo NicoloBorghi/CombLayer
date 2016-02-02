@@ -111,6 +111,7 @@ EdgeWater::EdgeWater(const EdgeWater& A) :
   insWaterLength(A.insWaterLength),
   insWaterHeight(A.insWaterHeight),
   insWaterThick(A.insWaterThick),
+  insWallMat(A.insWallMat),
   modMat(A.modMat),
   wallMat(A.wallMat),modTemp(A.modTemp)
   /*!
@@ -140,6 +141,7 @@ EdgeWater::operator=(const EdgeWater& A)
       insWaterLength=A.insWaterLength;
       insWaterHeight=A.insWaterHeight;
       insWaterThick=A.insWaterThick;
+      insWallMat=A.insWallMat;
       modMat=A.modMat;
       wallMat=A.wallMat;
       modTemp=A.modTemp;
@@ -183,6 +185,7 @@ EdgeWater::populate(const FuncDataBase& Control)
   insWaterLength=Control.EvalDefVar<double>(keyName+"InsWaterLength", 18.3);
   insWaterHeight=Control.EvalDefVar<double>(keyName+"InsWaterHeight", -3.0);
   insWaterThick=Control.EvalDefVar<double>(keyName+"InsWaterThick", 3.0);
+  insWallMat=ModelSupport::EvalMat<int>(Control,keyName+"InsWallMat");
 
   modMat=ModelSupport::EvalMat<int>(Control,keyName+"ModMat");
   wallMat=ModelSupport::EvalMat<int>(Control,keyName+"WallMat");
@@ -369,7 +372,7 @@ EdgeWater::createObjects(Simulation& System,
 
 
 	  Out=ModelSupport::getComposite(SMap,edgeIndex," 113 111 -112 (-103:-101:102) "); 
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
+	  System.addCell(MonteCarlo::Qhull(cellIndex++,insWallMat,
 					   modTemp,Out+container));
 
 	  Out=ModelSupport::getComposite(SMap,edgeIndex," 103 101 -102 "); // water insert
@@ -386,11 +389,11 @@ EdgeWater::createObjects(Simulation& System,
   
   // Two walls : otherwise divider container
   Out=ModelSupport::getComposite(SMap,edgeIndex," 11 -1");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
+  System.addCell(MonteCarlo::Qhull(cellIndex++,insWallMat,
 				   modTemp,Out+container+divider));
   CellMap::setCell("InnerAlSupply",  cellIndex-1);
   Out=ModelSupport::getComposite(SMap,edgeIndex," 2 -12");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
+  System.addCell(MonteCarlo::Qhull(cellIndex++,insWallMat,
 				   modTemp,Out+container+divider));
   CellMap::setCell("InnerAlReturn",  cellIndex-1);
 

@@ -56,6 +56,7 @@ class EdgeWater :
   double insWaterLength;        ///< water insert length. if insWaterLength<0 and insWaterHeight<0 then water insert is not built.
   double insWaterHeight;        ///< water insert height. if negative, spans over full height
   double insWaterThick;         ///< water insert thick
+  int    insWallMat;              ///< Wall material in the water insert and the inner part
 
   int modMat;               ///< Water material
   int wallMat;              ///< Wall material
