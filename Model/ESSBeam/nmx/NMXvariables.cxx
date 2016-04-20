@@ -76,7 +76,7 @@ NMXvariables(FuncDataBase& Control)
   Control.addVariable("nmxGAZStep",0.0);       
   Control.addVariable("nmxGAXYAngle",0.0);
   Control.addVariable("nmxGAZAngle",0.0);
-  Control.addVariable("nmxGABeamXYAngle",-1.0);       
+  Control.addVariable("nmxGABeamXYAngle",1.0);       
 
   Control.addVariable("nmxGALength",350.0);       
   Control.addVariable("nmxGANShapes",1);       
@@ -139,6 +139,7 @@ NMXvariables(FuncDataBase& Control)
   
   // VACUUM PIPES:
   Control.addVariable("nmxPipeBXYAngle",-1.2);   // from -0.8
+  Control.addVariable("nmxPipeBZAngle",0.0);   
   Control.addVariable("nmxPipeBRadius",12.0);
   Control.addVariable("nmxPipeBLength",500.0);
   Control.addVariable("nmxPipeBFeThick",1.0);
