@@ -1,9 +1,9 @@
 /********************************************************************* 
   CombLayer : MCNP(X) Input builder
  
- * File:   attachComp/PositionSupport.cxx
+ * File:   essBuild/iradVariables.cxx
  *
- * Copyright (c) 2004-2016 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell/Konstantin Batkov
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,58 +29,49 @@
 #include <vector>
 #include <set>
 #include <map>
-#include <deque>
 #include <string>
 #include <algorithm>
+#include <iterator>
 #include <memory>
 
 #include "Exception.h"
 #include "FileReport.h"
-#include "GTKreport.h"
 #include "NameStack.h"
 #include "RegMethod.h"
+#include "GTKreport.h"
 #include "OutputLog.h"
-#include "BaseVisit.h"
-#include "BaseModVisit.h"
+#include "support.h"
+#include "stringCombine.h"
 #include "MatrixBase.h"
 #include "Matrix.h"
 #include "Vec3D.h"
-#include "Quaternion.h"
-#include "Surface.h"
-#include "Rules.h"
-#include "HeadRule.h"
-#include "Object.h"
-#include "surfRegister.h"
+#include "Code.h"
+#include "varList.h"
+#include "FuncDataBase.h"
+#include "variableSetup.h"
+#include "essVariables.h"
 
-#include "LinkUnit.h"
-#include "FixedComp.h"
-#include "PositionSupport.h"
-
-
-namespace attachSystem
+namespace setVariable
 {
+
 
 void
-applyZAxisRotate(const FixedComp& FC,const double xyAngle,
-		 Geometry::Vec3D& V)
- /*!
-   Apply a rotation to the vector around the z axis
-   \param FC :: Object to get Z axis from 
-   \param xyAngle :: Angle in degrees
-   \param V :: Vector to rotate
- */
+EssIradVariables(FuncDataBase& Control)
+  /*!
+    Create all the irad variables
+    \param Control :: DataBase
+  */
 {
-  ELog::RegMethod RegA("PositionSupport[F]","applyZAxisRotate");
+  ELog::RegMethod RegA("essVariables[F]","EssIradVariables");
 
-  if (fabs(xyAngle)>Geometry::zeroTol)
-    {
-      const Geometry::Quaternion Qxy=
-	Geometry::Quaternion::calcQRotDeg(xyAngle,FC.getZ());
-      Qxy.rotate(V);
-    }
+  Control.addVariable("IradCylRadius",3.5);
+  Control.addVariable("IradCylLength",10.0);
+  Control.addVariable("IradCylWallThick",1.0);
+  Control.addVariable("IradCylTemp",0.0);
+  Control.addVariable("IradCylMat","Void");
+  Control.addVariable("IradCylWallMat","Aluminium");
+
   return;
 }
 
-
-
-}  // NAMESPACE attachSystem
+}  // NAMESPACE setVariable

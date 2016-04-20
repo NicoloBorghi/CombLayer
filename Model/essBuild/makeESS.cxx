@@ -61,6 +61,7 @@
 #include "Simulation.h"
 #include "LinkUnit.h"
 #include "FixedComp.h"
+#include "FixedOffset.h"
 #include "ContainedComp.h"
 #include "ContainedGroup.h"
 #include "LayerComp.h"
@@ -88,6 +89,7 @@
 #include "ButterflyModerator.h"
 #include "BlockAddition.h"
 #include "CylPreMod.h"
+#include "IradCylinder.h"
 #include "SupplyPipe.h"
 #include "BulkModule.h"
 #include "ShutterBay.h"
@@ -255,6 +257,56 @@ makeESS::createGuides(Simulation& System)
   return;
 }
 
+void
+makeESS::buildIradComponent(Simulation& System,
+                            const mainSystem::inputParam& IParam)
+  /*!
+    Build the Iradiation component 
+    \param System :: Simulation
+    \param IParam :: Name of Irad component
+   */
+{
+  ELog::RegMethod RegA("makeESS","buildIradComponent");
+
+  ModelSupport::objectRegister& OR=
+    ModelSupport::objectRegister::Instance();
+
+  const size_t NSet=IParam.setCnt("iradObject");
+  for(size_t j=0;j<NSet;j++)
+    {
+      const size_t NItems=IParam.itemCnt("iradObject",j);
+      // is this possible?
+      if (NItems<3)
+        throw ColErr::SizeError<size_t>
+          (NItems,3,"IradComp["+StrFunc::makeString(j)+"]");
+
+      const std::string objectName=
+        IParam.getValue<std::string>("iradObj",j,0);
+      const std::string compName=
+        IParam.getValue<std::string>("iradObj",j,1);
+      const std::string linkName=
+        IParam.getValue<std::string>("iradObj",j,2);
+
+      // First do we have an object name
+      if (objectName.substr(0,7)=="IradCyl")
+        {
+          std::shared_ptr<IradCylinder>
+            IRadComp(new IradCylinder(objectName));
+          const attachSystem::FixedComp* FC=
+            OR.getObject<attachSystem::FixedComp>(compName);
+          if (!FC)
+            throw ColErr::InContainerError<std::string>
+              (compName,"Component not found");
+          const long int linkPt=attachSystem::getLinkNumber(linkName);
+          
+          OR.addObject(IRadComp);
+          IRadComp->createAll(System,*FC,linkPt);
+          attachSystem::addToInsertSurfCtrl(System,*FC,*IRadComp);
+        }
+    }
+  return;
+}
+  
 void
 makeESS::buildLowButterfly(Simulation& System)
   /*!
@@ -450,16 +502,17 @@ makeESS::makeBunker(Simulation& System,
 
 
   ABunker->addInsertCell(74123);
-  ABunker->setCutWall(1,0);
   ABunker->createAll(System,*LowMod,*GBArray[0],2,true);
 
 
   BBunker->addInsertCell(74123);
+  BBunker->setCutWall(0,1);
   BBunker->createAll(System,*LowMod,*GBArray[0],2,true);
 
-  BBunker->insertComponent(System,"leftWall",*ABunker);
-  BBunker->insertComponent(System,"roof0",*ABunker);
-  BBunker->insertComponent(System,"floor",*ABunker);
+
+  ABunker->insertComponent(System,"rightWall",*BBunker);
+  ABunker->insertComponent(System,"roof0",*BBunker);
+  ABunker->insertComponent(System,"floor",*BBunker);
 
   if (bunkerType.find("noPillar")==std::string::npos)
     buildPillars(System);
@@ -515,7 +568,6 @@ makeESS::build(Simulation& System,
   const std::string targetType=IParam.getValue<std::string>("targetType");
   const std::string iradLine=IParam.getValue<std::string>("iradLineType");
   const std::string bunker=IParam.getValue<std::string>("bunkerType");
-
 
   const size_t nF5 = IParam.getValue<size_t>("nF5");
 
@@ -575,6 +627,7 @@ makeESS::build(Simulation& System,
   attachSystem::addToInsertForced(System,*Bulk,TopBFL->getCC("outer"));
 
 
+  buildIradComponent(System,IParam);
   // Full surround object
   ShutterBayObj->addInsertCell(voidCell);
   ShutterBayObj->createAll(System,*Bulk,*Bulk);
