@@ -3,7 +3,7 @@
  
  * File:   essBuildInc/IradCylinder.h
  *
- * Copyright (c) 2004-2014 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,77 +26,49 @@ class Simulation;
 
 namespace essSystem
 {
-  class BlockAddition;
 /*!
   \class IradCylinder
   \author S. Ansell
-  \version 1.0
-  \date October 2012
-  \brief Specialized for a cylinder moderator
+  \version 1.1
+  \date April 2016
+  \brief Iradiation object within the Pre-mod
 */
 
-class IradCylinder : public attachSystem::ContainedGroup,
-    public attachSystem::LayerComp,
-    public attachSystem::FixedComp
+class IradCylinder : public attachSystem::ContainedComp,
+  public attachSystem::FixedOffset,
+  public attachSystem::CellMap
 {
  private:
   
-  const int modIndex;             ///< Index of surface offset
+  const int iradIndex;            ///< Index of surface offset
   int cellIndex;                  ///< Cell index
 
-  /// Extension object
-  std::shared_ptr<BlockAddition> ExtAObj; 
-  std::shared_ptr<BlockAddition> ExtBObj; 
-  int blockActiveA;
-  int blockActiveB;
-  size_t aSide;  
-  size_t bSide;
+  double radius;                  ///< Main radius [from built object]
+  double length;                  ///< Length of cylinder
+  double wallThick;               ///< Wall thickness
 
-  double innerRadius;             ///< Radius from inner cell
-  double innerHeight;             ///< height from inner cell
-  double innerDepth;              ///< Depth from inner cell
+  double temp;                    ///< Temperature
+  int mat;                        ///< Main material
+  int wallMat;                    ///< Wall material
 
-  std::vector<double> radius;         ///< cylinder radii
-  std::vector<double> height;         ///< Full heights
-  std::vector<double> depth;          ///< full depths
-  std::vector<int> mat;               ///< Materials
-  std::vector<double> temp;           ///< Temperatures
-
-  std::vector<Geometry::Vec3D> viewY; ///< Direction from centre
-  std::vector<double> viewAngle;      ///< Angle from centre
-  std::vector<double> viewOpenAngle;  ///< Angle opening
-  std::vector<double> viewHeight;     ///< Height from centre
-  std::vector<double> viewWidth;      ///< Width at intercept
-
-  // Now calculated
-  std::vector<Geometry::Vec3D> FLpts;   ///< Flight line corner 
-  std::vector<Geometry::Vec3D> FLunit;  ///< Flight line direction  [-x,x,-z,z]
-  std::vector<int> layerCells;          ///< Layered cells
-  // Functions:  
-  void checkItems(const attachSystem::FixedComp&);
-  
   void populate(const FuncDataBase&);
-  void createUnitVector(const attachSystem::FixedComp&);
+  void createUnitVector(const attachSystem::FixedComp&,
+			const long int);
 
   void createSurfaces();
-  void createObjects(Simulation&,const attachSystem::ContainedComp*);
+  void createObjects(Simulation&);
   void createLinks();
-  
-  void updateLayers(Simulation&,const char,
-		    const size_t,const size_t) const;
-
-  Geometry::Vec3D calcViewIntercept(const size_t,const size_t) const;
 
  public:
 
   IradCylinder(const std::string&);
   IradCylinder(const IradCylinder&);
   IradCylinder& operator=(const IradCylinder&);
+  virtual IradCylinder* clone() const;
   virtual ~IradCylinder();
 
-  void createAll(Simulation&,const attachSystem::FixedComp&);
-
-    
+  void createAll(Simulation&,const attachSystem::FixedComp&,
+		 const long int);
 
 };
 

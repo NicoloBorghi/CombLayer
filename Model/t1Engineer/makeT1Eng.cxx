@@ -78,7 +78,6 @@
 #include "t1CylVessel.h"
 #include "t1BulkShield.h"
 #include "TargetBase.h"
-#include "TS2FlatTarget.h"
 #include "TS2ModifyTarget.h"
 #include "BulletPlates.h"
 #include "BulletVessel.h"
