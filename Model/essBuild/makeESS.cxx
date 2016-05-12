@@ -758,10 +758,13 @@ makeESS::buildDiagnosticPlug(Simulation& System)
   DPlug = std::shared_ptr<DiagnosticPlug>(new DiagnosticPlug("DiagnosticPlug"));
   OR.addObject(DPlug);
 
-  DPlug->createAll(System,*Bulk, *Target, 5);
+  DPlug->createAll(System, *Bulk, *Target, 5, *ShutterBayObj, 5);
+  // ??? how to exclude DPlug from Bulk and ShutterBayObj in such a way that if DPlug
+  // does not cut one of these objects it is not removed from it (and does not make its
+  // HeadRule more complex) ???
   attachSystem::addToInsertForced(System, *ShutterBayObj, *DPlug);
   //  attachSystem::addToInsertControl(System, *DPlug, *ShutterBayObj); // why this does not work???   // attachSystem::addToInsertSurfCtrl(System, *DPlug, *ShutterBayObj); // and this???
-  //  attachSystem::addToInsertControl(System, *DPlug, *Bulk);
+  attachSystem::addToInsertForced(System, *Bulk, *DPlug);
  
 }
   

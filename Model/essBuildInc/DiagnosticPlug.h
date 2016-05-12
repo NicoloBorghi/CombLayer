@@ -77,8 +77,10 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
 
   void createSurfaces();
   void createObjects(Simulation&,
-		 const attachSystem::FixedComp& floorFC,
-		 const size_t floorLP);
+		     const attachSystem::FixedComp& floorFC,
+		     const size_t floorLP,
+		     const attachSystem::FixedComp& roofFC,
+		     const size_t roofLP);
   void createLinks();
 
  public:
@@ -92,7 +94,9 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   void createAll(Simulation&,
 		 const attachSystem::FixedComp&,
 		 const attachSystem::FixedComp& floorFC,
-		 const size_t floorLP);
+		 const size_t floorLP,
+		 const attachSystem::FixedComp& roofFC,
+		 const size_t roofLP);
 };
 
 }

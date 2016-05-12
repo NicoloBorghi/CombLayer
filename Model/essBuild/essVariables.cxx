@@ -611,10 +611,10 @@ Control.addVariable("BeRefInnerStructureMat5", "Be30H2O");
   Control.addVariable("DiagnosticPlugXStep",0.0);
   Control.addVariable("DiagnosticPlugYStep",220.0);
   Control.addVariable("DiagnosticPlugZStep",100.0);
-  Control.addVariable("DiagnosticPlugXYangle",0.0);
+  Control.addVariable("DiagnosticPlugXYangle",20.0);
   Control.addVariable("DiagnosticPlugZangle",0.0);
-  Control.addVariable("DiagnosticPlugWidth",1.0);
-  Control.addVariable("DiagnosticPlugLength",10.0);
+  Control.addVariable("DiagnosticPlugWidth",5.0);
+  Control.addVariable("DiagnosticPlugLength",50.0);
 
   
 

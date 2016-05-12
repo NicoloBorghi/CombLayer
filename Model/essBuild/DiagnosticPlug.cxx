@@ -231,28 +231,36 @@ DiagnosticPlug::createSurfaces()
   ModelSupport::buildPlane(SMap,tIndex+3,Origin-X*width/2.0,X);
   ModelSupport::buildPlane(SMap,tIndex+4,Origin+X*width/2.0,X);
 
-  ModelSupport::buildPlane(SMap,tIndex+6,Origin+Z*2,Z);
-
   return;
 }
 
 void
 DiagnosticPlug::createObjects(Simulation& System,
 			      const attachSystem::FixedComp& floorFC,
-			      const size_t floorLP)
+			      const size_t floorLP,
+			      const attachSystem::FixedComp& roofFC,
+			      const size_t roofLP)
 
   /*!
     Create the vaned moderator
     \param System :: Simulation to add results
+    \param floorFC :: FixedComponent of the floor
+    \param floorLP :: link point of floorFC
+    \param roofFC :: FixedComponent of the roof
+    \param roofLP :: link poin of roofFC
   */
 {
   ELog::RegMethod RegA("DiagnosticPlug","createObjects");
 
   std::string strFloor = floorFC.getLinkString(floorLP);
+  HeadRule HR;
+  HR.procString(roofFC.getLinkString(roofLP));
+  HR.makeComplement();
+  std::string strRoof = HR.display();
   
   std::string Out;
-  Out=ModelSupport::getComposite(SMap,tIndex," 1 -2 3 -4 -6 ") + strFloor;
-  System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+  Out=ModelSupport::getComposite(SMap,tIndex," 1 -2 3 -4 ") + strFloor + strRoof;
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
 
   addOuterSurf(Out);
 
@@ -274,11 +282,17 @@ void
 DiagnosticPlug::createAll(Simulation& System,
 			  const attachSystem::FixedComp& FC,
 			  const attachSystem::FixedComp& floorFC,
-			  const size_t floorLP)
+			  const size_t floorLP,
+			  const attachSystem::FixedComp& roofFC,
+			  const size_t roofLP)
 /*!
     Extrenal build everything
     \param System :: Simulation
     \param FC :: FixedComponent for origin
+    \param floorFC :: FixedComponent of the floor
+    \param floorLP :: link point of floorFC
+    \param roofFC :: FixedComponent of the roof
+    \param roofLP :: link poin of roofFC
   */
 {
   ELog::RegMethod RegA("DiagnosticPlug","createAll");
@@ -286,7 +300,7 @@ DiagnosticPlug::createAll(Simulation& System,
 
   createUnitVector(FC);
   createSurfaces();
-  createObjects(System, floorFC, floorLP);
+  createObjects(System, floorFC, floorLP, roofFC, roofLP);
   createLinks();
   insertObjects(System);       
 
