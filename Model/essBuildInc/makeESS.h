@@ -61,6 +61,7 @@ namespace essSystem
   class PreModWing;
   class BulkModule;
   class TwisterModule;
+  class DiagnosticPlug;
   class ShutterBay;
   class ProtonTube;
   class GuideBay;
@@ -130,6 +131,8 @@ class makeESS
 
   std::shared_ptr<BulkModule> Bulk;      ///< Main bulk module
   std::shared_ptr<TwisterModule> Twister;
+  std::shared_ptr<DiagnosticPlug> DPlug; ///< Diagnostic plug
+
   std::shared_ptr<moderatorSystem::FlightLine> BulkLowAFL;  ///< Lower Mode FL
 
   /// Shutterbay objects
@@ -180,6 +183,7 @@ class makeESS
 
   void buildPreWings(Simulation&);
   void buildTwister(Simulation&);
+  void buildDiagnosticPlug(Simulation&);
 
   void buildPillars(Simulation&);
 

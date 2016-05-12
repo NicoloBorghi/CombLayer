@@ -92,6 +92,7 @@
 #include "SupplyPipe.h"
 #include "BulkModule.h"
 #include "TwisterModule.h"
+#include "DiagnosticPlug.h"
 #include "ShutterBay.h"
 #include "GuideBay.h"
 #include "TaperedDiskPreMod.h"
@@ -746,7 +747,22 @@ makeESS::buildTwister(Simulation& System)
   attachSystem::addToInsertForced(System,*Twister,LowBFL->getCC("outer"));
   attachSystem::addToInsertForced(System,*Twister, Target->getCC("Wheel"));
 
+}
 
+void
+makeESS::buildDiagnosticPlug(Simulation& System)
+{
+  ModelSupport::objectRegister& OR=
+    ModelSupport::objectRegister::Instance();
+
+  DPlug = std::shared_ptr<DiagnosticPlug>(new DiagnosticPlug("DiagnosticPlug"));
+  OR.addObject(DPlug);
+
+  DPlug->createAll(System,*Bulk); 
+  attachSystem::addToInsertForced(System, *ShutterBayObj, *DPlug);
+  //  attachSystem::addToInsertControl(System, *DPlug, *ShutterBayObj); // why this does not work???   // attachSystem::addToInsertSurfCtrl(System, *DPlug, *ShutterBayObj); // and this???
+  //  attachSystem::addToInsertControl(System, *DPlug, *Bulk);
+ 
 }
   
 void 
@@ -869,7 +885,10 @@ makeESS::build(Simulation& System,
   makeBeamLine(System,IParam);
 
   if (IParam.flag("eng"))
-    buildTwister(System);
+    {
+      buildTwister(System);
+      buildDiagnosticPlug(System);
+    }
   
   //  buildF5Collimator(System, nF5);
   buildF5Collimator(System, IParam);

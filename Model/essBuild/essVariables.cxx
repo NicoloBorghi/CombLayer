@@ -606,6 +606,16 @@ Control.addVariable("BeRefInnerStructureMat5", "Be30H2O");
   Control.addVariable("TwisterPlugFrameMat","Iron10H2O");
   Control.addVariable("TwisterPlugFrameWallThick",3.0);
   Control.addVariable("TwisterPlugFrameWallMat","Iron10H2O");
+
+  // Diagnostic plug
+  Control.addVariable("DiagnosticPlugXStep",0.0);
+  Control.addVariable("DiagnosticPlugYStep",220.0);
+  Control.addVariable("DiagnosticPlugZStep",100.0);
+  Control.addVariable("DiagnosticPlugXYangle",0.0);
+  Control.addVariable("DiagnosticPlugZangle",0.0);
+  Control.addVariable("DiagnosticPlugWidth",1.0);
+  Control.addVariable("DiagnosticPlugLength",10.0);
+
   
 
   // SHUTTER BAY
