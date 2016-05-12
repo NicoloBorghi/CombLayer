@@ -758,7 +758,7 @@ makeESS::buildDiagnosticPlug(Simulation& System)
   DPlug = std::shared_ptr<DiagnosticPlug>(new DiagnosticPlug("DiagnosticPlug"));
   OR.addObject(DPlug);
 
-  DPlug->createAll(System,*Bulk); 
+  DPlug->createAll(System,*Bulk, *Target, 5);
   attachSystem::addToInsertForced(System, *ShutterBayObj, *DPlug);
   //  attachSystem::addToInsertControl(System, *DPlug, *ShutterBayObj); // why this does not work???   // attachSystem::addToInsertSurfCtrl(System, *DPlug, *ShutterBayObj); // and this???
   //  attachSystem::addToInsertControl(System, *DPlug, *Bulk);
