@@ -225,8 +225,8 @@ DiagnosticPlug::createSurfaces()
 {
   ELog::RegMethod RegA("DiagnosticPlug","createSurfaces");
 
-  ModelSupport::buildPlane(SMap,tIndex+1,Origin-Y*length,Y);
-  ModelSupport::buildPlane(SMap,tIndex+2,Origin+Y*length,Y);
+  ModelSupport::buildPlane(SMap,tIndex+1,Origin-Y*length/2.0,Y);
+  ModelSupport::buildPlane(SMap,tIndex+2,Origin+Y*length/2.0,Y);
 
   ModelSupport::buildPlane(SMap,tIndex+3,Origin-X*width/2.0,X);
   ModelSupport::buildPlane(SMap,tIndex+4,Origin+X*width/2.0,X);
