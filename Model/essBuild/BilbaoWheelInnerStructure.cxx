@@ -253,7 +253,7 @@ namespace essSystem
       if (j==nSectors-1)
 	pmin=p[1];
 
-      if (j==20)
+      if ((j==1) || (j==20))
 	createBrickSurfaces(Wheel, pmin, pmax, j);
       //	createBrickSurfaces(Wheel, p[i], p[nSectors-2]);
       i+=2;
@@ -299,7 +299,7 @@ namespace essSystem
 	    // Tungsten
 	    SI1 = (j!=nSectors-1) ? SIsec+10 : insIndex+0;
 	    Out = ModelSupport::getComposite(SMap, SIsec, SI1, " 4 -3M ");
-	    if (j!=20)
+	    if (!((j==1) || (j==20)))
 		System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,temp,
 						 Out+vertStr+cylStr));
 	    else
