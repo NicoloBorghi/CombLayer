@@ -3,7 +3,7 @@
  
  * File:   constructInc/SupplyBox.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,17 +61,15 @@ class SupplyBox : public attachSystem::FixedComp
 
   std::string startSurf;               ///< Start surfaces [if needed]
   
-  void populate(const Simulation&);
+  void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,const size_t,
 			const long int);
   void createUnitVector(const attachSystem::FixedComp&,
 			const long int);
   void insertInlet(const attachSystem::FixedComp&,
 		   const long int);
-  void addExtra(const attachSystem::LayerComp&,
-		const size_t,const size_t);
   void addOuterPoints();
-  void addExtraLayer(const attachSystem::LayerComp&,const size_t);
+  void addExtraLayer(const attachSystem::LayerComp&,const long int);
 
   void setActive();
   void createLinks();
@@ -93,7 +91,7 @@ class SupplyBox : public attachSystem::FixedComp
   void setAngleSeg(const size_t N) { nAngle=N; }
   /// Set wallOffset
   void setWallOffset(const size_t N) { wallOffset=N; }
-  /// SEt Layer sequ
+  /// Set Layer sequence
   void setLayerSeq(const std::vector<size_t>& LS)
      { layerSeq=LS; }
 
@@ -106,8 +104,8 @@ class SupplyBox : public attachSystem::FixedComp
 		 const size_t,const long int,const long int);
 
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const size_t,const size_t,const size_t,
-		 const attachSystem::LayerComp&,const size_t);
+		 const size_t,const long int,const long int,
+		 const attachSystem::LayerComp&,const long int);
 
 };
 

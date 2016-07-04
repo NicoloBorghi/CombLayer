@@ -174,8 +174,7 @@ PipeLine::addPoint(const Geometry::Vec3D& newPt)
           // This is to test if the axis reverses on itself
 	  if (AAxis.dotProd(BAxis)>1.0-Geometry::zeroTol)
 	    {
-	      ELog::EM<<"["<<keyName<<"] Points reversed at index "
-		      <<Index<<ELog::endCrit;
+	      ELog::EM<<"Points reversed at index "<<Index<<ELog::endCrit;
 	      ELog::EM<<"PtA "<<Pts[Index-2]<<ELog::endCrit;
 	      ELog::EM<<"PtB "<<Pts[Index-1]<<ELog::endCrit;
 	      ELog::EM<<"PtNew "<<newPt<<ELog::endErr;
@@ -383,6 +382,8 @@ PipeLine::createUnits(Simulation& System)
     }
   for(size_t i=0;i<PUnits.size();i++)
     {
+      ELog::EM<<"Call of pipe"<<i<<ELog::endDiag;
+
       forcedInsertCells(i);
       PUnits[i]->setNAngle(nAngle);
       PUnits[i]->createAll(System,activeFlags[i],CV);
@@ -464,7 +465,7 @@ PipeLine::setStartSurf(const std::string& startS)
   /*!
     Simple setter for start surf
     \param startS :: Start surface
-  */
+   */
 {
   ELog::RegMethod RegA("PipeLine","setStartSurf");
 
@@ -475,7 +476,7 @@ PipeLine::setStartSurf(const std::string& startS)
 void
 PipeLine::createAll(Simulation& System)
   /*!
-    Global creation of pipe
+    Global creation of the hutch
     \param System :: Simulation to add vessel to
   */
 {

@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   process/pipeUnit.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -448,7 +448,7 @@ pipeUnit::insertObjects(Simulation& System)
   Axis.makeUnit();
   const Geometry::Vec3D AX(Axis.crossNormal());
   const Geometry::Vec3D AY(AX*Axis);
-  const double radius=getOuterRadius();
+  const double radius=getOuterRadius()*0.99;
 
   const double angleStep(2*M_PI/nAngle);
   double angle(0.0);

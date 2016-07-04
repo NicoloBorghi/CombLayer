@@ -192,13 +192,10 @@ SupplyPipe::createUnitVector(const attachSystem::FixedComp& FC,
   const attachSystem::LayerComp* LC=
     dynamic_cast<const attachSystem::LayerComp*>(&FC);
 
-  const size_t SI((sideIndex>0) ?
-		  static_cast<size_t>(sideIndex-1) :
-		  static_cast<size_t>(-sideIndex-1));
   if (LC)
     {
       Origin=LC->getSurfacePoint(layerIndex,sideIndex);
-      if (sideIndex) FC.selectAltAxis(SI,X,Y,Z);
+      if (sideIndex) FC.selectAltAxis(sideIndex,X,Y,Z);
     }
   else
     throw ColErr::DynamicConv("FixedComp","LayerComp","FC:"+FC.getKeyName());

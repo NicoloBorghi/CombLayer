@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   processInc/boxUnit.h
-*
- * Copyright (c) 2004-2013 by Stuart Ansell
+ *
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,12 +57,19 @@ class boxUnit : public attachSystem::FixedComp,
   Geometry::Vec3D XUnit;    ///< X point Axis
   Geometry::Vec3D ZUnit;    ///< Z point Axis
 
-  HeadRule initSurf;        ///< initial surface [sqr]
-  double maxExtent;         ///< longest length
 
-  size_t activeFlag;           ///< Flag for active layers
-  std::vector<boxValues> boxVar;      ///< Cylinder variables
-  size_t nSides;               ///< Number of sides
+  HeadRule ASurf;           ///< Start point rule if used [inward facing]
+  HeadRule BSurf;           ///< End point rule if used [inward facing]
+  double maxExtent;         ///< longest width/depth
+
+  size_t activeFlag;                  ///< Flag for active layers
+  std::vector<boxValues> boxVar;      ///< Box variables
+  size_t nSides;                      ///< Number of sides
+  std::set<int> cellCut;              ///< Cells the pipe 
+  
+  //  HeadRule initSurf;        ///< initial surface [sqr]
+
+
 
 
   void calcNorm(const int,const Geometry::Vec3D&,
@@ -70,11 +77,17 @@ class boxUnit : public attachSystem::FixedComp,
   void calcXZ(const Geometry::Vec3D&,const Geometry::Vec3D&);
 
   void checkForward();
+
+
+  size_t getOuterIndex() const;
+
+
+  
   void calcLineTrack(Simulation&,const Geometry::Vec3D&,
 		     const Geometry::Vec3D&,
 		     std::map<int,MonteCarlo::Object*>&) const;
   void addExcludeStrings(const std::map<int,MonteCarlo::Object*>&) const;
-  size_t getOuterIndex() const;
+
 
 
   /// access full extent
@@ -82,7 +95,7 @@ class boxUnit : public attachSystem::FixedComp,
   double getTanAngle(const Geometry::Vec3D&) const;
   Geometry::Vec3D getAExtra() const;
   Geometry::Vec3D getBExtra() const;
-  std::string getFaces() const;
+  std::string createCaps() const;
 
   // Main build
   void populate(const size_t,const std::vector<boxValues>&);
@@ -91,7 +104,6 @@ class boxUnit : public attachSystem::FixedComp,
   void createOuterObjects();
   void insertObjects(Simulation&);
   
-
 
  public:
   
@@ -102,7 +114,6 @@ class boxUnit : public attachSystem::FixedComp,
   boxUnit& operator=(const boxUnit&);
   virtual ~boxUnit();
 
-
   /// Access ZUnit vector
   const Geometry::Vec3D& getZUnit() const { return ZUnit; }
   /// Access Axis vector
@@ -111,7 +122,8 @@ class boxUnit : public attachSystem::FixedComp,
 
   /// Set surface number
 
-  void setInitSurf(const std::string&);
+  void setASurf(const HeadRule&);
+  void setBSurf(const HeadRule&);
   void setPoints(const Geometry::Vec3D&,const Geometry::Vec3D&);
   void setZUnit(const Geometry::Vec3D&);
   void connectFrom(boxUnit*);

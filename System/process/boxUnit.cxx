@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   process/boxUnit.cxx
  *
- * Copyright (c) 2004-2014 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,8 +102,9 @@ boxUnit::boxUnit(const boxUnit& A) :
   surfIndex(A.surfIndex),cellIndex(A.cellIndex),prev(A.prev),
   next(A.next),APt(A.APt),BPt(A.BPt),Axis(A.Axis),
   ANorm(A.ANorm),BNorm(A.BNorm),XUnit(A.XUnit),ZUnit(A.ZUnit),
-  initSurf(A.initSurf),maxExtent(A.maxExtent),
-  activeFlag(A.activeFlag),boxVar(A.boxVar),nSides(A.nSides)
+  ASurf(A.ASurf),BSurf(A.BSurf),maxExtent(A.maxExtent),
+  activeFlag(A.activeFlag),boxVar(A.boxVar),nSides(A.nSides),
+  cellCut(A.cellCut)
   /*!
     Copy constructor
     \param A :: boxUnit to copy
@@ -130,14 +131,17 @@ boxUnit::operator=(const boxUnit& A)
       BNorm=A.BNorm;
       XUnit=A.XUnit;
       ZUnit=A.ZUnit;
-      initSurf=A.initSurf;
+      ASurf=A.ASurf;
+      BSurf=A.BSurf;
       maxExtent=A.maxExtent;
       activeFlag=A.activeFlag;
       boxVar=A.boxVar;
       nSides=A.nSides;
+      cellCut=A.cellCut;
     }
   return *this;
 }
+
 
 boxUnit::~boxUnit()
   /*!
@@ -145,53 +149,25 @@ boxUnit::~boxUnit()
   */
 {}
 
-size_t
-boxUnit::getOuterIndex() const
-  /*!
-    Determine the outer index
-    \return Index of outer unit 
-  */
-{
-  ELog::RegMethod RegA("boxUnit","getOuterIndex");
-
-  if (boxVar.empty()) 
-    throw ColErr::EmptyValue<int>("boxVar vector empty");
-
-  size_t index=boxVar.size()-1;
-  if (!activeFlag) return index;
-  size_t bitIndex=1 << (index+1);
-  do
-    {
-      bitIndex>>=1;
-    } while( !(bitIndex & activeFlag) && --index>0);
-
-  return index;
-}
-
 void
-boxUnit::setZUnit(const Geometry::Vec3D& ZA) 
+boxUnit::setASurf(const HeadRule& AR)
   /*!
-    Set the Z unit
-    \param ZA :: Zaxis
+    Set the initial surface
+    \param AR :: Initial surface rule
   */
 {
-  ELog::RegMethod RegA("boxUnit","setZUnit");
-  if (ZA.abs()<Geometry::zeroTol)
-    ELog::EM<<"ZAxis unset "<<ELog::endErr;
-  ZUnit=ZA.unit();
+  ASurf=AR;
   return;
 }
 
 void
-boxUnit::setInitSurf(const std::string& SList)
+boxUnit::setBSurf(const HeadRule& BR)
   /*!
-    Set thie initial surface rule
-    \param SList :: surfaces for initrule
+    Set the final surface
+    \param BR :: Final surface rule
   */
 {
-  ELog::RegMethod RegA("boxUnit","setInitSurf");
-  if (!initSurf.procString(SList))
-    throw ColErr::InvalidLine(SList,"SList input");
+  BSurf=BR;
   return;
 }
 
@@ -269,6 +245,76 @@ boxUnit::populate(const size_t AF,const std::vector<boxValues>& CV)
   return;
 }
 
+const Geometry::Vec3D&
+boxUnit::getPt(const int side) const
+  /*!
+    Return a specific connection point
+    \param side :: Side of object
+    \return centre connection point
+  */
+{
+  return (!side) ? APt : BPt;
+}
+
+void
+boxUnit::connectFrom(boxUnit* Ptr) 
+  /*!
+    Set the previous connection
+    \param Ptr :: Pointer to use
+  */
+{
+  prev=Ptr;
+  return;
+}
+
+void
+boxUnit::connectTo(boxUnit* Ptr) 
+  /*!
+    Set the connection to the next object
+    \param Ptr :: Pointer to use
+  */
+{
+  next=Ptr;
+  return;
+}
+  
+size_t
+boxUnit::getOuterIndex() const
+  /*!
+    Determine the outer index
+    \return Index of outer unit 
+  */
+{
+  ELog::RegMethod RegA("boxUnit","getOuterIndex");
+
+  if (boxVar.empty()) 
+    throw ColErr::EmptyValue<int>("boxVar vector empty");
+
+  size_t index=boxVar.size()-1;
+  if (!activeFlag) return index;
+  size_t bitIndex=1 << (index+1);
+  do
+    {
+      bitIndex>>=1;
+    } while( !(bitIndex & activeFlag) && --index>0);
+
+  return index;
+}
+
+void
+boxUnit::setZUnit(const Geometry::Vec3D& ZA) 
+  /*!
+    Set the Z unit
+    \param ZA :: Zaxis
+  */
+{
+  ELog::RegMethod RegA("boxUnit","setZUnit");
+  if (ZA.abs()<Geometry::zeroTol)
+    ELog::EM<<"ZAxis unset "<<ELog::endErr;
+  ZUnit=ZA.unit();
+  return;
+}
+
 void
 boxUnit::calcXZ(const Geometry::Vec3D& PA,
 		const Geometry::Vec3D& PB)
@@ -302,38 +348,7 @@ boxUnit::calcXZ(const Geometry::Vec3D& PA,
   return;
 }
 
-const Geometry::Vec3D&
-boxUnit::getPt(const int side) const
-  /*!
-    Return a specific connection point
-    \param side :: Side of object
-    \return centre connection point
-  */
-{
-  return (!side) ? APt : BPt;
-}
 
-void
-boxUnit::connectFrom(boxUnit* Ptr) 
-  /*!
-    Set the previous connection
-    \param Ptr :: Pointer to use
-  */
-{
-  prev=Ptr;
-  return;
-}
-
-void
-boxUnit::connectTo(boxUnit* Ptr) 
-  /*!
-    Set the connection to the next object
-    \param Ptr :: Pointer to use
-  */
-{
-  next=Ptr;
-  return;
-}
 
 void
 boxUnit::createSurfaces() 
@@ -343,10 +358,16 @@ boxUnit::createSurfaces()
 {
   ELog::RegMethod RegA("boxUnit","createSurface");
 
-  // top / bottom plane
-  if (!initSurf.hasRule()) 
-    ModelSupport::buildPlane(SMap,surfIndex+1,APt,ANorm);
-  ModelSupport::buildPlane(SMap,surfIndex+2,BPt,BNorm);
+  if (!ASurf.hasRule())
+    {
+      ModelSupport::buildPlane(SMap,surfIndex+1,APt,ANorm);
+      ASurf=HeadRule(StrFunc::makeString(SMap.realSurf(surfIndex+5)));
+    }
+  if (!BSurf.hasRule())
+    {
+      ModelSupport::buildPlane(SMap,surfIndex+2,BPt,BNorm);
+      BSurf=HeadRule(StrFunc::makeString(SMap.realSurf(surfIndex+6)));
+    }
   
   // No need to delete surfaces [in SMap]
   nSides=boxVar.back().getSides();    
@@ -377,21 +398,15 @@ boxUnit::createSurfaces()
 }
 
 std::string
-boxUnit::getFaces() const
+boxUnit::createCaps() const
   /*!
-    Calculate the front/back face and make into an output string
-    \return Face string
+    Creates the caps with the appropiate surfaces
+    \return caps string [inward pointing]
   */
 {
-  ELog::RegMethod RegA("boxUnit","getFaces");
+  ELog::RegMethod RegA("pipeUnit","createCap");
 
-  std::string FBsurf;
-  if (initSurf.hasRule())
-    FBsurf=initSurf.display()+
-      ModelSupport::getComposite(SMap,surfIndex," 2 ");
-  else
-    FBsurf=ModelSupport::getComposite(SMap,surfIndex," 1 2 ");
-  return FBsurf;
+  return ASurf.display()+" "+BSurf.display(); 
 }
 
 void
@@ -406,7 +421,7 @@ boxUnit::createOuterObjects()
   const size_t outerIndex=getOuterIndex();
   const int SI(surfIndex+static_cast<int>(outerIndex)*10);
 
-  const std::string FBSurf=getFaces();
+  const std::string FBSurf=createCaps();
 
   // top / bottom plane
   std::ostringstream outerCX;
@@ -427,7 +442,7 @@ boxUnit::createObjects(Simulation& System)
 {
   ELog::RegMethod RegA("boxUnit","createObjects");
 
-  const std::string FBSurf=getFaces();  
+  const std::string FBSurf=createCaps();  
 
   std::string Out;
   int SI(surfIndex);

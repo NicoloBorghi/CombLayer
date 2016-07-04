@@ -206,6 +206,53 @@ BoxLine::addPoint(const Geometry::Vec3D& Pt)
   return;
 }
 
+void 
+BoxLine::addSurfPoint(const Geometry::Vec3D& Pt,const std::string& surfStr)
+  /*!
+    Add an additional point
+    \param Pt :: Point to add
+    \param surfStr :: Outgoing surface string
+   */
+{ 
+  ELog::RegMethod RegA("BoxLine","addSurfPoint");
+  addSurfPoint(Pt,surfStr,std::string());
+  return;
+}
+
+void 
+BoxLine::addSurfPoint(const Geometry::Vec3D& Pt,
+		       const std::string& surfStr,
+		       const std::string& commonStr)
+  /*!
+    Add an additional point
+    \param Pt :: Point to add
+    \param surfStr :: Outgoing surface string
+    \param commonSurf :: common surface
+   */
+{ 
+  ELog::RegMethod RegA("BoxLine","addSurfPoint");
+
+  HeadRule LSurf,CSurf;
+
+  if (LSurf.procString(surfStr)!=1)
+    throw ColErr::InvalidLine("surfStr",surfStr,0);
+
+  layerSurf.insert(std::map<size_t,HeadRule>::value_type(Pts.size(),LSurf));
+  if (!commonStr.empty())
+    {
+      if (CSurf.procString(commonStr)!=1)
+	throw ColErr::InvalidLine("commonStr",commonStr,0);
+    }
+  // insert empty rule if needed
+  commonSurf.insert(std::map<size_t,HeadRule>::value_type(Pts.size(),CSurf));
+
+  Pts.push_back(Pt);
+  if (Pts.size()>1)
+    activeFlags.push_back(0);
+
+  return;
+}
+
 void
 BoxLine::setActive(const size_t uIndex,const size_t flag)
   /*!
@@ -253,44 +300,67 @@ BoxLine::createUnits(Simulation& System)
    */
 {
   ELog::RegMethod RegA("BoxLine","createUnits");
-
+  
   if (Pts.size()<2)
     {
       ELog::EM<<"No points to create boxLine"<<ELog::endCrit;
       return -1;
     }
 
-  clearPUnits();
+
   // Set the points
+  clearPUnits();
+  HeadRule PtRule;
   for(size_t i=1;i<Pts.size();i++)
     {
       boxUnit* PU=new boxUnit(keyName+"Unit",i);
       PU->setPoints(Pts[i-1],Pts[i]);
+      if (layerSurf.find(i-1)!=layerSurf.end())
+	{
+	  PtRule=layerSurf[i-1];
+      	  PtRule.addIntersection(commonSurf[i-1]);
+	  PU->setASurf(PtRule);
+	}
+      // Complementary object only for modified surface
+      if (layerSurf.find(i)!=layerSurf.end())
+	{
+	  PtRule=layerSurf[i];
+	  PtRule.makeComplement();
+	  PtRule.addIntersection(commonSurf[i]);
+	  PU->setBSurf(PtRule);
+	}
       PUnits.push_back(PU);
-    }
-
-  // Set X-Y Axis:
-  PUnits.front()->setZUnit(ZAxis);
-
+    } 
   for(size_t i=0;i<PUnits.size();i++)
     {
       if (i>0)
 	PUnits[i]->connectFrom(PUnits[i-1]);
-      if ( (i+1) < PUnits.size() )
+      if ((i+1)<PUnits.size())
 	PUnits[i]->connectTo(PUnits[i+1]);
     }
-  
-  if (!InitSurf.empty())
-    PUnits.front()->setInitSurf(InitSurf);
 
+  
+  // Actually build the units
+  if (!startSurf.empty())
+    {
+      HeadRule ARule(startSurf);
+      PUnits[0]->setASurf(ARule);
+    }
   for(size_t i=0;i<PUnits.size();i++)
     {
-      ELog::EM<<"Surf == "<<activeFlags[i]<<ELog::endDiag;
+      ELog::EM<<"Call of pipe"<<i<<ELog::endDiag;
+
+      forcedInsertCells(i);
+      //      PUnits[i]->setNAngle(nAngle);
       PUnits[i]->createAll(System,activeFlags[i],CV);
     }
-
   return 0;
-}
+}  
+
+
+
+
+
 
 
 void

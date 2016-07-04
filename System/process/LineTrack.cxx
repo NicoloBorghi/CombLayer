@@ -3,7 +3,7 @@
  
  * File:   process/LineTrack.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,7 +163,8 @@ LineTrack::calculate(const Simulation& ASim)
   if (!OPtr)
     ELog::EM<<"Initial point not in model:"<<InitPt<<ELog::endErr;
   int SN=OPtr->isOnSide(InitPt);
-  
+    
+  ELog::EM<<"Initial surface == "<<SN<<" :: "<<InitPt<<ELog::endCrit;
   const MonteCarlo::Object* prevOPtr(0);
   while(OPtr)
     {
@@ -178,7 +179,7 @@ LineTrack::calculate(const Simulation& ASim)
 	  OPtr=OSMPtr->findNextObject(SN,nOut.Pos,OPtr->getName());
 	  if (!OPtr)
 	    {
-	      ELog::EM<<"INIT POINT == "<<InitPt<<ELog::endDiag;
+	      ELog::EM<<"INIT POINT == "<<InitPt<<ELog::endErr;
 	      calculateError(ASim);
 	    }
 	  if (!OPtr || aDist<Geometry::zeroTol)
@@ -214,7 +215,7 @@ LineTrack::calculateError(const Simulation& ASim)
   if (!OPtr)
     ELog::EM<<"Initial point not in model:"<<InitPt<<ELog::endErr;
   const MonteCarlo::Object* prevOPtr(0);
-  int SN=OPtr->isOnSide(InitPt);
+  int SN= OPtr->isOnSide(InitPt);
   
   while(OPtr)
     {

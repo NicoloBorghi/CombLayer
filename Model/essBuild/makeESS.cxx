@@ -74,7 +74,9 @@
 #include "AttachSupport.h"
 #include "pipeUnit.h"
 #include "PipeLine.h"
-
+#include "boxValues.h"
+#include "boxUnit.h"
+#include "BoxLine.h"
 #include "beamlineConstructor.h"
 #include "WheelBase.h"
 #include "Wheel.h"
@@ -90,8 +92,11 @@
 #include "BlockAddition.h"
 #include "CylPreMod.h"
 #include "IradCylinder.h"
+
 #include "SupplyPipe.h"
+#include "SupplyBox.h"
 #include "BulkModule.h"
+#include "TwisterModule.h"
 #include "ShutterBay.h"
 #include "GuideBay.h"
 #include "DiskPreMod.h"
@@ -641,6 +646,33 @@ makeESS::makeBunker(Simulation& System,
   return;
 }
 
+void
+makeESS::buildTwister(Simulation& System)
+  /*!
+    Construct the twister modulce for the 
+   */
+{
+  ModelSupport::objectRegister& OR=
+    ModelSupport::objectRegister::Instance();
+
+  Twister = std::shared_ptr<TwisterModule>(new TwisterModule("Twister"));
+  OR.addObject(Twister);
+
+  Twister->createAll(System,*Bulk);
+  attachSystem::addToInsertForced(System, *Bulk, *Twister);
+  attachSystem::addToInsertForced(System, *ShutterBayObj, *Twister);
+  attachSystem::addToInsertSurfCtrl(System, *Twister, PBeam->getCC("Sector0"));
+  attachSystem::addToInsertSurfCtrl(System, *Twister, PBeam->getCC("Sector1")); ELog::EM << "remove this line after R is set correctly " << ELog::endDiag;
+  attachSystem::addToInsertControl(System, *Twister, *Reflector);
+  attachSystem::addToInsertForced(System,*Twister,TopAFL->getCC("outer"));
+  attachSystem::addToInsertForced(System,*Twister,TopBFL->getCC("outer"));
+  attachSystem::addToInsertForced(System,*Twister,LowAFL->getCC("outer"));
+  attachSystem::addToInsertForced(System,*Twister,LowBFL->getCC("outer"));
+  attachSystem::addToInsertForced(System,*Twister, Target->getCC("Wheel"));
+
+
+}
+
   
 void 
 makeESS::build(Simulation& System,
@@ -748,6 +780,8 @@ makeESS::build(Simulation& System,
 				    PBeam->getCC("Full"));
 
   makeBeamLine(System,IParam);
+  if (IParam.flag("eng"))
+    buildTwister(System);
   buildF5Collimator(System, nF5);
   return;
 }

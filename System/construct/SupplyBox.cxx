@@ -1,5 +1,5 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   essBuild/SupplyBox.cxx
  *
@@ -92,13 +92,14 @@ SupplyBox::SupplyBox(const std::string& Key)  :
 {}
 
 SupplyBox::SupplyBox(const SupplyBox& A) : 
-  attachSystem::FixedComp(A),optName(A.optName),
-  pipeIndex(A.pipeIndex),cellIndex(A.cellIndex),
-  NSegIn(A.NSegIn),wallOffset(A.wallOffset),
-  Width(A.Width),Depth(A.Depth),Mat(A.Mat),Temp(A.Temp),
-  ActiveFlag(A.ActiveFlag),Coaxial(A.Coaxial),
-  layerOffset(A.layerOffset),PPts(A.PPts),
-  nAngle(A.nAngle)
+  attachSystem::FixedComp(A),
+  optName(A.optName),pipeIndex(A.pipeIndex),
+  cellIndex(A.cellIndex),NSegIn(A.NSegIn),
+  wallOffset(A.wallOffset),Width(A.Width),Depth(A.Depth),
+  Mat(A.Mat),Temp(A.Temp),ActiveFlag(A.ActiveFlag),
+  layerSeq(A.layerSeq),Coaxial(A.Coaxial),
+  layerOffset(A.layerOffset),PPts(A.PPts),nAngle(A.nAngle),
+  startSurf(A.startSurf)
   /*!
     Copy constructor
     \param A :: SupplyBox to copy
@@ -116,17 +117,21 @@ SupplyBox::operator=(const SupplyBox& A)
   if (this!=&A)
     {
       attachSystem::FixedComp::operator=(A);
+      optName=A.optName;
       cellIndex=A.cellIndex;
       NSegIn=A.NSegIn;
+      wallOffset=A.wallOffset;
       Width=A.Width;
       Depth=A.Depth;
       Mat=A.Mat;
       Temp=A.Temp;
       ActiveFlag=A.ActiveFlag;
+      layerSeq=A.layerSeq;
       Coaxial=A.Coaxial;
       layerOffset=A.layerOffset;
       PPts=A.PPts;
       nAngle=A.nAngle;
+      startSurf=A.startSurf;
     }
   return *this;
 }
@@ -139,16 +144,13 @@ SupplyBox::~SupplyBox()
 {}
 
 void
-SupplyBox::populate(const Simulation& System)
+SupplyBox::populate(const FuncDataBase& Control)
   /*!
     Populate all the variables
     \param System :: Simulation to use
   */
 {
   ELog::RegMethod RegA("SupplyBox","populate");
-  
-  const FuncDataBase& Control=System.getDataBase();
-  
   
   std::string numStr;
   NSegIn=Control.EvalPair<size_t>(optName+"NSegIn",keyName+"NSegIn");
@@ -184,13 +186,12 @@ SupplyBox::populate(const Simulation& System)
 
 void
 SupplyBox::createUnitVector(const attachSystem::FixedComp& FC,
-			     const size_t  layerIndex,
+			     const size_t layerIndex,
 			     const long int sideIndex)
   /*!
     Create the unit vectors
     \param FC :: Fixed unit that it is connected to 
     \param sideIndex :: Connection point to use as origin [0 for origin]
-    
   */
 {
   ELog::RegMethod RegA("SupplyBox","createUnitVector");
@@ -199,14 +200,15 @@ SupplyBox::createUnitVector(const attachSystem::FixedComp& FC,
   const attachSystem::LayerComp* LC=
     dynamic_cast<const attachSystem::LayerComp*>(&FC);
 
-  const size_t SI((sideIndex>0) ?
-		  static_cast<size_t>(sideIndex-1) :
-		  static_cast<size_t>(-sideIndex-1));
-  if (LC && sideIndex)
+  if (LC)
     {
-      Origin=LC->getSurfacePoint(layerIndex,SI);
-      FC.selectAltAxis(SI,X,Y,Z);
+      Origin=LC->getSurfacePoint(layerIndex,sideIndex);
+      if (sideIndex) FC.selectAltAxis(sideIndex,X,Y,Z);
     }
+  else
+    throw ColErr::DynamicConv("FixedComp","LayerComp","FC:"+FC.getKeyName());
+
+      
   ELog::EM<<"Side ="<<sideIndex<<" X == "<<X<<ELog::endDebug;
   ELog::EM<<"Y ="<<Y<<" Z == "<<Z<<ELog::endDebug;
   ELog::EM<<"Origin = "<<Origin<<ELog::endDebug;
@@ -257,7 +259,7 @@ SupplyBox::insertInlet(const attachSystem::FixedComp& FC,
 		  static_cast<size_t>(-lSideIndex-1));
 		  
   
-  Geometry::Vec3D PtZ=LC->getSurfacePoint(0,SI);
+  Geometry::Vec3D PtZ=LC->getSurfacePoint(0,lSideIndex);
   PtZ+=layerOffset;
   const int commonSurf=LC->getCommonSurf(SI);
   const std::string commonStr=(commonSurf) ? 		       
@@ -265,7 +267,7 @@ SupplyBox::insertInlet(const attachSystem::FixedComp& FC,
   if (PtZ!=Pt)
     Coaxial.addPoint(Pt);
   
-  const size_t NL(LC->getNLayers(lSideIndex));
+  const size_t NL(LC->getNLayers(SI));
 
   // First find start point in layer set: [avoid inner layer]
   Coaxial.addSurfPoint
@@ -280,7 +282,7 @@ SupplyBox::insertInlet(const attachSystem::FixedComp& FC,
 
   for(const size_t lIndex : layerSeq)
     {
-      PtZ=LC->getSurfacePoint(lIndex,SI);
+      PtZ=LC->getSurfacePoint(lIndex,lSideIndex);
       PtZ+=layerOffset;
       Coaxial.addSurfPoint
 	(PtZ,LC->getLayerString(lIndex,SI),commonStr);
@@ -290,7 +292,7 @@ SupplyBox::insertInlet(const attachSystem::FixedComp& FC,
 
 void
 SupplyBox::addExtraLayer(const attachSystem::LayerComp& LC,
-			  const size_t lSideIndex)
+			  const long int lSideIndex)
   /*!
     Add extra Layer for a pre-mod or such
     \param LC :: LayerComp Point [pre-mod for example]
@@ -298,18 +300,24 @@ SupplyBox::addExtraLayer(const attachSystem::LayerComp& LC,
    */
 {
   ELog::RegMethod RegA("SupplyBox","addExtraLayer");
+
   
-  const int commonSurf=LC.getCommonSurf(lSideIndex);
-  const size_t NL(LC.getNLayers(lSideIndex));
-
-  const std::string commonStr=(commonSurf) ? 		       
-    StrFunc::makeString(commonSurf) : "";
-  const Geometry::Vec3D PtZ=
-    LC.getSurfacePoint(NL-1,lSideIndex)+
-    layerOffset;
-  Coaxial.addSurfPoint
-    (PtZ,LC.getLayerString(NL-1,lSideIndex),commonStr);
-
+  const size_t SI((lSideIndex>0) ?
+                  static_cast<size_t>(lSideIndex-1) :
+                  static_cast<size_t>(-1-lSideIndex));
+  
+  const int commonSurf=LC.getCommonSurf(SI);
+  const size_t NL(LC.getNLayers(SI));
+  if (NL)
+    {
+      const std::string commonStr=(commonSurf) ? 		       
+	StrFunc::makeString(commonSurf) : "";
+      const Geometry::Vec3D PtZ=
+	LC.getSurfacePoint(NL-1,lSideIndex)+
+	layerOffset;
+      Coaxial.addSurfPoint
+	(PtZ,LC.getLayerString(NL-1,SI),commonStr);
+    }
   return;
 }
 
@@ -334,7 +342,7 @@ SupplyBox::addOuterPoints()
       Pt=Origin+X*PPts[i].X()+Y*PPts[i].Y()+Z*PPts[i].Z();
       Coaxial.addPoint(Pt);
     }
-    
+
   for(size_t i=0;i<Width.size();i++)
     Coaxial.addSection(Width[i],Depth[i],Mat[i],Temp[i]);
 
@@ -403,7 +411,7 @@ SupplyBox::createAll(Simulation& System,
   */
 {
   ELog::RegMethod RegA("SupplyBox","createAll");
-  populate(System);
+  populate(System.getDataBase());
 
   createUnitVector(FC,sideIndex);
   addOuterPoints();
@@ -433,9 +441,11 @@ SupplyBox::createAll(Simulation& System,
   */
 {
   ELog::RegMethod RegA("SupplyBox","createAll");
-  populate(System);
-
+  populate(System.getDataBase());
+  return;
   createUnitVector(FC,orgLayerIndex,orgSideIndex);
+  ELog::EM<<"Origin == "<<Origin<<ELog::endDiag;
+  ELog::EM<<"Z == "<<Z<<ELog::endDiag;
   insertInlet(FC,exitSideIndex);
   addOuterPoints();
   setActive();
@@ -453,15 +463,15 @@ void
 SupplyBox::createAll(Simulation& System,
 		      const attachSystem::FixedComp& FC,
 		      const size_t orgLayerIndex,
-		      const size_t orgSideIndex,
-		      const size_t exitSideIndex,
+		      const long int orgSideIndex,
+		      const long int exitSideIndex,
 		      const attachSystem::LayerComp& LC,
-		      const size_t extraSide)
+		      const long int extraSide)
   /*!
     Generic function to create everything
     \param System :: Simulation to create objects in
     \param FC :: Fixed Base unit
-    \param orgLayerIndex :: Link point for origin  [0 for origin]
+    \param orgLayerIndex :: Surface Layer for 
     \param orgSideIndex :: Link point for X,Y,Z axis [0 for origin]
     \param exitSideIndex :: layer to pass pipe out via
     \param ExtraLC :: Point to extra Layer Object if exist [pre-mod]
@@ -469,14 +479,11 @@ SupplyBox::createAll(Simulation& System,
   */
 {
   ELog::RegMethod RegA("SupplyBox","createAll<LC>");
-  populate(System);
-
-  createUnitVector(FC,orgLayerIndex,
-                   static_cast<long int>(orgSideIndex));
-  const long int exitLongSideIndex=
-    static_cast<long int>(exitSideIndex);
+  populate(System.getDataBase());
+  
+  createUnitVector(FC,orgLayerIndex,orgSideIndex);
       
-  insertInlet(FC,exitLongSideIndex);
+  insertInlet(FC,exitSideIndex);
   addExtraLayer(LC,extraSide);
   addOuterPoints();
   setActive();
