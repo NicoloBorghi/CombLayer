@@ -67,9 +67,12 @@
 #include "LinkUnit.h"
 #include "FixedComp.h"
 #include "ContainedComp.h"
+#include "ContainedGroup.h"
 #include "BaseMap.h"
 #include "CellMap.h"
 #include "DiagnosticPlug.h"
+#include "PinholeBase.h"
+#include "RectangularPinhole.h"
 #include "Plane.h"
 #include "SurInter.h"
 
@@ -161,31 +164,19 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
   width=Control.EvalVar<double>(keyName+"Width");
   length=Control.EvalVar<double>(keyName+"Length");
 
+  const Geometry::Plane *floorPlane    = SMap.realPtr<Geometry::Plane>(floorSurfaceNumber);
+  const Geometry::Plane *roofPlane     = SMap.realPtr<Geometry::Plane>(roofSurfaceNumber);
+  const Geometry::Plane *targetTopSurf = SMap.realPtr<Geometry::Plane>(targetTopSurfaceNumber);
+
+  height = fabs(roofPlane->getDistance() - floorPlane->getDistance());
+
+  Pinhole->setXYZSteps(xStep,yStep,zStep);
+  Pinhole->setAngles(xyAngle,zAngle);
+  Pinhole->setDimensions(length,width, height);
+  Pinhole->setTargetTopSurfaceZ(targetTopSurf->getDistance());
+  Pinhole->populateBase(Control);
+
   return;
-}
-
-Geometry::Vec3D DiagnosticPlug::getXYZSteps() {
-
-  Geometry::Vec3D V(xStep,yStep,zStep);
-
-  return V;
-
-}
-
-Geometry::Vec2D DiagnosticPlug::getAngles() {
-
-  Geometry::Vec2D V(xyAngle,zAngle);
-
-  return V;
-
-}
-
-Geometry::Vec2D DiagnosticPlug::getDimensions() {
-
-  Geometry::Vec2D V(width,length);
-
-  return V;
-
 }
 
 void
@@ -201,6 +192,19 @@ DiagnosticPlug::createUnitVector(const attachSystem::FixedComp& FC)
   applyAngleRotate(xyAngle,zAngle);
   
   return;
+}
+
+void
+DiagnosticPlug::setPinhole(PinholeBase *ph)
+  /*!
+    Load the pinhole base class to build the requested pinhole
+  */
+{
+
+  ELog::RegMethod RegA("DiagnosticPlug","setPinhole");
+
+  Pinhole = ph;
+
 }
 
 void
@@ -284,10 +288,11 @@ DiagnosticPlug::createAll(Simulation& System,
 {
   ELog::RegMethod RegA("DiagnosticPlug","createAll");
 
-  populate(System.getDataBase());
-
   floorSurfaceNumber = floorFC.getLinkSurf(floorLP);
   roofSurfaceNumber = roofFC.getLinkSurf(roofLP);
+  targetTopSurfaceNumber = floorFC.getLinkSurf(10);
+
+  populate(System.getDataBase());
 
   createUnitVector(FC);
   createSurfaces();

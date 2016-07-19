@@ -94,6 +94,8 @@
 #include "BulkModule.h"
 #include "TwisterModule.h"
 #include "DiagnosticPlug.h"
+#include "PinholeBase.h"
+#include "RectangularPinhole.h"
 #include "ShutterBay.h"
 #include "GuideBay.h"
 #include "TaperedDiskPreMod.h"
@@ -758,6 +760,8 @@ makeESS::buildDiagnosticPlug(Simulation& System, const std::string& pinholeType)
 
   DPlug = std::shared_ptr<DiagnosticPlug>(new DiagnosticPlug("DiagnosticPlug"));
   OR.addObject(DPlug);
+
+  DPlug->setPinhole(new RectangularPinhole("RectangularPinhole"));
 
   DPlug->createAll(System, *Bulk, *Target, 5, *ShutterBayObj, 5);
   // ??? how to exclude DPlug from Bulk and ShutterBayObj in such a way that if DPlug

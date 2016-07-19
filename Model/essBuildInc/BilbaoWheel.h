@@ -52,6 +52,7 @@ class BilbaoWheel : public WheelBase,
   std::shared_ptr<BilbaoWheelInnerStructure> InnerComp; ///< Inner components
   
   double targetHeight;           ///< Total height of target
+  double targetZTopSurface;	 ///< Z coordinate of the target top surface
   double voidTungstenThick;      ///< Void thickness below/above Tungsten
   double steelTungstenThick;     ///< Steel thickness below/above Tungsten
   double caseThickIn;            ///< Thickness of coolant (inner wheel)

@@ -23,7 +23,6 @@
 #define essSystem_DiagnosticPlug_h
 
 class Simulation;
-class PinholeBase;
 
 namespace essSystem
 {
@@ -34,6 +33,8 @@ namespace essSystem
   \date May 2016
   \brief Diagnostic plug
 */
+
+class PinholeBase;
 
 class DiagnosticPlug : public attachSystem::ContainedComp,
   public attachSystem::FixedComp,
@@ -52,10 +53,11 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
 
   double width;                   ///< Width
   double length;                  ///< Length
-  double height;                  ///< Height
+  double height;		  ///< Height
 
   int floorSurfaceNumber;          ///< Diagnostic plug floor surface number
   int roofSurfaceNumber;          ///< Diagnostic plug roof surface number
+  int targetTopSurfaceNumber;	  //< Target top surface number
   
   // Functions:
 
@@ -70,9 +72,7 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
 		     const size_t roofLP);
   void createLinks();
 
-  Geometry::Vec3D getXYZSteps();
-  Geometry::Vec2D getAngles();
-  Geometry::Vec2D getDimensions();
+  PinholeBase *Pinhole;   ///< Pinhole object
 
  public:
 
@@ -82,7 +82,7 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   virtual DiagnosticPlug* clone() const;
   virtual ~DiagnosticPlug();
 
-  void setCollimator(PinholeBase *);
+  void setPinhole(PinholeBase *);
 
   void createAll(Simulation&,
 		 const attachSystem::FixedComp&,

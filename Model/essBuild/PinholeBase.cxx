@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MCNP(X) Input builder
  
- * File:   essBuild/DiagnosticPlug.cxx
+ * File:   essBuild/PinholeBase.cxx
  *
  * Copyright (c) 2004-2015 by Stuart Ansell
  *
@@ -72,73 +72,131 @@
 #include "CellMap.h"
 #include "PinholeBase.h"
 
-namespace essSystem
-{
+namespace essSystem {
 
-PinholeBase::PinholeBase(const std::string& Key) :
-  attachSystem::ContainedComp(),attachSystem::FixedComp(Key,11),
-  attachSystem::CellMap(),
-  pinholeIndex(ModelSupport::objectRegister::Instance().cell(Key)),
-  cellIndex(pinholeIndex+1)
-  /*!
-    Constructor
-    \param Key :: Name of construction key
-  */
-{
-}
+	PinholeBase::PinholeBase(const std::string& Key)   :	attachSystem::ContainedComp(),
+								attachSystem::FixedComp(Key, 20),
+								attachSystem::CellMap(),
+								pinholeIndex( ModelSupport::objectRegister::Instance().cell(Key) ),
+								cellIndex( pinholeIndex+1 ) {
 
-PinholeBase::PinholeBase(const PinholeBase& A) : 
-  attachSystem::ContainedComp(A),attachSystem::FixedComp(A),
-  attachSystem::CellMap(A),  
-  pinholeIndex(A.pinholeIndex),cellIndex(A.cellIndex),zImagingPlane(A.zImagingPlane),
-  radialPinholeOffset(A.radialPinholeOffset),radialPinholePos(A.radialPinholePos),
-  radialPinholeWidth(A.radialPinholeWidth),transversalPinholeOffset(A.transversalPinholeOffset),
-  transversalPinholePos(A.transversalPinholePos),transversalPinholeWidth(A.transversalPinholeWidth),
-  distancePinholeImagingPlane(A.distancePinholeImagingPlane),
-  distanceTargetSurfImagingPlane(A.distanceTargetSurfImagingPlane),zPinholePos(A.zPinholePos)
-  /*!
-    Copy constructor
-    \param A :: PinholeBase to copy
-  */
-{}
+		/*!
+			Constructor
+			\param Key :: Name of construction key
+		*/
+	}
 
-PinholeBase&
-PinholeBase::operator=(const PinholeBase& A)
-  /*!
-    Assignment operator
-    \param A :: PinholeBase to copy
-    \return *this
-  */
-{
-  if (this!=&A)
-    {
-      attachSystem::ContainedComp::operator=(A);
-      attachSystem::FixedComp::operator=(A);
-      CellMap::operator=(A);
-      cellIndex=A.cellIndex;
-      zImagingPlane=A.zImagingPlane;
-      radialPinholeOffset=A.radialPinholeOffset;
-      radialPinholePos=A.radialPinholePos;
-      radialPinholeWidth=A.radialPinholeWidth;
-      transversalPinholeOffset=A.transversalPinholeOffset;
-      transversalPinholePos=A.transversalPinholePos;
-      transversalPinholeWidth=A.transversalPinholeWidth;
-      distancePinholeImagingPlane=A.distancePinholeImagingPlane;
-      distanceTargetSurfImagingPlane=A.distanceTargetSurfImagingPlane;
-      zPinholePos=A.zPinholePos;
-    }
-  return *this;
-}
+	PinholeBase::PinholeBase(const PinholeBase& A)    :	attachSystem::ContainedComp(A),
+								attachSystem::FixedComp(A),
+								attachSystem::CellMap(A),  
+								pinholeIndex(A.pinholeIndex),
+								cellIndex(A.cellIndex),
+								zImagingPlane(A.zImagingPlane),
+								radialPinholeOffset(A.radialPinholeOffset),
+								radialPinholePos(A.radialPinholePos),
+								radialPinholeWidth(A.radialPinholeWidth),
+								transversalPinholeOffset(A.transversalPinholeOffset),
+								transversalPinholePos(A.transversalPinholePos),
+								transversalPinholeWidth(A.transversalPinholeWidth),
+								distancePinholeImagingPlane(A.distancePinholeImagingPlane),
+								distanceTargetSurfImagingPlane(A.distanceTargetSurfImagingPlane),
+								zPinholePos(A.zPinholePos) {
+		/*!
+			Copy constructor
+			\param A :: PinholeBase to copy
+		*/
+	}
+
+	PinholeBase& PinholeBase::operator=(const PinholeBase& A) {
+
+		/*!
+			Assignment operator
+			\param A :: PinholeBase to copy
+			\return *this
+		*/
+
+		if (this!=&A)     {
+
+			attachSystem::ContainedComp::operator=(A);
+			attachSystem::FixedComp::operator=(A);
+			CellMap::operator=(A);
+			cellIndex=A.cellIndex;
+			zImagingPlane=A.zImagingPlane;
+			radialPinholeOffset=A.radialPinholeOffset;
+			radialPinholePos=A.radialPinholePos;
+			radialPinholeWidth=A.radialPinholeWidth;
+			transversalPinholeOffset=A.transversalPinholeOffset;
+			transversalPinholePos=A.transversalPinholePos;
+			transversalPinholeWidth=A.transversalPinholeWidth;
+			distancePinholeImagingPlane=A.distancePinholeImagingPlane;
+			distanceTargetSurfImagingPlane=A.distanceTargetSurfImagingPlane;
+			zPinholePos=A.zPinholePos;
+		}
+
+		return *this;
+	}
   
+	PinholeBase::~PinholeBase() {
 
-PinholeBase::~PinholeBase()
-  /*!
-    Destructor
-   */
-{}
-  
+		/*!
+			Destructor
+		*/
 
+	}
 
+	void PinholeBase::setXYZSteps(double xS, double yS, double zS) {
+
+		ELog::RegMethod RegA("PinholeBase","setXYZSteps");
+
+		xStep = xS;
+		yStep = yS;
+		zStep = zS;
+
+	}
+
+	void PinholeBase::setAngles(double xyA, double zA) {
+
+		ELog::RegMethod RegA("PinholeBase","setAngles");
+
+		xyAngle = xyA;
+		zAngle = zA;
+
+	}
+
+	void PinholeBase::setDimensions(double l, double w, double h) {
+
+		ELog::RegMethod RegA("PinholeBase","setDimensions");
+
+		length = l;
+		width = w;
+		height = h;
+
+	}
+
+	void PinholeBase::setTargetTopSurfaceZ(double z) {
+
+		ELog::RegMethod RegA("PinholeBase","setTargetTopSurf");
+
+		targetTopSurfZ = z;
+
+	}
+
+	void PinholeBase::populateBase(const FuncDataBase& Control) {
+
+		ELog::RegMethod RegA("PinholeBase","populateBase");
+
+		distanceTargetSurfImagingPlane = Control.EvalVar<double>(keyName+"DistanceTargetSurfImagingPlane");
+		distancePinholeImagingPlane    = Control.EvalVar<double>(keyName+"DistancePinholeImagingPlane");
+
+		radialPinholeOffset            = Control.EvalVar<double>(keyName+"RadialPinholeOffset");
+		radialPinholeWidth             = Control.EvalVar<double>(keyName+"RadialPinholeWidth");
+
+		transversalPinholeOffset       = Control.EvalVar<double>(keyName+"TransversalPinholeOffset");
+		transversalPinholeWidth        = Control.EvalVar<double>(keyName+"TransversalPinholeWidth");
+
+		//throw ColErr::RangeError<double>(theta, 0, 360, "Theta must be set in range 0-360 deg");
+
+	}
 
 }
 

@@ -69,15 +69,13 @@ EssDiagnosticPlug(FuncDataBase& Control)
   Control.addVariable("DiagnosticPlugWidth",5.0);
   Control.addVariable("DiagnosticPlugLength",40.0);
 
-  Control.addVariable("DiagnosticPlugPHType","rect");
-  Control.addVariable("DiagnosticPlugZImagingPlane",200.0);
-  Control.addVariable("DiagnosticPlugRadialPHOffset",0.0);
-  Control.addVariable("DiagnosticPlugRadialPHWidth",1.0);
-  Control.addVariable("DiagnosticPlugTransversalPHOffset",0.0);
-  Control.addVariable("DiagnosticPlugTransversalPHWidth",5.0);
-  Control.addVariable("DiagnosticPlugZDistanceFromImage",100.0);
 
-
+  Control.addVariable("PinholeBaseRadialPinholeOffset",0.0);
+  Control.addVariable("PinholeBaseRadialPinholeWidth",1.0);
+  Control.addVariable("PinholeBaseTransversalPinholeOffset",0.0);
+  Control.addVariable("PinholeBaseTransversalPinholeWidth",5.0);
+  Control.addVariable("PinholeBaseDistancePinholeImagingPlane",100.0);
+  Control.addVariable("PinholeBaseDistanceTargetSurfImagingPlane",200.0);
 
   return;
 }

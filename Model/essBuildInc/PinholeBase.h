@@ -24,56 +24,76 @@
 
 class Simulation;
 
-namespace essSystem
-{
+namespace essSystem {
 
-/*!
-  \class PinholeBase
-  \author N. Borghi
-  \version 1.0
-  \date July 2016
-  \brief Pinhole collimator base class
-*/
+	/*!
+		\class PinholeBase
+		\author Nicolò Borghi
+		\version 1.0
+		\date July 2016
+		\brief Pinhole collimator base class
+	*/
 
-class PinholeBase : public attachSystem::ContainedGroup,
-    public attachSystem::ContainedComp,
-    public attachSystem::FixedComp,
-    public attachSystem::CellMap
-{
+	class PinholeBase   :	public attachSystem::ContainedGroup,
+				public attachSystem::ContainedComp,
+				public attachSystem::FixedComp,
+				public attachSystem::CellMap {
 
- protected:
+		public:
+
+					 PinholeBase(const std::string&);
+					 PinholeBase(const PinholeBase&);
+					 PinholeBase& operator=(const PinholeBase&);
+			       virtual   PinholeBase* clone() const=0;
+			       virtual  ~PinholeBase();
+
+			  virtual void   createAll(Simulation&, const attachSystem::FixedComp&) = 0;
+
+  				  void   setXYZSteps(double, double, double);
+				  void   setAngles(double, double);
+				  void   setDimensions(double, double, double);
+				  void   setTargetTopSurfaceZ(double);
+				  void   populateBase(const FuncDataBase&);
+
+	 	protected:
+
+			     const int   pinholeIndex;				///< Index of surface offset
+				   int   cellIndex;				///< Cell index
+
+			// Variables relative to the DiagnosticPlug, necessary for building the pinhole collimator
+
+  				double   xStep;					///< X step (obtained from DiagnosticPlug)
+				double   yStep;					///< Y step (obtained from DiagnosticPlug)
+				double   zStep;					///< Z step (obtained from DiagnosticPlug)
+				double   xyAngle;				///< XY Angle (obtained from DiagnosticPlug)
+				double   zAngle;				///< Z Angle (obtained from DiagnosticPlug)
+				double   width;					///< Width (obtained from DiagnosticPlug)
+				double   length;				///< Length (obtained from DiagnosticPlug)
+				double   height;				///< Height (obtained from DiagnosticPlug)
+				double   targetTopSurfZ;			///< Z coordinate of the target upper surface
+
+				   int   floorSurfaceNumber;			///< Diagnostic plug floor surface number
+				   int   roofSurfaceNumber;			///< Diagnostic plug roof surface number
   
-  const int pinholeIndex;             ///< Index of surface offset
-  int cellIndex;                     ///< Cell index
+			// Variables relative to the Pinhole collimator common to all the possible pinhole geometries
 
- public:
+				double   heightImagingSystem;			///< Height of the imaging system measured from the DiagnosticPlug floor to the imaging plane
+				double   zImagingPlane;				///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
 
-  PinholeBase(const std::string&);
-  PinholeBase(const PinholeBase&);
-  PinholeBase& operator=(const PinholeBase&);
-  virtual PinholeBase* clone() const=0;
-  virtual ~PinholeBase();
-
- public:
-
-  double zImagingPlane;                   ///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
-
-  double radialPinholeOffset;             ///< Offset of the Pinhole center from the center of the DP
-  double radialPinholePos;                ///< Radial position of the Pinhole (Y coord.)
-  double radialPinholeWidth;              ///< Radial width of the Pinhole
+				double   radialPinholeOffset;			///< Offset of the Pinhole center from the center of the DP
+				double   radialPinholePos;			///< Radial position of the Pinhole (Y coord.)
+				double   radialPinholeWidth;			///< Radial width of the Pinhole
 
 
-  double transversalPinholeOffset;        ///< Offset of the Pinhole center from the center of the DP
-  double transversalPinholePos;           ///< Transversal position of the Pinhole (Y coord.)
-  double transversalPinholeWidth;         ///< Transversal width of the Pinhole
+				double   transversalPinholeOffset;		///< Offset of the Pinhole center from the center of the DP
+				double   transversalPinholePos;			///< Transversal position of the Pinhole (Y coord.)
+				double   transversalPinholeWidth;		///< Transversal width of the Pinhole
 
-  double distancePinholeImagingPlane;     ///< Distance between the Pinhole and the imaging plane
-  double distanceTargetSurfImagingPlane;  ///< Distance between the target upper surface and the imaging plane
-  double zPinholePos;                     ///< z position of the Pinhole
+				double   distancePinholeImagingPlane;		///< Distance between the Pinhole and the imaging plane
+				double   distanceTargetSurfImagingPlane;	///< Distance between the target upper surface and the imaging plane
+				double   zPinholePos;				///< z position of the Pinhole
 
-  virtual void createAll(Simulation&,const attachSystem::FixedComp&) =0;
-  
-};
+	};
 
 }
 

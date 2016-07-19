@@ -471,6 +471,8 @@ BilbaoWheel::createSurfaces()
   H += caseThick;
   ModelSupport::buildPlane(SMap,wheelIndex+125,Origin-Z*H,Z);  // 22 : 23 
   ModelSupport::buildPlane(SMap,wheelIndex+126,Origin+Z*H,Z);
+
+  targetZTopSurface = H;
   
   
   int SI(wheelIndex+10);
@@ -646,7 +648,9 @@ BilbaoWheel::createLinks()
       SI+=10;
     }
 
-  
+  FixedComp::setConnect(10, Origin+Z*targetZTopSurface, Z);
+  FixedComp::setLinkSurf(10, SMap.realSurf(wheelIndex+126));
+
   return;
 }
 
