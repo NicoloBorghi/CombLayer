@@ -38,6 +38,7 @@ namespace setVariable
   void EssProtonBeam(FuncDataBase&);
   void pipeVariables(FuncDataBase&);
   void F5Variables(FuncDataBase&);
+  void EssDiagnosticPlug(FuncDataBase&);
 
   // ESS Beamlines
   void ODINvariables(FuncDataBase&);

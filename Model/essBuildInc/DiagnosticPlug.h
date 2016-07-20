@@ -53,6 +53,7 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
 
   double width;                   ///< Width
   double length;                  ///< Length
+  double height;                  ///< Height
   
   double shaftWallThick;          ///< Shaft wall thickness
   double shaftBearingRadius;              ///< shaft bearing radius
@@ -69,6 +70,27 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   int plugFrameWallMat;           ///< plug frame wall material
   int shaftMat;                   ///< shaft material
   int shaftWallMat;               ///< shaft wall material
+
+  // Pinhole (PH) definition
+
+  std::string PHType;             ///< The pinhole can be either "rect" (rectangular) or "circ" (circular)
+
+  double zImagingPlane;            ///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
+
+  double radialPHOffset;          ///< Offset of the PH center from the center of the DP
+  double radialPHPos;             ///< Radial position of the PH (Y coord.)
+  double radialPHWidth;           ///< Radial width of the PH
+
+
+  double transversalPHOffset;     ///< Offset of the PH center from the center of the DP
+  double transversalPHPos;        ///< Transversal position of the PH (Y coord.)
+  double transversalPHWidth;      ///< Transversal width of the PH
+
+  double zDistanceFromImage;      ///< Distance of the PH from the imaging plane
+  double zPHPos;                  ///< z position of the PH
+
+  int DPfloorLinkNumber;
+  int DProofLinkNumber;
 
   // Functions:
 

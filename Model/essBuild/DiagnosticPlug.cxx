@@ -69,6 +69,8 @@
 #include "BaseMap.h"
 #include "CellMap.h"
 #include "DiagnosticPlug.h"
+#include "Plane.h"
+#include "SurInter.h"
 
 namespace essSystem
 {
@@ -180,25 +182,62 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
   
   width=Control.EvalVar<double>(keyName+"Width");
   length=Control.EvalVar<double>(keyName+"Length");
-  /*
-  shaftWallThick=Control.EvalVar<double>(keyName+"ShaftWallThick");
 
-  shaftBearingRadius=Control.EvalVar<double>(keyName+"ShaftBearingRadius");
-  shaftBearingHeight=Control.EvalVar<double>(keyName+"ShaftBearingHeight");
-  shaftBearingWallThick=Control.EvalVar<double>(keyName+"ShaftBearingWallThick");
+  /////////////////////////////////////////////////////////////////////////////
 
-  plugFrameRadius=Control.EvalVar<double>(keyName+"PlugFrameRadius");   
-  plugFrameHeight=Control.EvalVar<double>(keyName+"PlugFrameHeight");   
-  plugFrameDepth=Control.EvalVar<double>(keyName+"PlugFrameDepth");
-  plugFrameAngle=Control.EvalVar<double>(keyName+"PlugFrameAngle");
-  plugFrameWallThick=Control.EvalVar<double>(keyName+"PlugFrameWallThick");
+  PHType = "rect"; // Control.EvalVar<double>(keyName+"PHType"); // For now we only build a rectangular pinhole
 
-  plugFrameMat=ModelSupport::EvalMat<int>(Control,keyName+"PlugFrameMat");
-  plugFrameWallMat=ModelSupport::EvalMat<int>(Control,keyName+"PlugFrameWallMat");
+  zImagingPlane = Control.EvalVar<double>(keyName+"ZImagingPlane") + 5.80;
 
-  shaftMat=ModelSupport::EvalMat<int>(Control,keyName+"ShaftMat");
-  shaftWallMat=ModelSupport::EvalMat<int>(Control,keyName+"ShaftWallMat");
-  */
+  /////////////////////////////////////////////////////////////////////////////
+
+  radialPHOffset = Control.EvalVar<double>(keyName+"RadialPHOffset");
+
+  if (abs(radialPHOffset) >= (length/2.0)) {
+
+    ELog::EM << "Radial Offset out of range. Setting to 0" << ELog::endDiag;
+    radialPHOffset = 0.0;
+
+  }
+
+  radialPHPos = Origin.Y() + radialPHOffset;
+
+  radialPHWidth = Control.EvalVar<double>(keyName+"RadialPHWidth");
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  transversalPHOffset = Control.EvalVar<double>(keyName+"TransversalPHOffset");
+
+  if (abs(transversalPHOffset) >= (width/2.0)) {
+
+    ELog::EM << "Transversal Offset out of range. Setting to 0" << ELog::endDiag;
+    transversalPHOffset = 0.0;
+
+  }
+
+  transversalPHPos = Origin.X() + transversalPHOffset;
+
+  transversalPHWidth = Control.EvalVar<double>(keyName+"TransversalPHWidth");
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  const Geometry::Plane *floorPlane = SMap.realPtr<Geometry::Plane>(DPfloorLinkNumber);
+
+  height = zImagingPlane - floorPlane->getDistance();
+
+  zDistanceFromImage = Control.EvalVar<double>(keyName+"ZDistanceFromImage");
+
+  if (abs(zDistanceFromImage) > height) {
+
+    ELog::EM << "Pinhole distance from imaging plane out of range. Setting to half height" << ELog::endDiag;
+    zDistanceFromImage = zImagingPlane/2.0;
+
+  }
+
+  zPHPos = Origin.Z() + zImagingPlane - zDistanceFromImage;
+
+  ELog::EM << "X:" << transversalPHPos << " - Y: " << radialPHPos << " - Z: " << zPHPos << ELog::endDiag;
+
   return;
 }
 
@@ -231,6 +270,121 @@ DiagnosticPlug::createSurfaces()
   ModelSupport::buildPlane(SMap,tIndex+3,Origin-X*width/2.0,X);
   ModelSupport::buildPlane(SMap,tIndex+4,Origin+X*width/2.0,X);
 
+  // Imaging plane
+  ModelSupport::buildPlane(SMap,tIndex+5,Origin+Z*zImagingPlane,Z);
+
+  // Get three points for the first PH collimator face
+
+  const Geometry::Plane *pl1 = SMap.realPtr<Geometry::Plane>(tIndex+1);
+  const Geometry::Plane *pl2 = SMap.realPtr<Geometry::Plane>(tIndex+3);
+  const Geometry::Plane *pl3 = SMap.realPtr<Geometry::Plane>(tIndex+5);
+
+  Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+  ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+1);
+  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+4);
+  pl3 = SMap.realPtr<Geometry::Plane>(tIndex+5);
+
+  Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+  ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+  Geometry::Vec3D p3(xStep+transversalPHPos - (radialPHWidth/2)*sin(xyAngle), yStep+radialPHPos + (radialPHWidth/2)*cos(xyAngle), zStep+zPHPos);
+
+  ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+  Geometry::Vec3D norm(-sin(xyAngle),cos(xyAngle),cos(atan(zDistanceFromImage/((length-radialPHWidth)/2.0))));
+
+  ModelSupport::buildPlane(SMap,tIndex+7,p1,p2,p3,norm);
+  
+  ////////////////////////////////////////////////////
+
+  // Get three points for the second PH collimator face
+
+  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+1);
+  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+3);
+  pl3 = SMap.realPtr<Geometry::Plane>(DPfloorLinkNumber);
+
+  p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+  ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+1);
+  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+4);
+  pl3 = SMap.realPtr<Geometry::Plane>(DPfloorLinkNumber);
+
+  p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+  ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+  p3(xStep+transversalPHPos - (radialPHWidth/2)*sin(xyAngle), yStep+radialPHPos + (radialPHWidth/2)*cos(xyAngle), zStep+zPHPos);
+
+  ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+  norm(-sin(xyAngle),cos(xyAngle),cos(atan((height-zDistanceFromImage)/((length-radialPHWidth)/2.0))));
+
+  ModelSupport::buildPlane(SMap,tIndex+8,p1,p2,p3,norm);
+  
+  ////////////////////////////////////////////////////
+
+  // Get three points for the third PH collimator face
+
+  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+2);
+  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+3);
+  pl3 = SMap.realPtr<Geometry::Plane>(tIndex+5);
+
+  p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+  ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+2);
+  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+4);
+  pl3 = SMap.realPtr<Geometry::Plane>(tIndex+5);
+
+  p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+  ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+  p3(xStep+transversalPHPos + (radialPHWidth/2)*sin(xyAngle), yStep+radialPHPos - (radialPHWidth/2)*cos(xyAngle), zStep+zPHPos);
+
+  ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+  norm(-sin(xyAngle),cos(xyAngle),-cos(atan(zDistanceFromImage/((length+radialPHWidth)/2.0))));
+
+  ModelSupport::buildPlane(SMap,tIndex+17,p1,p2,p3,norm);
+  
+  ////////////////////////////////////////////////////
+
+  // Get three points for the fourth PH collimator face
+
+  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+2);
+  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+3);
+  pl3 = SMap.realPtr<Geometry::Plane>(DPfloorLinkNumber);
+
+  p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+  ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+2);
+  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+4);
+  pl3 = SMap.realPtr<Geometry::Plane>(DPfloorLinkNumber);
+
+  p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+  ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+  p3(xStep+transversalPHPos + (radialPHWidth/2)*sin(xyAngle), yStep+radialPHPos - (radialPHWidth/2)*cos(xyAngle), zStep+zPHPos);
+
+  ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+  norm(-sin(xyAngle),cos(xyAngle),-cos(atan((height-zDistanceFromImage)/((length+radialPHWidth)/2.0))));
+
+  ModelSupport::buildPlane(SMap,tIndex+18,p1,p2,p3,norm);
+  
+  ////////////////////////////////////////////////////
+
   return;
 }
 
@@ -259,9 +413,20 @@ DiagnosticPlug::createObjects(Simulation& System,
   std::string strRoof = HR.display();
   
   std::string Out;
-  Out=ModelSupport::getComposite(SMap,tIndex," 1 -2 3 -4 ") + strFloor + strRoof;
+
+  Out=ModelSupport::getComposite(SMap,tIndex," 1 3 -4 -5 7 8") + strFloor;
   System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
 
+  Out=ModelSupport::getComposite(SMap,tIndex," -2 3 -4 -5 -17 -18") + strFloor;
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+  Out=ModelSupport::getComposite(SMap,tIndex," -2 3 -4 -5 (-7:-8) (17:18)") + strFloor;
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+  Out=ModelSupport::getComposite(SMap,tIndex," 1 -2 3 -4 5") + strRoof;
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+  Out=ModelSupport::getComposite(SMap,tIndex," 1 -2 3 -4") + strFloor + strRoof;
   addOuterSurf(Out);
 
   return; 
@@ -296,6 +461,10 @@ DiagnosticPlug::createAll(Simulation& System,
   */
 {
   ELog::RegMethod RegA("DiagnosticPlug","createAll");
+
+  DPfloorLinkNumber = floorFC.getLinkSurf(floorLP);
+  DProofLinkNumber = roofFC.getLinkSurf(roofLP);
+
   populate(System.getDataBase());
 
   createUnitVector(FC);
