@@ -71,7 +71,7 @@ EssDiagnosticPlug(FuncDataBase& Control)
 
   Control.addVariable("DiagnosticPlugPHType","rect");
   Control.addVariable("DiagnosticPlugZImagingPlane",200.0);
-  Control.addVariable("DiagnosticPlugRadialPHOffset",50.0);
+  Control.addVariable("DiagnosticPlugRadialPHOffset",0.0);
   Control.addVariable("DiagnosticPlugRadialPHWidth",1.0);
   Control.addVariable("DiagnosticPlugTransversalPHOffset",0.0);
   Control.addVariable("DiagnosticPlugTransversalPHWidth",5.0);

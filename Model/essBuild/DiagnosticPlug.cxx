@@ -191,32 +191,28 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
 
   /////////////////////////////////////////////////////////////////////////////
 
-  radialPHOffset = Control.EvalVar<double>(keyName+"RadialPHOffset");
+  radialPHOffset = -1.0*Control.EvalVar<double>(keyName+"RadialPHOffset");
 
-  if (abs(radialPHOffset) >= (length/2.0)) {
+  if (fabs(radialPHOffset) >= (length/2.0)) {
 
     ELog::EM << "Radial Offset out of range. Setting to 0" << ELog::endDiag;
     radialPHOffset = 0.0;
 
   }
 
-  radialPHPos = Origin.Y() + radialPHOffset;
+  transversalPHOffset = -1.0*Control.EvalVar<double>(keyName+"TransversalPHOffset");
 
-  radialPHWidth = Control.EvalVar<double>(keyName+"RadialPHWidth");
-
-  /////////////////////////////////////////////////////////////////////////////
-
-  transversalPHOffset = Control.EvalVar<double>(keyName+"TransversalPHOffset");
-
-  if (abs(transversalPHOffset) >= (width/2.0)) {
+  if (fabs(transversalPHOffset) >= (width/2.0)) {
 
     ELog::EM << "Transversal Offset out of range. Setting to 0" << ELog::endDiag;
     transversalPHOffset = 0.0;
 
   }
 
-  transversalPHPos = Origin.X() + transversalPHOffset;
+  radialPHPos      = radialPHOffset*sin(90.0 + xyAngle) + transversalPHOffset*cos(90.0 + xyAngle);
+  transversalPHPos = radialPHOffset*cos(90.0 + xyAngle) + transversalPHOffset*sin(90.0 + xyAngle);
 
+  radialPHWidth = Control.EvalVar<double>(keyName+"RadialPHWidth");
   transversalPHWidth = Control.EvalVar<double>(keyName+"TransversalPHWidth");
 
   /////////////////////////////////////////////////////////////////////////////
@@ -227,16 +223,17 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
 
   zDistanceFromImage = Control.EvalVar<double>(keyName+"ZDistanceFromImage");
 
-  if (abs(zDistanceFromImage) > height) {
+  if (fabs(zDistanceFromImage) > height) {
 
     ELog::EM << "Pinhole distance from imaging plane out of range. Setting to half height" << ELog::endDiag;
     zDistanceFromImage = zImagingPlane/2.0;
 
   }
 
-  zPHPos = Origin.Z() + zImagingPlane - zDistanceFromImage;
+  zPHPos = zImagingPlane - zDistanceFromImage;
 
   ELog::EM << "X:" << transversalPHPos << " - Y: " << radialPHPos << " - Z: " << zPHPos << ELog::endDiag;
+  ELog::EM << "xStep:" << xStep << " - yStep: " << yStep << " - zStep: " << zStep << ELog::endDiag;
 
   return;
 }
@@ -291,7 +288,9 @@ DiagnosticPlug::createSurfaces()
 
   ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
-  Geometry::Vec3D p3(xStep+transversalPHPos - (radialPHWidth/2)*sin(xyAngle), yStep+radialPHPos + (radialPHWidth/2)*cos(xyAngle), zStep+zPHPos);
+  Geometry::Vec3D p3( xStep + transversalPHPos + fabs((radialPHWidth/2.0)*cos(90.0 + xyAngle)),
+                      yStep + radialPHPos      - fabs((radialPHWidth/2.0)*sin(90.0 + xyAngle)),
+                      zStep + zPHPos);
 
   ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
@@ -319,7 +318,9 @@ DiagnosticPlug::createSurfaces()
 
   ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
-  p3(xStep+transversalPHPos - (radialPHWidth/2)*sin(xyAngle), yStep+radialPHPos + (radialPHWidth/2)*cos(xyAngle), zStep+zPHPos);
+  p3( xStep + transversalPHPos + fabs((radialPHWidth/2.0)*cos(90.0 + xyAngle)),
+      yStep + radialPHPos      - fabs((radialPHWidth/2.0)*sin(90.0 + xyAngle)),
+      zStep + zPHPos);
 
   ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
@@ -347,7 +348,9 @@ DiagnosticPlug::createSurfaces()
 
   ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
-  p3(xStep+transversalPHPos + (radialPHWidth/2)*sin(xyAngle), yStep+radialPHPos - (radialPHWidth/2)*cos(xyAngle), zStep+zPHPos);
+  p3( xStep + transversalPHPos - fabs((radialPHWidth/2.0)*cos(90.0 + xyAngle)),
+      yStep + radialPHPos      + fabs((radialPHWidth/2.0)*sin(90.0 + xyAngle)),
+      zStep + zPHPos);
 
   ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
@@ -375,7 +378,9 @@ DiagnosticPlug::createSurfaces()
 
   ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
-  p3(xStep+transversalPHPos + (radialPHWidth/2)*sin(xyAngle), yStep+radialPHPos - (radialPHWidth/2)*cos(xyAngle), zStep+zPHPos);
+  p3( xStep + transversalPHPos - fabs((radialPHWidth/2.0)*cos(90.0 + xyAngle)),
+      yStep + radialPHPos      + fabs((radialPHWidth/2.0)*sin(90.0 + xyAngle)),
+      zStep + zPHPos);
 
   ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
