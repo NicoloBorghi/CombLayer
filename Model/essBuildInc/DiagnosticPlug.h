@@ -70,8 +70,8 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   void createLinks();
 
   Geometry::Vec3D getXYZSteps();
-  //Geometry::Vec2D getAngles();
-  Geometry::Vec3D getDimensions();
+  Geometry::Vec2D getAngles();
+  Geometry::Vec2D getDimensions();
 
  public:
 

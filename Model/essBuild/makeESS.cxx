@@ -47,6 +47,7 @@
 #include "MatrixBase.h"
 #include "Matrix.h"
 #include "Vec3D.h"
+#include "Vec2D.h"
 #include "stringCombine.h"
 #include "inputParam.h"
 #include "Surface.h"

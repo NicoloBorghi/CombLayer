@@ -46,6 +46,7 @@
 #include "MatrixBase.h"
 #include "Matrix.h"
 #include "Vec3D.h"
+#include "Vec2D.h"
 #include "Quaternion.h"
 #include "Surface.h"
 #include "surfIndex.h"
@@ -163,7 +164,29 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
   return;
 }
 
+Geometry::Vec3D DiagnosticPlug::getXYZSteps() {
 
+  Geometry::Vec3D V(xStep,yStep,zStep);
+
+  return V;
+
+}
+
+Geometry::Vec2D DiagnosticPlug::getAngles() {
+
+  Geometry::Vec2D V(xyAngle,zAngle);
+
+  return V;
+
+}
+
+Geometry::Vec2D DiagnosticPlug::getDimensions() {
+
+  Geometry::Vec2D V(width,length);
+
+  return V;
+
+}
 
 void
 DiagnosticPlug::createUnitVector(const attachSystem::FixedComp& FC)
