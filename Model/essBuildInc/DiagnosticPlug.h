@@ -43,8 +43,6 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   const int tIndex;               ///< Index of surface offset
   int cellIndex;                  ///< Cell index
 
-  int engActive;                  ///< Engineering active flag
-
   double xStep;                   ///< X step
   double yStep;                   ///< Y step
   double zStep;                   ///< Z step
@@ -54,44 +52,10 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   double width;                   ///< Width
   double length;                  ///< Length
   double height;                  ///< Height
+
+  int floorSurfaceNumber;          ///< Diagnostic plug floor surface number
+  int roofSurfaceNumber;          ///< Diagnostic plug roof surface number
   
-  double shaftWallThick;          ///< Shaft wall thickness
-  double shaftBearingRadius;              ///< shaft bearing radius
-  double shaftBearingHeight;              ///< shaft bearing height
-  double shaftBearingWallThick;      ///< shaft bearing side wall thick
-  
-  double plugFrameRadius;         ///< plug frame outer radius
-  double plugFrameHeight;         ///< plug frame height
-  double plugFrameDepth;          ///< plug frame depth
-  double plugFrameAngle;          ///< plug frame opening angle
-  double plugFrameWallThick;      ///< plug frame wall thickness
-
-  int plugFrameMat;               ///< plug frame material
-  int plugFrameWallMat;           ///< plug frame wall material
-  int shaftMat;                   ///< shaft material
-  int shaftWallMat;               ///< shaft wall material
-
-  // Pinhole (PH) definition
-
-  std::string PHType;             ///< The pinhole can be either "rect" (rectangular) or "circ" (circular)
-
-  double zImagingPlane;            ///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
-
-  double radialPHOffset;          ///< Offset of the PH center from the center of the DP
-  double radialPHPos;             ///< Radial position of the PH (Y coord.)
-  double radialPHWidth;           ///< Radial width of the PH
-
-
-  double transversalPHOffset;     ///< Offset of the PH center from the center of the DP
-  double transversalPHPos;        ///< Transversal position of the PH (Y coord.)
-  double transversalPHWidth;      ///< Transversal width of the PH
-
-  double zDistanceFromImage;      ///< Distance of the PH from the imaging plane
-  double zPHPos;                  ///< z position of the PH
-
-  int DPfloorLinkNumber;
-  int DProofLinkNumber;
-
   // Functions:
 
   void populate(const FuncDataBase&);
@@ -104,6 +68,10 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
 		     const attachSystem::FixedComp& roofFC,
 		     const size_t roofLP);
   void createLinks();
+
+  Geometry::Vec3D getXYZSteps();
+  //Geometry::Vec2D getAngles();
+  Geometry::Vec3D getDimensions();
 
  public:
 

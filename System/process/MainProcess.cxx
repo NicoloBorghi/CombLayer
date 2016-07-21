@@ -264,6 +264,7 @@ createInputs(inputParam& IParam)
   IParam.regFlag("TW","tallyWeight");
   IParam.regItem("TX","Txml",1);
   IParam.regItem("targetType","targetType",1);
+  IParam.regItem("pinholeType","pinholeType",1);
   IParam.regDefItem<int>("u","units",1,0);
   IParam.regItem("validCheck","validCheck",1);
   IParam.regFlag("um","voidUnMask");
@@ -671,6 +672,9 @@ createESSInputs(inputParam& IParam)
   IParam.setValue("sdefType",std::string("ess"));  
   IParam.setValue("targetType",std::string("Bilbao"));
 
+  //  Set default Pinhole collimator type
+  IParam.setValue("pinholeType",std::string("Rectangular"));
+
   IParam.regDefItem<std::string>("matDB","materialDatabase",1,std::string("shielding"));
   
   IParam.regDefItem<std::string>("lowMod","lowModType",1,std::string("lowMod"));
@@ -699,6 +703,7 @@ createESSInputs(inputParam& IParam)
 		 "  -- The corresponding variables must exist.");
   IParam.setDesc("f5-collimators","Space separated list of theta angles"
 		 "for F5 collimators (theta is defined on page 183 of TDR)");
+  IParam.setDesc("pinholeType","Set default Pinhole collimator type");
 
   return;
 }

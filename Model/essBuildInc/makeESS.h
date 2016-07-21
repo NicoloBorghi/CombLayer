@@ -183,7 +183,7 @@ class makeESS
 
   void buildPreWings(Simulation&);
   void buildTwister(Simulation&);
-  void buildDiagnosticPlug(Simulation&);
+  void buildDiagnosticPlug(Simulation&, const std::string&);
 
   void buildPillars(Simulation&);
 

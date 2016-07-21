@@ -750,7 +750,7 @@ makeESS::buildTwister(Simulation& System)
 }
 
 void
-makeESS::buildDiagnosticPlug(Simulation& System)
+makeESS::buildDiagnosticPlug(Simulation& System, const std::string& pinholeType)
 {
   ModelSupport::objectRegister& OR=
     ModelSupport::objectRegister::Instance();
@@ -792,6 +792,7 @@ makeESS::build(Simulation& System,
   const std::string iradLine=IParam.getValue<std::string>("iradLineType");
   const std::string bunker=IParam.getValue<std::string>("bunkerType");
   const std::string materials=IParam.getValue<std::string>("matDB");
+  const std::string pinholeType=IParam.getValue<std::string>("pinholeType");
 
   // Add extra materials to the DBdatabase
   if (materials=="neutronics")
@@ -890,7 +891,7 @@ makeESS::build(Simulation& System,
   if (IParam.flag("eng"))
     {
       buildTwister(System);
-      buildDiagnosticPlug(System);
+      buildDiagnosticPlug(System,pinholeType);
     }
   
   //  buildF5Collimator(System, nF5);
