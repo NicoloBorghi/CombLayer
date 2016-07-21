@@ -1,3 +1,163 @@
+/********************************************************************* 
+  CombLayer : MCNP(X) Input builder
+ 
+ * File:   essBuild/DiagnosticPlug.cxx
+ *
+ * Copyright (c) 2004-2015 by Stuart Ansell
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+ *
+ ****************************************************************************/
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <cmath>
+#include <complex>
+#include <list>
+#include <vector>
+#include <set>
+#include <map>
+#include <string>
+#include <algorithm>
+#include <memory>
+
+#include "Exception.h"
+#include "FileReport.h"
+#include "GTKreport.h"
+#include "NameStack.h"
+#include "RegMethod.h"
+#include "OutputLog.h"
+#include "surfRegister.h"
+#include "objectRegister.h"
+#include "BaseVisit.h"
+#include "BaseModVisit.h"
+#include "MatrixBase.h"
+#include "Matrix.h"
+#include "Vec3D.h"
+#include "Vec2D.h"
+#include "Quaternion.h"
+#include "Surface.h"
+#include "surfIndex.h"
+#include "Quadratic.h"
+#include "Rules.h"
+#include "varList.h"
+#include "Code.h"
+#include "FuncDataBase.h"
+#include "HeadRule.h"
+#include "Object.h"
+#include "Qhull.h"
+#include "Simulation.h"
+#include "ModelSupport.h"
+#include "MaterialSupport.h"
+#include "generateSurf.h"
+#include "support.h"
+#include "stringCombine.h"
+#include "LinkUnit.h"
+#include "FixedComp.h"
+#include "ContainedComp.h"
+#include "ContainedGroup.h"
+#include "BaseMap.h"
+#include "CellMap.h"
+#include "PinholeBase.h"
+
+namespace essSystem
+{
+
+PinholeBase::PinholeBase(const std::string& Key) :
+  attachSystem::ContainedComp(),attachSystem::FixedComp(Key,11),
+  attachSystem::CellMap(),
+  pinholeIndex(ModelSupport::objectRegister::Instance().cell(Key)),
+  cellIndex(pinholeIndex+1)
+  /*!
+    Constructor
+    \param Key :: Name of construction key
+  */
+{
+}
+
+PinholeBase::PinholeBase(const PinholeBase& A) : 
+  attachSystem::ContainedComp(A),attachSystem::FixedComp(A),
+  attachSystem::CellMap(A),  
+  pinholeIndex(A.pinholeIndex),cellIndex(A.cellIndex),zImagingPlane(A.zImagingPlane),
+  radialPinholeOffset(A.radialPinholeOffset),radialPinholePos(A.radialPinholePos),
+  radialPinholeWidth(A.radialPinholeWidth),transversalPinholeOffset(A.transversalPinholeOffset),
+  transversalPinholePos(A.transversalPinholePos),transversalPinholeWidth(A.transversalPinholeWidth),
+  distancePinholeImagingPlane(A.distancePinholeImagingPlane),
+  distanceTargetSurfImagingPlane(A.distanceTargetSurfImagingPlane),zPinholePos(A.zPinholePos)
+  /*!
+    Copy constructor
+    \param A :: PinholeBase to copy
+  */
+{}
+
+PinholeBase&
+PinholeBase::operator=(const PinholeBase& A)
+  /*!
+    Assignment operator
+    \param A :: PinholeBase to copy
+    \return *this
+  */
+{
+  if (this!=&A)
+    {
+      attachSystem::ContainedComp::operator=(A);
+      attachSystem::FixedComp::operator=(A);
+      CellMap::operator=(A);
+      cellIndex=A.cellIndex;
+      zImagingPlane=A.zImagingPlane;
+      radialPinholeOffset=A.radialPinholeOffset;
+      radialPinholePos=A.radialPinholePos;
+      radialPinholeWidth=A.radialPinholeWidth;
+      transversalPinholeOffset=A.transversalPinholeOffset;
+      transversalPinholePos=A.transversalPinholePos;
+      transversalPinholeWidth=A.transversalPinholeWidth;
+      distancePinholeImagingPlane=A.distancePinholeImagingPlane;
+      distanceTargetSurfImagingPlane=A.distanceTargetSurfImagingPlane;
+      zPinholePos=A.zPinholePos;
+    }
+  return *this;
+}
+  
+
+PinholeBase::~PinholeBase()
+  /*!
+    Destructor
+   */
+{}
+  
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
   /////////////////////////////////////////////////////////////////////////////
 
   PHType = "rect"; // Control.EvalVar<double>(keyName+"PHType"); // For now we only build a rectangular pinhole
@@ -50,3 +210,7 @@
 
   ELog::EM << "X:" << transversalPHPos << " - Y: " << radialPHPos << " - Z: " << zPHPos << ELog::endDiag;
   ELog::EM << "xStep:" << xStep << " - yStep: " << yStep << " - zStep: " << zStep << ELog::endDiag;
+
+
+
+*/

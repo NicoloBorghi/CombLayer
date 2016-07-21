@@ -37,25 +37,40 @@ namespace essSystem
 
 class PinholeBase : public attachSystem::ContainedGroup,
     public attachSystem::ContainedComp,
-    public attachSystem::FixedComp
+    public attachSystem::FixedComp,
     public attachSystem::CellMap
 {
+
  protected:
   
-  const int pnholeIndex;             ///< Index of surface offset
-  int cellIndex;                    ///< Cell index
+  const int pinholeIndex;             ///< Index of surface offset
+  int cellIndex;                     ///< Cell index
 
-  public:
+ public:
 
   PinholeBase(const std::string&);
   PinholeBase(const PinholeBase&);
   PinholeBase& operator=(const PinholeBase&);
-  virtual PinholeBase* clone() const =0;
+  virtual PinholeBase* clone() const=0;
   virtual ~PinholeBase();
 
-  virtual double wheelHeight() const =0;
-  
-  //  virtual int getCell() const =0;
+ public:
+
+  double zImagingPlane;                   ///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
+
+  double radialPinholeOffset;             ///< Offset of the Pinhole center from the center of the DP
+  double radialPinholePos;                ///< Radial position of the Pinhole (Y coord.)
+  double radialPinholeWidth;              ///< Radial width of the Pinhole
+
+
+  double transversalPinholeOffset;        ///< Offset of the Pinhole center from the center of the DP
+  double transversalPinholePos;           ///< Transversal position of the Pinhole (Y coord.)
+  double transversalPinholeWidth;         ///< Transversal width of the Pinhole
+
+  double distancePinholeImagingPlane;     ///< Distance between the Pinhole and the imaging plane
+  double distanceTargetSurfImagingPlane;  ///< Distance between the target upper surface and the imaging plane
+  double zPinholePos;                     ///< z position of the Pinhole
+
   virtual void createAll(Simulation&,const attachSystem::FixedComp&) =0;
   
 };
@@ -65,28 +80,15 @@ class PinholeBase : public attachSystem::ContainedGroup,
 #endif
 
 
+/*
 
 
+  // Pinhole (Pinhole) definition
 
+  std::string PinholeType;             ///< The pinhole can be either "rect" (rectangular) or "circ" (circular)
 
-  // Pinhole (PH) definition
-
-  std::string PHType;             ///< The pinhole can be either "rect" (rectangular) or "circ" (circular)
-
-  double zImagingPlane;            ///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
-
-  double radialPHOffset;          ///< Offset of the PH center from the center of the DP
-  double radialPHPos;             ///< Radial position of the PH (Y coord.)
-  double radialPHWidth;           ///< Radial width of the PH
-
-
-  double transversalPHOffset;     ///< Offset of the PH center from the center of the DP
-  double transversalPHPos;        ///< Transversal position of the PH (Y coord.)
-  double transversalPHWidth;      ///< Transversal width of the PH
-
-  double zDistanceFromImage;      ///< Distance of the PH from the imaging plane
-  double zPHPos;                  ///< z position of the PH
 
   int DPfloorSurfaceNumber;
   int DProofSurfaceNumber;
 
+*/
