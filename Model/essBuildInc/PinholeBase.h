@@ -48,11 +48,15 @@ namespace essSystem {
 			       virtual  ~PinholeBase();
 
 			  virtual void   createAll(Simulation&, const attachSystem::FixedComp&) = 0;
+			  virtual void   populate(const FuncDataBase&) = 0;
 
   				  void   setXYZSteps(double, double, double);
 				  void   setAngles(double, double);
 				  void   setDimensions(double, double, double);
 				  void   setBoundarySurfacesZ(double, double, double);
+
+		protected:
+
 				  void   populateBase(const FuncDataBase&);
 
 	 	protected:

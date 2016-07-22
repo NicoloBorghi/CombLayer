@@ -79,7 +79,7 @@
 
 namespace essSystem {
 
-	RectangularPinhole::RectangularPinhole(const std::string& Key) : PinholeBase("PinholeBase") {
+	RectangularPinhole::RectangularPinhole(const std::string& Key) : PinholeBase(Key) {
 
 		/*!
 			Constructor
@@ -142,6 +142,45 @@ namespace essSystem {
 		*/
 
 		ELog::RegMethod RegA("RectangularPinhole","populate");
+
+		std::cout << keyName << std::endl;
+
+		populateBase(Control);
+
+		std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++INIZIO++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+
+		radialPinholeWidth      = Control.EvalVar<double>(keyName+"RadialPinholeWidth");
+		transversalPinholeWidth = Control.EvalVar<double>(keyName+"TransversalPinholeWidth");
+
+		if ( (radialPinholeWidth <= 0.0) || (radialPinholeWidth >= length) ) {
+
+			throw ColErr::RangeError<double>(radialPinholeWidth, 0.0, length, "The radial size of the pinhole must be larger than 0 and must not exceed the radial dimension of the diagnostic plug.");
+
+		}
+
+		double overallSize = (radialPinholeWidth/2.0) + fabs(radialPinholeOffset);
+
+		if ( overallSize >= (length/2.0) ) {
+
+			throw ColErr::RangeError<double>(overallSize, 0.0, (length/2.0), "Pinhole radial size and the relative offset must not exceed the diagnostic plug size.");
+
+		}
+
+		if ( (transversalPinholeWidth <= 0.0) || (transversalPinholeWidth >= width) ) {
+
+			throw ColErr::RangeError<double>(transversalPinholeWidth, 0.0, width, "The transversal size of the pinhole must be larger than 0 and must not exceed the transversal dimension of the diagnostic plug.");
+
+		}
+
+		overallSize = (transversalPinholeWidth/2.0) + fabs(transversalPinholeOffset);
+
+		if ( overallSize >= (width/2.0) ) {
+
+			throw ColErr::RangeError<double>(overallSize, 0.0, (width/2.0), "Pinhole transversal size and the relative offset must not exceed the diagnostic plug size.");
+
+		}
+
+		std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++FINE++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
 
 	}
 

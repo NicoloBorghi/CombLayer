@@ -49,8 +49,11 @@ namespace essSystem {
 					   virtual  ~RectangularPinhole();
 
 				      virtual void   createAll(Simulation&,const attachSystem::FixedComp&);
-			
 
+		private:
+
+					    double   radialPinholeWidth;		///< Radial width of the Pinhole
+					    double   transversalPinholeWidth;		///< Transversal width of the Pinhole
 
 		private:
 

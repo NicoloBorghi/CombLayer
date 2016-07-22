@@ -185,14 +185,14 @@ namespace essSystem {
 
 		ELog::RegMethod RegA("PinholeBase","populateBase");
 
+		std::cout << "================================================================================================================INIZIO================================================================================================================" << std::endl;
+
 		distancePinholeImagingPlane    = Control.EvalVar<double>(keyName+"DistancePinholeImagingPlane");
 		distanceTargetSurfImagingPlane = Control.EvalVar<double>(keyName+"DistanceTargetSurfImagingPlane");
 
 		radialPinholeOffset            = Control.EvalVar<double>(keyName+"RadialPinholeOffset");
-		radialPinholeWidth             = Control.EvalVar<double>(keyName+"RadialPinholeWidth");
 
 		transversalPinholeOffset       = Control.EvalVar<double>(keyName+"TransversalPinholeOffset");
-		transversalPinholeWidth        = Control.EvalVar<double>(keyName+"TransversalPinholeWidth");
 
 		zImagingPlane = distanceTargetSurfImagingPlane + targetTopSurfZ;
 
@@ -218,41 +218,15 @@ namespace essSystem {
 
 		}
 
-		if ( (radialPinholeWidth <= 0.0) || (radialPinholeWidth >= length) ) {
-
-			throw ColErr::RangeError<double>(radialPinholeWidth, 0.0, length, "The radial size of the pinhole must be larger than 0 and must not exceed the radial dimension of the diagnostic plug.");
-
-		}
-
-		double overallSize = (radialPinholeWidth/2.0) + fabs(radialPinholeOffset);
-
-		if ( overallSize >= (length/2.0) ) {
-
-			throw ColErr::RangeError<double>(overallSize, 0.0, (length/2.0), "Pinhole radial size and the relative offset must not exceed the diagnostic plug size.");
-
-		}
-
 		if ( fabs(transversalPinholeOffset) >= (width/2.0) ) {
 
 			throw ColErr::RangeError<double>(transversalPinholeOffset, -1.0*(width/2.0), (width/2.0), "The transversal offset must not exceed the diagnostic plug transversal borders.");
 
 		}
 
-		if ( (transversalPinholeWidth <= 0.0) || (transversalPinholeWidth >= width) ) {
-
-			throw ColErr::RangeError<double>(transversalPinholeWidth, 0.0, width, "The transversal size of the pinhole must be larger than 0 and must not exceed the transversal dimension of the diagnostic plug.");
-
-		}
-
-		overallSize = (transversalPinholeWidth/2.0) + fabs(transversalPinholeOffset);
-
-		if ( overallSize >= (width/2.0) ) {
-
-			throw ColErr::RangeError<double>(overallSize, 0.0, (width/2.0), "Pinhole transversal size and the relative offset must not exceed the diagnostic plug size.");
-
-		}
-
 		pinholePos = Origin + X*transversalPinholeOffset + Y*radialPinholeOffset + Z*zPinholePos;
+
+		std::cout << "================================================================================================================FINE================================================================================================================" << std::endl;
 
 	}
 
