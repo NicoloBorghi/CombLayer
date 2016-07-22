@@ -23,6 +23,7 @@
 #define essSystem_DiagnosticPlug_h
 
 class Simulation;
+class PinholeBase;
 
 namespace essSystem
 {
@@ -80,6 +81,8 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   DiagnosticPlug& operator=(const DiagnosticPlug&);
   virtual DiagnosticPlug* clone() const;
   virtual ~DiagnosticPlug();
+
+  void setCollimator(PinholeBase *);
 
   void createAll(Simulation&,
 		 const attachSystem::FixedComp&,
