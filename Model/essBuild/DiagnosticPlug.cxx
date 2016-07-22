@@ -173,7 +173,7 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
   Pinhole->setXYZSteps(xStep,yStep,zStep);
   Pinhole->setAngles(xyAngle,zAngle);
   Pinhole->setDimensions(length,width, height);
-  Pinhole->setTargetTopSurfaceZ(targetTopSurf->getDistance());
+  Pinhole->setBoundarySurfacesZ(floorPlane->getDistance(), roofPlane->getDistance(), targetTopSurf->getDistance());
   Pinhole->populateBase(Control);
 
   return;

@@ -52,7 +52,7 @@ namespace essSystem {
   				  void   setXYZSteps(double, double, double);
 				  void   setAngles(double, double);
 				  void   setDimensions(double, double, double);
-				  void   setTargetTopSurfaceZ(double);
+				  void   setBoundarySurfacesZ(double, double, double);
 				  void   populateBase(const FuncDataBase&);
 
 	 	protected:
@@ -70,28 +70,27 @@ namespace essSystem {
 				double   width;					///< Width (obtained from DiagnosticPlug)
 				double   length;				///< Length (obtained from DiagnosticPlug)
 				double   height;				///< Height (obtained from DiagnosticPlug)
+				double   floorSurfaceZ;				///< Z coordinate of the floor surface
+				double   roofSurfaceZ;				///< Z coordinate of the roof surface
 				double   targetTopSurfZ;			///< Z coordinate of the target upper surface
 
-				   int   floorSurfaceNumber;			///< Diagnostic plug floor surface number
-				   int   roofSurfaceNumber;			///< Diagnostic plug roof surface number
-  
 			// Variables relative to the Pinhole collimator common to all the possible pinhole geometries
 
 				double   heightImagingSystem;			///< Height of the imaging system measured from the DiagnosticPlug floor to the imaging plane
 				double   zImagingPlane;				///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
 
 				double   radialPinholeOffset;			///< Offset of the Pinhole center from the center of the DP
-				double   radialPinholePos;			///< Radial position of the Pinhole (Y coord.)
 				double   radialPinholeWidth;			///< Radial width of the Pinhole
 
 
 				double   transversalPinholeOffset;		///< Offset of the Pinhole center from the center of the DP
-				double   transversalPinholePos;			///< Transversal position of the Pinhole (Y coord.)
 				double   transversalPinholeWidth;		///< Transversal width of the Pinhole
 
 				double   distancePinholeImagingPlane;		///< Distance between the Pinhole and the imaging plane
 				double   distanceTargetSurfImagingPlane;	///< Distance between the target upper surface and the imaging plane
 				double   zPinholePos;				///< z position of the Pinhole
+
+		       Geometry::Vec3D   pinholePos;				///< Vec3D to hold the absolute pinhole position
 
 	};
 

@@ -93,14 +93,13 @@ namespace essSystem {
 								cellIndex(A.cellIndex),
 								zImagingPlane(A.zImagingPlane),
 								radialPinholeOffset(A.radialPinholeOffset),
-								radialPinholePos(A.radialPinholePos),
 								radialPinholeWidth(A.radialPinholeWidth),
 								transversalPinholeOffset(A.transversalPinholeOffset),
-								transversalPinholePos(A.transversalPinholePos),
 								transversalPinholeWidth(A.transversalPinholeWidth),
 								distancePinholeImagingPlane(A.distancePinholeImagingPlane),
 								distanceTargetSurfImagingPlane(A.distanceTargetSurfImagingPlane),
-								zPinholePos(A.zPinholePos) {
+								zPinholePos(A.zPinholePos),
+								pinholePos(A.pinholePos) {
 		/*!
 			Copy constructor
 			\param A :: PinholeBase to copy
@@ -123,14 +122,13 @@ namespace essSystem {
 			cellIndex=A.cellIndex;
 			zImagingPlane=A.zImagingPlane;
 			radialPinholeOffset=A.radialPinholeOffset;
-			radialPinholePos=A.radialPinholePos;
 			radialPinholeWidth=A.radialPinholeWidth;
 			transversalPinholeOffset=A.transversalPinholeOffset;
-			transversalPinholePos=A.transversalPinholePos;
 			transversalPinholeWidth=A.transversalPinholeWidth;
 			distancePinholeImagingPlane=A.distancePinholeImagingPlane;
 			distanceTargetSurfImagingPlane=A.distanceTargetSurfImagingPlane;
 			zPinholePos=A.zPinholePos;
+			pinholePos=A.pinholePos;
 		}
 
 		return *this;
@@ -173,11 +171,13 @@ namespace essSystem {
 
 	}
 
-	void PinholeBase::setTargetTopSurfaceZ(double z) {
+	void PinholeBase::setBoundarySurfacesZ(double fZ, double rZ, double tZ) {
 
 		ELog::RegMethod RegA("PinholeBase","setTargetTopSurf");
 
-		targetTopSurfZ = z;
+		floorSurfaceZ = fZ;
+		roofSurfaceZ = rZ;
+		targetTopSurfZ = tZ;
 
 	}
 
@@ -185,8 +185,8 @@ namespace essSystem {
 
 		ELog::RegMethod RegA("PinholeBase","populateBase");
 
-		distanceTargetSurfImagingPlane = Control.EvalVar<double>(keyName+"DistanceTargetSurfImagingPlane");
 		distancePinholeImagingPlane    = Control.EvalVar<double>(keyName+"DistancePinholeImagingPlane");
+		distanceTargetSurfImagingPlane = Control.EvalVar<double>(keyName+"DistanceTargetSurfImagingPlane");
 
 		radialPinholeOffset            = Control.EvalVar<double>(keyName+"RadialPinholeOffset");
 		radialPinholeWidth             = Control.EvalVar<double>(keyName+"RadialPinholeWidth");
@@ -194,7 +194,65 @@ namespace essSystem {
 		transversalPinholeOffset       = Control.EvalVar<double>(keyName+"TransversalPinholeOffset");
 		transversalPinholeWidth        = Control.EvalVar<double>(keyName+"TransversalPinholeWidth");
 
-		//throw ColErr::RangeError<double>(theta, 0, 360, "Theta must be set in range 0-360 deg");
+		zImagingPlane = distanceTargetSurfImagingPlane + targetTopSurfZ;
+
+		if ( (zImagingPlane <= floorSurfaceZ) || (zImagingPlane >= roofSurfaceZ) ) { 
+
+			throw ColErr::RangeError<double>(distanceTargetSurfImagingPlane, (floorSurfaceZ - targetTopSurfZ), (roofSurfaceZ - targetTopSurfZ), "DistanceTargetSurfImagingPlane must be set within the diagnostic plug hole.");
+
+		}
+
+		heightImagingSystem = zImagingPlane - floorSurfaceZ;
+
+		if ( (distancePinholeImagingPlane <= 0) || (distancePinholeImagingPlane >= heightImagingSystem) ) {
+
+			throw ColErr::RangeError<double>(distancePinholeImagingPlane, 0.0, heightImagingSystem, "DistancePinholeImagingPlane must be larger than 0 and must be be within the allowed gap in the diagnostic plug.");
+
+		}
+
+		zPinholePos = zImagingPlane - distancePinholeImagingPlane;
+
+		if ( fabs(radialPinholeOffset) >= (length/2.0) ) {
+
+			throw ColErr::RangeError<double>(radialPinholeOffset, -1.0*(length/2.0), (length/2.0), "The radial offset must not exceed the diagnostic plug radial borders.");
+
+		}
+
+		if ( (radialPinholeWidth <= 0.0) || (radialPinholeWidth >= length) ) {
+
+			throw ColErr::RangeError<double>(radialPinholeWidth, 0.0, length, "The radial size of the pinhole must be larger than 0 and must not exceed the radial dimension of the diagnostic plug.");
+
+		}
+
+		double overallSize = (radialPinholeWidth/2.0) + fabs(radialPinholeOffset);
+
+		if ( overallSize >= (length/2.0) ) {
+
+			throw ColErr::RangeError<double>(overallSize, 0.0, (length/2.0), "Pinhole radial size and the relative offset must not exceed the diagnostic plug size.");
+
+		}
+
+		if ( fabs(transversalPinholeOffset) >= (width/2.0) ) {
+
+			throw ColErr::RangeError<double>(transversalPinholeOffset, -1.0*(width/2.0), (width/2.0), "The transversal offset must not exceed the diagnostic plug transversal borders.");
+
+		}
+
+		if ( (transversalPinholeWidth <= 0.0) || (transversalPinholeWidth >= width) ) {
+
+			throw ColErr::RangeError<double>(transversalPinholeWidth, 0.0, width, "The transversal size of the pinhole must be larger than 0 and must not exceed the transversal dimension of the diagnostic plug.");
+
+		}
+
+		overallSize = (transversalPinholeWidth/2.0) + fabs(transversalPinholeOffset);
+
+		if ( overallSize >= (width/2.0) ) {
+
+			throw ColErr::RangeError<double>(overallSize, 0.0, (width/2.0), "Pinhole transversal size and the relative offset must not exceed the diagnostic plug size.");
+
+		}
+
+		pinholePos = Origin + X*transversalPinholeOffset + Y*radialPinholeOffset + Z*zPinholePos;
 
 	}
 
