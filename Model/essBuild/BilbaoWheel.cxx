@@ -643,13 +643,13 @@ BilbaoWheel::createLinks()
 	  FixedComp::setConnect(9, Origin+Y*radius[i], -Y);
 	  FixedComp::setLinkSurf(9, -SMap.realSurf(SI+17));
 
+	  FixedComp::setConnect(10, Origin+Z*targetZTopSurface, Z);
+	  FixedComp::setLinkSurf(10, SMap.realSurf(wheelIndex+126));
+
 	  return; // !!! we assume that there is only one Tungsten layer
 	}
       SI+=10;
     }
-
-  FixedComp::setConnect(10, Origin+Z*targetZTopSurface, Z);
-  FixedComp::setLinkSurf(10, SMap.realSurf(wheelIndex+126));
 
   return;
 }

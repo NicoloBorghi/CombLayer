@@ -73,7 +73,7 @@ namespace essSystem
 {
 
 WheelBase::WheelBase(const std::string& Key) :
-  attachSystem::ContainedGroup("Wheel","Shaft"),attachSystem::FixedComp(Key,10), // !!! SA: WheelBase needs only 6 link points, other 4 are used by BilbaoWheel. Including these 4 here looks ugly, so I need your advice.
+  attachSystem::ContainedGroup("Wheel","Shaft"),attachSystem::FixedComp(Key,11), // !!! SA: WheelBase needs only 6 link points, other 4 are used by BilbaoWheel. Including these 4 here looks ugly, so I need your advice.
   wheelIndex(ModelSupport::objectRegister::Instance().cell(Key)),
   cellIndex(wheelIndex+1)
   /*!
