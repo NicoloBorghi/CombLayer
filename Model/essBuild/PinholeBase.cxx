@@ -185,7 +185,6 @@ namespace essSystem {
 
 		ELog::RegMethod RegA("PinholeBase","populateBase");
 
-		std::cout << "================================================================================================================INIZIO================================================================================================================" << std::endl;
 
 		distancePinholeImagingPlane    = Control.EvalVar<double>(keyName+"DistancePinholeImagingPlane");
 		distanceTargetSurfImagingPlane = Control.EvalVar<double>(keyName+"DistanceTargetSurfImagingPlane");
@@ -225,8 +224,6 @@ namespace essSystem {
 		}
 
 		pinholePos = Origin + X*transversalPinholeOffset + Y*radialPinholeOffset + Z*zPinholePos;
-
-		std::cout << "================================================================================================================FINE================================================================================================================" << std::endl;
 
 	}
 

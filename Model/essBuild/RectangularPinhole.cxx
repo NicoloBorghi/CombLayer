@@ -147,8 +147,6 @@ namespace essSystem {
 
 		populateBase(Control);
 
-		std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++INIZIO++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-
 		radialPinholeWidth      = Control.EvalVar<double>(keyName+"RadialPinholeWidth");
 		transversalPinholeWidth = Control.EvalVar<double>(keyName+"TransversalPinholeWidth");
 
@@ -180,8 +178,6 @@ namespace essSystem {
 
 		}
 
-		std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++FINE++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-
 	}
 
 	void RectangularPinhole::createUnitVector(const attachSystem::FixedComp& FC) {
@@ -193,8 +189,8 @@ namespace essSystem {
 
 		ELog::RegMethod RegA("RectangularPinhole","createUnitVector");
 		attachSystem::FixedComp::createUnitVector(FC);
-		//applyShift(xStep,yStep,zStep);
-		//applyAngleRotate(xyAngle,zAngle);
+		applyShift(xStep,yStep,zStep);
+		applyAngleRotate(xyAngle,zAngle);
 
 		return;
 
@@ -245,6 +241,10 @@ namespace essSystem {
 		*/
 
 		ELog::RegMethod RegA("RectangularPinhole","createAll");
+
+		//std::cout << "Ciaooo" << (SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0)))->getDistance() << std::endl;
+
+		std::cout << "Ciaooo" << FC.getLinkSurf(0) << std::endl;
 
 	}
 

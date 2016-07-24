@@ -265,6 +265,21 @@ DiagnosticPlug::createLinks()
     Links/directions going outwards true.
   */
 {
+
+  ELog::RegMethod RegA("DIagnosticPlug","createLinks");
+
+  FixedComp::setConnect(0,Origin-Y*length/2.0,Y);
+  FixedComp::setLinkSurf(0,SMap.realSurf(tIndex+1));
+
+  FixedComp::setConnect(1,Origin+Y*length/2.0,-Y);
+  FixedComp::setLinkSurf(1,SMap.realSurf(tIndex+2));
+
+  FixedComp::setConnect(2,Origin-X*width/2.0,X);
+  FixedComp::setLinkSurf(2,SMap.realSurf(tIndex+3));
+
+  FixedComp::setConnect(3,Origin-X*width/2.0,-X);
+  FixedComp::setLinkSurf(3,SMap.realSurf(tIndex+4));
+
   return;
 }
 
@@ -298,6 +313,7 @@ DiagnosticPlug::createAll(Simulation& System,
   createSurfaces();
   createObjects(System, floorFC, floorLP, roofFC, roofLP);
   createLinks();
+  Pinhole->createAll(System, *this);
   insertObjects(System);       
 
   return;
