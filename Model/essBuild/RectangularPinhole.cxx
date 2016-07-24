@@ -143,8 +143,6 @@ namespace essSystem {
 
 		ELog::RegMethod RegA("RectangularPinhole","populate");
 
-		std::cout << keyName << std::endl;
-
 		populateBase(Control);
 
 		radialPinholeWidth      = Control.EvalVar<double>(keyName+"RadialPinholeWidth");
@@ -188,9 +186,9 @@ namespace essSystem {
 		*/
 
 		ELog::RegMethod RegA("RectangularPinhole","createUnitVector");
-		attachSystem::FixedComp::createUnitVector(FC);
-		applyShift(xStep,yStep,zStep);
-		applyAngleRotate(xyAngle,zAngle);
+		attachSystem::FixedComp::createUnitVector(FC); // The UnitVector is created with respect to FC, which is relative to the DiagnosticPlug, so it shouldn't be necessary to apply any shift or rotations.
+		//applyShift(xStep,yStep,zStep);
+		//applyAngleRotate(xyAngle,zAngle);
 
 		return;
 
@@ -242,9 +240,18 @@ namespace essSystem {
 
 		ELog::RegMethod RegA("RectangularPinhole","createAll");
 
-		//std::cout << "Ciaooo" << (SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0)))->getDistance() << std::endl;
+		populate(System.getDataBase());
 
-		std::cout << "Ciaooo" << FC.getLinkSurf(0) << std::endl;
+		//std::cout << "Ciaooo" << (SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0)))->getDistance() << std::endl;
+		//std::cout << "Ciaooo" << FC.getLinkSurf(0) << std::endl;
+
+		createUnitVector(FC);
+		createSurfaces();
+		createObjects(System);
+		createLinks();
+		//insertObjects(System);       
+
+  return;
 
 	}
 
