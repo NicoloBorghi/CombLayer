@@ -75,8 +75,8 @@ namespace setVariable {
 		/* +->*/Control.addVariable("RectangularPinholeDistanceTargetSurfImagingPlane",200.0);
 		/* |  */
 		/* |  */
-		/* +->*/Control.addVariable("RectangularPinholeRadialPinholeWidth",1.0);
-		/* +->*/Control.addVariable("RectangularPinholeTransversalPinholeWidth",1.0);
+		/* +->*/Control.addVariable("RectangularPinholeRadialPinholeWidth",0.02);
+		/* +->*/Control.addVariable("RectangularPinholeTransversalPinholeWidth",0.02);
 		/* |  */
 		/* |  */
 //		/* |  */	/* --- NOT IMPLEMENTED YET --- */
