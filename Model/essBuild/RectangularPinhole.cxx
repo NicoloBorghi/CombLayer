@@ -212,6 +212,8 @@ namespace essSystem {
 		// Calculate the absoulte pinhole position
 		pinholePos = Origin + X*transversalPinholeOffset + Y*radialPinholeOffset + Z*zPinholePos;
 
+		ELog::EM << "=== PINHOLE CENTER COORDINATES === X: " << pinholePos.X() << " - Y: " << pinholePos.Y() << " - Z: " << pinholePos.Z() << ELog::endDiag;
+
 		// Imaging plane
 		ModelSupport::buildPlane(SMap,pinholeIndex+5,Origin+Z*zImagingPlane,Z);
 
