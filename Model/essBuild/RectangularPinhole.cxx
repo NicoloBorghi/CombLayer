@@ -614,16 +614,16 @@ namespace essSystem {
 		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
 
 		Out=ModelSupport::getComposite(SMap,pinholeIndex," -7 8 9 -19") + strBackWall;
-		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 7401, 300.0, Out));
 
 		Out=ModelSupport::getComposite(SMap,pinholeIndex," -17 18 29 -39") + strFrontWall;
-		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 7401, 300.0, Out));
 
 		Out=ModelSupport::getComposite(SMap,pinholeIndex," -27 28 -9 -29") + strLeftWall;
-		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 7401, 300.0, Out));
 
 		Out=ModelSupport::getComposite(SMap,pinholeIndex," -37 38 19 39") + strRightWall;
-		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 7401, 300.0, Out));
 
 		Out=ModelSupport::getComposite(SMap,pinholeIndex," -5 (7:-8:-9:19) (17:-18:-29:39) (27:-28:9:29) (37:-38:-19:-39)")  + strFloor;
 		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
