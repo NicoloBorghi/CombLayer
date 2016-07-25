@@ -84,6 +84,7 @@ namespace essSystem {
 			Constructor
 			\param Key :: Name of construction key
 		*/
+
 	}
 
 	PinholeBase::PinholeBase(const PinholeBase& A)    :	attachSystem::ContainedComp(A),
@@ -104,6 +105,7 @@ namespace essSystem {
 			Copy constructor
 			\param A :: PinholeBase to copy
 		*/
+
 	}
 
 	PinholeBase& PinholeBase::operator=(const PinholeBase& A) {
@@ -132,6 +134,7 @@ namespace essSystem {
 		}
 
 		return *this;
+
 	}
   
 	PinholeBase::~PinholeBase() {
@@ -150,6 +153,8 @@ namespace essSystem {
 		yStep = yS;
 		zStep = zS;
 
+		return;
+
 	}
 
 	void PinholeBase::setAngles(double xyA, double zA) {
@@ -158,6 +163,8 @@ namespace essSystem {
 
 		xyAngle = xyA;
 		zAngle = zA;
+
+		return;
 
 	}
 
@@ -169,6 +176,8 @@ namespace essSystem {
 		width = w;
 		height = h;
 
+		return;
+
 	}
 
 	void PinholeBase::setBoundarySurfacesZ(double fZ, double rZ, double tZ) {
@@ -178,6 +187,8 @@ namespace essSystem {
 		floorSurfaceZ = fZ;
 		roofSurfaceZ = rZ;
 		targetTopSurfZ = tZ;
+
+		return;
 
 	}
 
@@ -197,7 +208,10 @@ namespace essSystem {
 
 		if ( (zImagingPlane <= floorSurfaceZ) || (zImagingPlane >= roofSurfaceZ) ) { 
 
-			throw ColErr::RangeError<double>(distanceTargetSurfImagingPlane, (floorSurfaceZ - targetTopSurfZ), (roofSurfaceZ - targetTopSurfZ), "DistanceTargetSurfImagingPlane must be set within the diagnostic plug hole.");
+			throw ColErr::RangeError<double>(distanceTargetSurfImagingPlane, 
+							(floorSurfaceZ - targetTopSurfZ),
+							(roofSurfaceZ - targetTopSurfZ),
+							"DistanceTargetSurfImagingPlane must be set within the diagnostic plug hole.");
 
 		}
 
@@ -205,7 +219,10 @@ namespace essSystem {
 
 		if ( (distancePinholeImagingPlane <= 0) || (distancePinholeImagingPlane >= heightImagingSystem) ) {
 
-			throw ColErr::RangeError<double>(distancePinholeImagingPlane, 0.0, heightImagingSystem, "DistancePinholeImagingPlane must be larger than 0 and must be be within the allowed gap in the diagnostic plug.");
+			throw ColErr::RangeError<double>(distancePinholeImagingPlane,
+							0.0,
+							heightImagingSystem,
+							"DistancePinholeImagingPlane must be larger than 0 and must be be within the allowed gap in the diagnostic plug.");
 
 		}
 
@@ -213,91 +230,24 @@ namespace essSystem {
 
 		if ( fabs(radialPinholeOffset) >= (length/2.0) ) {
 
-			throw ColErr::RangeError<double>(radialPinholeOffset, -1.0*(length/2.0), (length/2.0), "The radial offset must not exceed the diagnostic plug radial borders.");
+			throw ColErr::RangeError<double>(radialPinholeOffset,
+							-1.0*(length/2.0),
+							(length/2.0),
+							"The radial offset must not exceed the diagnostic plug radial borders.");
 
 		}
 
 		if ( fabs(transversalPinholeOffset) >= (width/2.0) ) {
 
-			throw ColErr::RangeError<double>(transversalPinholeOffset, -1.0*(width/2.0), (width/2.0), "The transversal offset must not exceed the diagnostic plug transversal borders.");
+			throw ColErr::RangeError<double>(transversalPinholeOffset,
+							-1.0*(width/2.0),
+							(width/2.0),
+							"The transversal offset must not exceed the diagnostic plug transversal borders.");
 
 		}
 
-		pinholePos = Origin + X*transversalPinholeOffset + Y*radialPinholeOffset + Z*zPinholePos;
+		return;
 
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-  /////////////////////////////////////////////////////////////////////////////
-
-  PHType = "rect"; // Control.EvalVar<double>(keyName+"PHType"); // For now we only build a rectangular pinhole
-
-  zImagingPlane = Control.EvalVar<double>(keyName+"ZImagingPlane") + 5.80;
-
-  /////////////////////////////////////////////////////////////////////////////
-
-  radialPHOffset = -1.0*Control.EvalVar<double>(keyName+"RadialPHOffset");
-
-  if (fabs(radialPHOffset) >= (length/2.0)) {
-
-    ELog::EM << "Radial Offset out of range. Setting to 0" << ELog::endErr;
-    radialPHOffset = 0.0;
-
-  }
-
-  transversalPHOffset = -1.0*Control.EvalVar<double>(keyName+"TransversalPHOffset");
-  //transversalPHOffset = -1.0*Control.EvalDefVar<double>(keyName+"TransversalPHOffset",0);
-
-  if (fabs(transversalPHOffset) >= (width/2.0)) {
-
-    ELog::EM << "Transversal Offset out of range. Setting to 0" << ELog::endDiag;
-    transversalPHOffset = 0.0;
-
-  }
-
-  radialPHPos      = radialPHOffset*sin(90.0 + xyAngle) + transversalPHOffset*cos(90.0 + xyAngle);
-  transversalPHPos = radialPHOffset*cos(90.0 + xyAngle) + transversalPHOffset*sin(90.0 + xyAngle);
-
-  radialPHWidth = Control.EvalVar<double>(keyName+"RadialPHWidth");
-  transversalPHWidth = Control.EvalVar<double>(keyName+"TransversalPHWidth");
-
-  /////////////////////////////////////////////////////////////////////////////
-
-  const Geometry::Plane *floorPlane = SMap.realPtr<Geometry::Plane>(DPfloorSurfaceNumber);
-
-  height = zImagingPlane - floorPlane->getDistance();
-
-  zDistanceFromImage = Control.EvalVar<double>(keyName+"ZDistanceFromImage");
-
-  if (fabs(zDistanceFromImage) > height) {
-
-    ELog::EM << "Pinhole distance from imaging plane out of range. Setting to half height" << ELog::endDiag;
-    zDistanceFromImage = zImagingPlane/2.0;
-
-  }
-
-  zPHPos = zImagingPlane - zDistanceFromImage;
-
-  ELog::EM << "X:" << transversalPHPos << " - Y: " << radialPHPos << " - Z: " << zPHPos << ELog::endDiag;
-  ELog::EM << "xStep:" << xStep << " - yStep: " << yStep << " - zStep: " << zStep << ELog::endDiag;
-
-
-
-*/

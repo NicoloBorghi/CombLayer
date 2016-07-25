@@ -251,6 +251,7 @@ DiagnosticPlug::createObjects(Simulation& System,
 
   Out=ModelSupport::getComposite(SMap,tIndex," 1 -2 3 -4") + strFloor + strRoof; 
   System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+  setCell("main",cellIndex-1);
 
   addOuterSurf(Out);
 
@@ -312,7 +313,7 @@ DiagnosticPlug::createAll(Simulation& System,
   createSurfaces();
   createObjects(System, floorFC, floorLP, roofFC, roofLP);
   createLinks();
-  Pinhole->createAll(System, *this);
+  Pinhole->createAll(System, *this, floorFC, floorLP, roofFC, roofLP);
   insertObjects(System);       
 
   return;

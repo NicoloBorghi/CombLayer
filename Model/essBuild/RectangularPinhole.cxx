@@ -75,6 +75,7 @@
 #include "CellMap.h"
 #include "PinholeBase.h"
 #include "RectangularPinhole.h"
+#include "SurInter.h"
 
 
 namespace essSystem {
@@ -176,6 +177,8 @@ namespace essSystem {
 
 		}
 
+		return;
+
 	}
 
 	void RectangularPinhole::createUnitVector(const attachSystem::FixedComp& FC) {
@@ -194,25 +197,388 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createSurfaces() {
+	void RectangularPinhole::createSurfaces(const attachSystem::FixedComp& FC,
+						const attachSystem::FixedComp& floorFC,
+						const size_t floorLP,
+						const attachSystem::FixedComp& roofFC,
+						const size_t roofLP) {
 
 		/*!
 			Create the collimator surfaces
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createSrfaces");
+		ELog::RegMethod RegA("RectangularPinhole","createSurfaces");
+
+		// Calculate the absoulte pinhole position
+		pinholePos = Origin + X*transversalPinholeOffset + Y*radialPinholeOffset + Z*zPinholePos;
+
+		// Imaging plane
+		ModelSupport::buildPlane(SMap,pinholeIndex+5,Origin+Z*zImagingPlane,Z);
+
+		createRadialSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
+		createTransversalSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
+		createSideSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
 
 		return;
 
 	}
 
-	void RectangularPinhole::createObjects(Simulation&) {
+	void RectangularPinhole::createRadialSurfaces(const attachSystem::FixedComp& FC,
+						      const attachSystem::FixedComp& floorFC,
+						      const size_t floorLP,
+						      const attachSystem::FixedComp& roofFC,
+						      const size_t roofLP) {
+
+		/*!
+			Create the collimator surfaces
+		*/
+
+		ELog::RegMethod RegA("RectangularPinhole","createRadialSurfaces");
+
+		// Get three points for the first PH collimator face
+
+		const Geometry::Plane *pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		const Geometry::Plane *pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		const Geometry::Plane *pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		Geometry::Vec3D p3 = pinholePos - Y*fabs(radialPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+7,p1,p2,p3,(p3-p1)*(p3-p2));
+  
+		////////////////////////////////////////////////////
+
+		// Get three points for the second PH collimator face
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		p3 = pinholePos - Y*fabs(radialPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+8,p1,p2,p3,(p3-p1)*(p3-p2));
+  
+		////////////////////////////////////////////////////
+
+		// Get three points for the third PH collimator face
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		p3 = pinholePos + Y*fabs(radialPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+17,p1,p2,p3,(p3-p2)*(p3-p1));
+  
+		////////////////////////////////////////////////////
+
+		// Get three points for the fourth PH collimator face
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		p3 = pinholePos + Y*fabs(radialPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+18,p1,p2,p3,(p3-p2)*(p3-p1));
+
+		////////////////////////////////////////////////////
+
+		return;
+
+	}
+
+	void RectangularPinhole::createTransversalSurfaces(const attachSystem::FixedComp& FC,
+							   const attachSystem::FixedComp& floorFC,
+							   const size_t floorLP,
+							   const attachSystem::FixedComp& roofFC,
+							   const size_t roofLP) {
+
+		/*!
+			Create the collimator surfaces
+		*/
+
+		ELog::RegMethod RegA("RectangularPinhole","createTransversalSurfaces");
+
+		// Get three points for the first PH collimator face
+
+		const Geometry::Plane *pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		const Geometry::Plane *pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		const Geometry::Plane *pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		Geometry::Vec3D p3 = pinholePos - X*fabs(transversalPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+27,p1,p2,p3,(p3-p2)*(p3-p1));
+  
+		////////////////////////////////////////////////////
+
+		// Get three points for the second PH collimator face
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		p3 = pinholePos - X*fabs(transversalPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+28,p1,p2,p3,(p3-p2)*(p3-p1));
+  
+		////////////////////////////////////////////////////
+
+		// Get three points for the third PH collimator face
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		p3 = pinholePos + X*fabs(transversalPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+37,p1,p2,p3,(p3-p1)*(p3-p2));
+  
+		////////////////////////////////////////////////////
+
+		// Get three points for the fourth PH collimator face
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		p3 = pinholePos + X*fabs(transversalPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+38,p1,p2,p3,(p3-p1)*(p3-p2));
+  
+		////////////////////////////////////////////////////
+
+		return;
+
+	}
+
+	void RectangularPinhole::createSideSurfaces(const attachSystem::FixedComp& FC,
+						    const attachSystem::FixedComp& floorFC,
+						    const size_t floorLP,
+						    const attachSystem::FixedComp& roofFC,
+						    const size_t roofLP) {
+
+		/*!
+			Create the collimator surfaces
+		*/
+
+		ELog::RegMethod RegA("RectangularPinhole","createSideSurfaces");
+
+		// Get three points for the first PH collimator face
+
+		const Geometry::Plane *pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		const Geometry::Plane *pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		const Geometry::Plane *pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		Geometry::Vec3D p3 = pinholePos - X*fabs(transversalPinholeWidth/2.0) - Y*fabs(radialPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+9,p1,p2,p3,(p3-p1)*(p3-p2));
+  
+		////////////////////////////////////////////////////
+
+		// Get three points for the second PH collimator face
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
+
+		p1 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+
+		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
+		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
+
+		p2 = SurInter::getPoint(pl1,pl2,pl3);
+
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+
+		p3 = pinholePos + X*fabs(transversalPinholeWidth/2.0) - Y*fabs(radialPinholeWidth/2.0);
+
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+
+		ModelSupport::buildPlane(SMap,pinholeIndex+19,p1,p2,p3,(p3-p2)*(p3-p1));
+  
+		////////////////////////////////////////////////////
+
+		return;
+
+	}
+
+	void RectangularPinhole::createObjects( Simulation& System,
+						attachSystem::FixedComp& FC,
+						const attachSystem::FixedComp& floorFC,
+						const size_t floorLP,
+						const attachSystem::FixedComp& roofFC,
+						const size_t roofLP) {
 
 		/*!
 			Create the objects for the collimator
 		*/
 
 		ELog::RegMethod RegA("RectangularPinhole","createObjects");
+
+		std::string strFloor = floorFC.getLinkString(floorLP);
+		std::string strRoof  = roofFC.getLinkComplement(roofLP);
+		std::string strBackWall = FC.getLinkString(0);
+		std::string strFrontWall = FC.getLinkComplement(1);
+		std::string strLeftWall = FC.getLinkString(2);
+		std::string strRightWall = FC.getLinkComplement(3);
+
+
+		attachSystem::CellMap* CM = dynamic_cast<attachSystem::CellMap*>(&FC);
+		CM->deleteCellWithData(System, "main");
+
+		
+		std::string Out=ModelSupport::getComposite(SMap,pinholeIndex," 5") + strRoof + strBackWall + strFrontWall + strLeftWall + strRightWall; 
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+		Out=ModelSupport::getComposite(SMap,pinholeIndex," -7 8 9 -19") + strBackWall;
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+		//Out=ModelSupport::getComposite(SMap,pinholeIndex," -17 18") + strFrontWall + strLeftWall + strRightWall;
+		//System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+		Out=ModelSupport::getComposite(SMap,pinholeIndex," -5 (7:-8:-9:19)") + strFrontWall + strLeftWall + strRightWall + strFloor + strRoof;
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+		/*Out=ModelSupport::getComposite(SMap,pinholeIndex," -27 28") + strLeftWall + strBackWall + strFrontWall;
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+		Out=ModelSupport::getComposite(SMap,pinholeIndex," -37 38") + strRightWall + strBackWall + strFrontWall;
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+		Out=ModelSupport::getComposite(SMap,pinholeIndex," -5 (27:-28) (37:-38)") + strBackWall + strFrontWall + strFloor + strRoof;
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));*/
+
+		Out = strFloor + strRoof + strBackWall + strFrontWall + strLeftWall + strRightWall; 
+		addOuterSurf(Out);
 
 		return;
 
@@ -230,7 +596,12 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createAll(Simulation& System, const attachSystem::FixedComp& FC) {
+	void RectangularPinhole::createAll(Simulation& System,
+					   attachSystem::FixedComp& FC,
+					   const attachSystem::FixedComp& floorFC,
+					   const size_t floorLP,
+					   const attachSystem::FixedComp& roofFC,
+					   const size_t roofLP) {
 
 		/*|
 			External build everything
@@ -242,187 +613,14 @@ namespace essSystem {
 
 		populate(System.getDataBase());
 
-		//std::cout << "Ciaooo" << (SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0)))->getDistance() << std::endl;
-		//std::cout << "Ciaooo" << FC.getLinkSurf(0) << std::endl;
-
 		createUnitVector(FC);
-		createSurfaces();
-		createObjects(System);
+		createSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
+		createObjects(System,FC,floorFC,floorLP,roofFC,roofLP);
 		createLinks();
 		//insertObjects(System);       
 
-  return;
+		return;
 
 	}
 
-
-
-
-
-
-
-
 }
-/*
-
-  // Get three points for the first PH collimator face
-
-  const Geometry::Plane *pl1 = SMap.realPtr<Geometry::Plane>(tIndex+1);
-  const Geometry::Plane *pl2 = SMap.realPtr<Geometry::Plane>(tIndex+3);
-  const Geometry::Plane *pl3 = SMap.realPtr<Geometry::Plane>(tIndex+5);
-
-  Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
-
-  ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
-
-  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+1);
-  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+4);
-  pl3 = SMap.realPtr<Geometry::Plane>(tIndex+5);
-
-  Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
-
-  ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
-
-  Geometry::Vec3D p3( xStep + transversalPHPos + fabs((radialPHWidth/2.0)*cos(90.0 + xyAngle)),
-                      yStep + radialPHPos      - fabs((radialPHWidth/2.0)*sin(90.0 + xyAngle)),
-                      zStep + zPHPos);
-
-  ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
-
-  Geometry::Vec3D norm(cos(90.0 + xyAngle),sin(90.0 + xyAngle),cos(atan(zDistanceFromImage/((length-radialPHWidth)/2.0))));
-
-  ELog::EM << "CROSS PRODUCT ==> X: " << norm.X() << " - Y: " << norm.Y() << " - Z: " << norm.Z() << ELog::endDiag;
-
-  Geometry::Vec3D A(p3.X() - p1.X(), p3.Y() - p1.Y(), p3.Z() - p1.Z());
-  Geometry::Vec3D B(p3.X() - p2.X(), p3.Y() - p2.Y(), p3.Z() - p2.Z());
-  //ELog::EM << "CROSS PRODUCT ==> X: " << calculateNorm(A/A.abs(),B/B.abs()).X() << " - Y: " << calculateNorm(A/A.abs(),B/B.abs()).Y() << " - Z: " << calculateNorm(A/A.abs(),B/B.abs()).Z() << ELog::endDiag;
-
-  ModelSupport::buildPlane(SMap,tIndex+7,p1,p2,p3,norm);
-  
-  ////////////////////////////////////////////////////
-
-  // Get three points for the second PH collimator face
-
-  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+1);
-  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+3);
-  pl3 = SMap.realPtr<Geometry::Plane>(DPfloorSurfaceNumber);
-
-  p1 = SurInter::getPoint(pl1,pl2,pl3);
-
-  ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
-
-  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+1);
-  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+4);
-  pl3 = SMap.realPtr<Geometry::Plane>(DPfloorSurfaceNumber);
-
-  p2 = SurInter::getPoint(pl1,pl2,pl3);
-
-  ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
-
-  p3( xStep + transversalPHPos + fabs((radialPHWidth/2.0)*cos(90.0 + xyAngle)),
-      yStep + radialPHPos      - fabs((radialPHWidth/2.0)*sin(90.0 + xyAngle)),
-      zStep + zPHPos);
-
-  ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
-
-  norm(-sin(xyAngle),cos(xyAngle),cos(atan((height-zDistanceFromImage)/((length-radialPHWidth)/2.0))));
-
-  ModelSupport::buildPlane(SMap,tIndex+8,p1,p2,p3,norm);
-  
-  ////////////////////////////////////////////////////
-
-  // Get three points for the third PH collimator face
-
-  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+2);
-  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+3);
-  pl3 = SMap.realPtr<Geometry::Plane>(tIndex+5);
-
-  p1 = SurInter::getPoint(pl1,pl2,pl3);
-
-  ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
-
-  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+2);
-  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+4);
-  pl3 = SMap.realPtr<Geometry::Plane>(tIndex+5);
-
-  p2 = SurInter::getPoint(pl1,pl2,pl3);
-
-  ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
-
-  p3( xStep + transversalPHPos - fabs((radialPHWidth/2.0)*cos(90.0 + xyAngle)),
-      yStep + radialPHPos      + fabs((radialPHWidth/2.0)*sin(90.0 + xyAngle)),
-      zStep + zPHPos);
-
-  ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
-
-  norm(-sin(xyAngle),cos(xyAngle),-cos(atan(zDistanceFromImage/((length+radialPHWidth)/2.0))));
-
-  ModelSupport::buildPlane(SMap,tIndex+17,p1,p2,p3,norm);
-  
-  ////////////////////////////////////////////////////
-
-  // Get three points for the fourth PH collimator face
-
-  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+2);
-  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+3);
-  pl3 = SMap.realPtr<Geometry::Plane>(DPfloorSurfaceNumber);
-
-  p1 = SurInter::getPoint(pl1,pl2,pl3);
-
-  ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
-
-  pl1 = SMap.realPtr<Geometry::Plane>(tIndex+2);
-  pl2 = SMap.realPtr<Geometry::Plane>(tIndex+4);
-  pl3 = SMap.realPtr<Geometry::Plane>(DPfloorSurfaceNumber);
-
-  p2 = SurInter::getPoint(pl1,pl2,pl3);
-
-  ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
-
-  p3( xStep + transversalPHPos - fabs((radialPHWidth/2.0)*cos(90.0 + xyAngle)),
-      yStep + radialPHPos      + fabs((radialPHWidth/2.0)*sin(90.0 + xyAngle)),
-      zStep + zPHPos);
-
-  ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
-
-  norm(-sin(xyAngle),cos(xyAngle),-cos(atan((height-zDistanceFromImage)/((length+radialPHWidth)/2.0))));
-
-  ModelSupport::buildPlane(SMap,tIndex+18,p1,p2,p3,norm);
-  
-  ////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  Out=ModelSupport::getComposite(SMap,tIndex," 1 3 -4 -5 7 8") + strFloor;
-  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
-
-  Out=ModelSupport::getComposite(SMap,tIndex," -2 3 -4 -5 -17 -18") + strFloor;
-  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
-
-  Out=ModelSupport::getComposite(SMap,tIndex," -2 3 -4 -5 (-7:-8) (17:18)") + strFloor;
-  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
-
-
-
-*/

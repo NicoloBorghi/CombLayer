@@ -50,46 +50,46 @@
 #include "FuncDataBase.h"
 #include "variableSetup.h"
 
-namespace setVariable
-{
+namespace setVariable {
 
-void
-EssDiagnosticPlug(FuncDataBase& Control)
-  /*!
-    Variables that are used for the segmented wheel
-    \param Control :: Segment variables
-   */
-{
-  // Diagnostic plug
-  Control.addVariable("DiagnosticPlugXStep",-18.0);
-  Control.addVariable("DiagnosticPlugYStep",217.4);
-  Control.addVariable("DiagnosticPlugZStep",0.0);
-  Control.addVariable("DiagnosticPlugXYangle",10.0);
-  Control.addVariable("DiagnosticPlugZangle",0.0);
-  Control.addVariable("DiagnosticPlugWidth",5.0);
-  Control.addVariable("DiagnosticPlugLength",40.0);
+	void EssDiagnosticPlug(FuncDataBase& Control) {
 
+		/*!
+			Variables that are used for the segmented wheel
+			\param Control :: Segment variables
+		*/
 
-  Control.addVariable("RectangularPinholeRadialPinholeOffset",0.0);
-  Control.addVariable("RectangularPinholeTransversalPinholeOffset",0.0);
-  Control.addVariable("RectangularPinholeDistancePinholeImagingPlane",100.0);
-  Control.addVariable("RectangularPinholeDistanceTargetSurfImagingPlane",200.0);
+		// Diagnostic plug
+		Control.addVariable("DiagnosticPlugXStep",-18.0);
+		Control.addVariable("DiagnosticPlugYStep",217.4);
+		Control.addVariable("DiagnosticPlugZStep",0.0);
+		Control.addVariable("DiagnosticPlugXYangle",10.0);
+		Control.addVariable("DiagnosticPlugZangle",0.0);
+		Control.addVariable("DiagnosticPlugWidth",5.0);
+		Control.addVariable("DiagnosticPlugLength",40.0);
+		/* |  */
+		/* |  */
+		/* +->*/Control.addVariable("RectangularPinholeRadialPinholeOffset",0.0);
+		/* +->*/Control.addVariable("RectangularPinholeTransversalPinholeOffset",0.0);
+		/* +->*/Control.addVariable("RectangularPinholeDistancePinholeImagingPlane",100.0);
+		/* +->*/Control.addVariable("RectangularPinholeDistanceTargetSurfImagingPlane",200.0);
+		/* |  */
+		/* |  */
+		/* +->*/Control.addVariable("RectangularPinholeRadialPinholeWidth",1.0);
+		/* +->*/Control.addVariable("RectangularPinholeTransversalPinholeWidth",1.0);
+		/* |  */
+		/* |  */
+//		/* |  */	/* --- NOT IMPLEMENTED YET --- */
+//		/* +->*/Control.addVariable("CircularPinholeRadialPinholeOffset",0.0);
+//		/* +->*/Control.addVariable("CircularPinholeTransversalPinholeOffset",0.0);
+//		/* +->*/Control.addVariable("CircularPinholeDistancePinholeImagingPlane",100.0);
+//		/* +->*/Control.addVariable("CircularPinholeDistanceTargetSurfImagingPlane",200.0);
+		/* |  */
+		/* |  */
+//		/* +->*/Control.addVariable("CircularPinholeRadius",1.0);
 
+		return;
 
-  Control.addVariable("RectangularPinholeRadialPinholeWidth",1.0);
-  Control.addVariable("RectangularPinholeTransversalPinholeWidth",4.9);
-
-/* --- NOT IMPLEMENTED YET ---
-  Control.addVariable("CircularPinholeRadialPinholeOffset",0.0);
-  Control.addVariable("CircularPinholeTransversalPinholeOffset",0.0);
-  Control.addVariable("CircularPinholeDistancePinholeImagingPlane",100.0);
-  Control.addVariable("CircularPinholeDistanceTargetSurfImagingPlane",200.0);
-
-
-  Control.addVariable("CircularPinholeRadius",1.0);
-*/
-
-  return;
-}
+	}
   
 }  // NAMESPACE setVariable
