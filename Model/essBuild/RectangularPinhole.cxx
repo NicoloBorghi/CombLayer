@@ -217,15 +217,15 @@ namespace essSystem {
 		// Imaging plane
 		ModelSupport::buildPlane(SMap,pinholeIndex+5,Origin+Z*zImagingPlane,Z);
 
-		createRadialSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
 		createTransversalSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
+		createRadialSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
 		createSideSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
 
 		return;
 
 	}
 
-	void RectangularPinhole::createRadialSurfaces(const attachSystem::FixedComp& FC,
+	void RectangularPinhole::createTransversalSurfaces(const attachSystem::FixedComp& FC,
 						      const attachSystem::FixedComp& floorFC,
 						      const size_t floorLP,
 						      const attachSystem::FixedComp& roofFC,
@@ -235,7 +235,7 @@ namespace essSystem {
 			Create the collimator surfaces
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createRadialSurfaces");
+		ELog::RegMethod RegA("RectangularPinhole","createTransversalSurfaces");
 
 		// Get three points for the first PH collimator face
 
@@ -345,7 +345,7 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createTransversalSurfaces(const attachSystem::FixedComp& FC,
+	void RectangularPinhole::createRadialSurfaces(const attachSystem::FixedComp& FC,
 							   const attachSystem::FixedComp& floorFC,
 							   const size_t floorLP,
 							   const attachSystem::FixedComp& roofFC,
@@ -355,7 +355,7 @@ namespace essSystem {
 			Create the collimator surfaces
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createTransversalSurfaces");
+		ELog::RegMethod RegA("RectangularPinhole","createRadialSurfaces");
 
 		// Get three points for the first PH collimator face
 

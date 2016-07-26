@@ -148,6 +148,7 @@ namespace essSystem {
 
 		radialPinholeWidth      = Control.EvalVar<double>(keyName+"RadialPinholeWidth");
 		transversalPinholeWidth = Control.EvalVar<double>(keyName+"TransversalPinholeWidth");
+		pinholeNumber           = Control.EvalVar<double>(keyName+"PinholeNumber");
 
 		if ( (radialPinholeWidth <= 0.0) || (radialPinholeWidth >= length) ) {
 
@@ -174,6 +175,12 @@ namespace essSystem {
 		if ( overallSize >= (width/2.0) ) {
 
 			throw ColErr::RangeError<double>(overallSize, 0.0, (width/2.0), "Pinhole transversal size and the relative offset must not exceed the diagnostic plug size.");
+
+		}
+
+		if ( pinholeNumber <= 0) {
+
+			throw ColErr::InContainerError<int>(pinholeNumber,"There must be at least one pinhole (not 0 or negative).");
 
 		}
 
@@ -217,15 +224,15 @@ namespace essSystem {
 		// Imaging plane
 		ModelSupport::buildPlane(SMap,pinholeIndex+5,Origin+Z*zImagingPlane,Z);
 
-		createRadialSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
 		createTransversalSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
+		createRadialSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
 		createSideSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
 
 		return;
 
 	}
 
-	void RectangularPinholeArray::createRadialSurfaces(const attachSystem::FixedComp& FC,
+	void RectangularPinholeArray::createTransversalSurfaces(const attachSystem::FixedComp& FC,
 				 			   const attachSystem::FixedComp& floorFC,
 							   const size_t floorLP,
 							   const attachSystem::FixedComp& roofFC,
@@ -235,7 +242,7 @@ namespace essSystem {
 			Create the collimator surfaces
 		*/
 
-		ELog::RegMethod RegA("RectangularPinholeArray","createRadialSurfaces");
+		ELog::RegMethod RegA("RectangularPinholeArray","createTransversalSurfaces");
 
 		// Get three points for the first PH collimator face
 
@@ -345,7 +352,7 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinholeArray::createTransversalSurfaces(const attachSystem::FixedComp& FC,
+	void RectangularPinholeArray::createRadialSurfaces(const attachSystem::FixedComp& FC,
 								const attachSystem::FixedComp& floorFC,
 								const size_t floorLP,
 								const attachSystem::FixedComp& roofFC,
@@ -355,7 +362,7 @@ namespace essSystem {
 			Create the collimator surfaces
 		*/
 
-		ELog::RegMethod RegA("RectangularPinholeArray","createTransversalSurfaces");
+		ELog::RegMethod RegA("RectangularPinholeArray","createRadialSurfaces");
 
 		// Get three points for the first PH collimator face
 
