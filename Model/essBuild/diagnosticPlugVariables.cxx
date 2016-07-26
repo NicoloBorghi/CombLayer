@@ -79,6 +79,19 @@ namespace setVariable {
 		/* +->*/Control.addVariable("RectangularPinholeTransversalPinholeWidth",0.02);
 		/* |  */
 		/* |  */
+		/* +->*/Control.addVariable("RectangularPinholeArrayRadialPinholeOffset",0.0);
+		/* +->*/Control.addVariable("RectangularPinholeArrayTransversalPinholeOffset",0.0);
+		/* +->*/Control.addVariable("RectangularPinholeArrayDistancePinholeImagingPlane",100.0);
+		/* +->*/Control.addVariable("RectangularPinholeArrayDistanceTargetSurfImagingPlane",200.0);
+		/* |  */
+		/* |  */
+		/* +->*/Control.addVariable("RectangularPinholeArrayRadialPinholeWidth",0.02);
+		/* +->*/Control.addVariable("RectangularPinholeArrayTransversalPinholeWidth",0.02);
+		/* |  */
+		/* |  */
+		/* +->*/Control.addVariable("RectangularPinholeArrayPinholeNumber",5);
+		/* |  */
+		/* |  */
 //		/* |  */	/* --- NOT IMPLEMENTED YET --- */
 //		/* +->*/Control.addVariable("CircularPinholeRadialPinholeOffset",0.0);
 //		/* +->*/Control.addVariable("CircularPinholeTransversalPinholeOffset",0.0);
