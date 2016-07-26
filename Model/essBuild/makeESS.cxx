@@ -775,7 +775,7 @@
 
 	  } else {
 
-		pinhole = 0;
+		throw ColErr::InContainerError<std::string>(pinholeType,"Unknown pinholeType");
 
 	  }
 
