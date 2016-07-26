@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MCNP(X) Input builder
  
- * File:   essBuild/RectangularPinhole.cxx
+ * File:   essBuild/RectangularPinholeArray.cxx
  *
  * Copyright (c) 2015 by Konstantin Batkov
  *
@@ -74,13 +74,13 @@
 #include "BaseMap.h"
 #include "CellMap.h"
 #include "PinholeBase.h"
-#include "RectangularPinhole.h"
+#include "RectangularPinholeArray.h"
 #include "SurInter.h"
 
 
 namespace essSystem {
 
-	RectangularPinhole::RectangularPinhole(const std::string& Key) : PinholeBase(Key) {
+	RectangularPinholeArray::RectangularPinholeArray(const std::string& Key) : PinholeBase(Key) {
 
 		/*!
 			Constructor
@@ -89,20 +89,20 @@ namespace essSystem {
 
 	}
 
-	RectangularPinhole::RectangularPinhole(const RectangularPinhole& A) : PinholeBase(A) {
+	RectangularPinholeArray::RectangularPinholeArray(const RectangularPinholeArray& A) : PinholeBase(A) {
 
 		/*!
 			Copy constructor
-			\param A :: RectangularPinhole to copy
+			\param A :: RectangularPinholeArray to copy
 		*/
 
 	}
 
-	RectangularPinhole& RectangularPinhole::operator=(const RectangularPinhole& A) {
+	RectangularPinholeArray& RectangularPinholeArray::operator=(const RectangularPinholeArray& A) {
 
 		/*!
 			Assignment operator
-			\param A :: RectangularPinhole to copy
+			\param A :: RectangularPinholeArray to copy
 			\return *this
 		*/
 
@@ -116,7 +116,7 @@ namespace essSystem {
 
 	}
 
-	RectangularPinhole::~RectangularPinhole() {
+	RectangularPinholeArray::~RectangularPinholeArray() {
 
 		/*!
 			Destructor
@@ -124,25 +124,25 @@ namespace essSystem {
 
 	}
 
-	RectangularPinhole* RectangularPinhole::clone() const {
+	RectangularPinholeArray* RectangularPinholeArray::clone() const {
 
 		/*!
 			Virtual copy constructor
 			\return new(this)
 		*/
 
-		return new RectangularPinhole(*this);
+		return new RectangularPinholeArray(*this);
 
 	}
 
-	void RectangularPinhole::populate(const FuncDataBase& Control) {
+	void RectangularPinholeArray::populate(const FuncDataBase& Control) {
 
 		/*!
 			Populate all the variables
 			\param Control :: Variable table to use
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","populate");
+		ELog::RegMethod RegA("RectangularPinholeArray","populate");
 
 		populateBase(Control);
 
@@ -181,14 +181,14 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createUnitVector(const attachSystem::FixedComp& FC) {
+	void RectangularPinholeArray::createUnitVector(const attachSystem::FixedComp& FC) {
 
 		/*!
 			Create the unit vectors
 			\param FC :: Fixed Component
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createUnitVector");
+		ELog::RegMethod RegA("RectangularPinholeArray","createUnitVector");
 		attachSystem::FixedComp::createUnitVector(FC); // The UnitVector is created with respect to FC, which is relative to the DiagnosticPlug, so it shouldn't be necessary to apply any shift or rotations.
 		//applyShift(xStep,yStep,zStep);
 		//applyAngleRotate(xyAngle,zAngle);
@@ -197,17 +197,17 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createSurfaces(const attachSystem::FixedComp& FC,
-						const attachSystem::FixedComp& floorFC,
-						const size_t floorLP,
-						const attachSystem::FixedComp& roofFC,
-						const size_t roofLP) {
+	void RectangularPinholeArray::createSurfaces(const attachSystem::FixedComp& FC,
+						     const attachSystem::FixedComp& floorFC,
+						     const size_t floorLP,
+						     const attachSystem::FixedComp& roofFC,
+						     const size_t roofLP) {
 
 		/*!
 			Create the collimator surfaces
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createSurfaces");
+		ELog::RegMethod RegA("RectangularPinholeArray","createSurfaces");
 
 		// Calculate the absoulte pinhole position
 		pinholePos = Origin + X*transversalPinholeOffset + Y*radialPinholeOffset + Z*zPinholePos;
@@ -225,17 +225,17 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createRadialSurfaces(const attachSystem::FixedComp& FC,
-						      const attachSystem::FixedComp& floorFC,
-						      const size_t floorLP,
-						      const attachSystem::FixedComp& roofFC,
-						      const size_t roofLP) {
+	void RectangularPinholeArray::createRadialSurfaces(const attachSystem::FixedComp& FC,
+				 			   const attachSystem::FixedComp& floorFC,
+							   const size_t floorLP,
+							   const attachSystem::FixedComp& roofFC,
+							   const size_t roofLP) {
 
 		/*!
 			Create the collimator surfaces
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createRadialSurfaces");
+		ELog::RegMethod RegA("RectangularPinholeArray","createRadialSurfaces");
 
 		// Get three points for the first PH collimator face
 
@@ -245,7 +245,7 @@ namespace essSystem {
 
 		Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
@@ -253,11 +253,11 @@ namespace essSystem {
 
 		Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		Geometry::Vec3D p3 = pinholePos - Y*fabs(radialPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+7,p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -271,7 +271,7 @@ namespace essSystem {
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
@@ -279,11 +279,11 @@ namespace essSystem {
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePos - Y*fabs(radialPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+8,p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -297,7 +297,7 @@ namespace essSystem {
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
@@ -305,11 +305,11 @@ namespace essSystem {
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePos + Y*fabs(radialPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+17,p1,p2,p3,(p3-p2)*(p3-p1));
   
@@ -323,7 +323,7 @@ namespace essSystem {
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
@@ -331,11 +331,11 @@ namespace essSystem {
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePos + Y*fabs(radialPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+18,p1,p2,p3,(p3-p2)*(p3-p1));
 
@@ -345,17 +345,17 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createTransversalSurfaces(const attachSystem::FixedComp& FC,
-							   const attachSystem::FixedComp& floorFC,
-							   const size_t floorLP,
-							   const attachSystem::FixedComp& roofFC,
-							   const size_t roofLP) {
+	void RectangularPinholeArray::createTransversalSurfaces(const attachSystem::FixedComp& FC,
+								const attachSystem::FixedComp& floorFC,
+								const size_t floorLP,
+								const attachSystem::FixedComp& roofFC,
+								const size_t roofLP) {
 
 		/*!
 			Create the collimator surfaces
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createTransversalSurfaces");
+		ELog::RegMethod RegA("RectangularPinholeArray","createTransversalSurfaces");
 
 		// Get three points for the first PH collimator face
 
@@ -365,7 +365,7 @@ namespace essSystem {
 
 		Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
@@ -373,11 +373,11 @@ namespace essSystem {
 
 		Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		Geometry::Vec3D p3 = pinholePos - X*fabs(transversalPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+27,p1,p2,p3,(p3-p2)*(p3-p1));
   
@@ -391,7 +391,7 @@ namespace essSystem {
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
@@ -399,11 +399,11 @@ namespace essSystem {
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePos - X*fabs(transversalPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+28,p1,p2,p3,(p3-p2)*(p3-p1));
   
@@ -417,7 +417,7 @@ namespace essSystem {
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
@@ -425,11 +425,11 @@ namespace essSystem {
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePos + X*fabs(transversalPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+37,p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -443,7 +443,7 @@ namespace essSystem {
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
@@ -451,11 +451,11 @@ namespace essSystem {
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePos + X*fabs(transversalPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+38,p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -465,17 +465,17 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createSideSurfaces(const attachSystem::FixedComp& FC,
-						    const attachSystem::FixedComp& floorFC,
-						    const size_t floorLP,
-						    const attachSystem::FixedComp& roofFC,
-						    const size_t roofLP) {
+	void RectangularPinholeArray::createSideSurfaces(const attachSystem::FixedComp& FC,
+							 const attachSystem::FixedComp& floorFC,
+							 const size_t floorLP,
+							 const attachSystem::FixedComp& roofFC,
+							 const size_t roofLP) {
 
 		/*!
 			Create the collimator surfaces
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createSideSurfaces");
+		ELog::RegMethod RegA("RectangularPinholeArray","createSideSurfaces");
 
 		// Get three points for the first PH collimator face
 
@@ -485,7 +485,7 @@ namespace essSystem {
 
 		Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
@@ -493,11 +493,11 @@ namespace essSystem {
 
 		Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		Geometry::Vec3D p3 = pinholePos - X*fabs(transversalPinholeWidth/2.0) - Y*fabs(radialPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+9,p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -511,7 +511,7 @@ namespace essSystem {
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
@@ -519,11 +519,11 @@ namespace essSystem {
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePos + X*fabs(transversalPinholeWidth/2.0) - Y*fabs(radialPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+19,p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -537,7 +537,7 @@ namespace essSystem {
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
@@ -545,11 +545,11 @@ namespace essSystem {
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePos - X*fabs(transversalPinholeWidth/2.0) + Y*fabs(radialPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+29,p1,p2,p3,(p3-p2)*(p3-p1));
   
@@ -563,7 +563,7 @@ namespace essSystem {
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
 		pl1 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
@@ -571,11 +571,11 @@ namespace essSystem {
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePos + X*fabs(transversalPinholeWidth/2.0) + Y*fabs(radialPinholeWidth/2.0);
 
-		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+39,p1,p2,p3,(p3-p2)*(p3-p1));
   
@@ -585,18 +585,18 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createObjects( Simulation& System,
-						attachSystem::FixedComp& FC,
-						const attachSystem::FixedComp& floorFC,
-						const size_t floorLP,
-						const attachSystem::FixedComp& roofFC,
-						const size_t roofLP) {
+	void RectangularPinholeArray::createObjects(Simulation& System,
+						    attachSystem::FixedComp& FC,
+						    const attachSystem::FixedComp& floorFC,
+						    const size_t floorLP,
+						    const attachSystem::FixedComp& roofFC,
+						    const size_t roofLP) {
 
 		/*!
 			Create the objects for the collimator
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createObjects");
+		ELog::RegMethod RegA("RectangularPinholeArray","createObjects");
 
 		std::string strFloor = floorFC.getLinkString(floorLP);
 		std::string strRoof  = roofFC.getLinkComplement(roofLP);
@@ -650,24 +650,24 @@ namespace essSystem {
 
 	}
 
-	void RectangularPinhole::createLinks() {
+	void RectangularPinholeArray::createLinks() {
 
 		/*!
 			Create the link points
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","creatLinks");
+		ELog::RegMethod RegA("RectangularPinholeArray","creatLinks");
 
 		return;
 
 	}
 
-	void RectangularPinhole::createAll(Simulation& System,
-					   attachSystem::FixedComp& FC,
-					   const attachSystem::FixedComp& floorFC,
-					   const size_t floorLP,
-					   const attachSystem::FixedComp& roofFC,
-					   const size_t roofLP) {
+	void RectangularPinholeArray::createAll(Simulation& System,
+						attachSystem::FixedComp& FC,
+						const attachSystem::FixedComp& floorFC,
+						const size_t floorLP,
+						const attachSystem::FixedComp& roofFC,
+						const size_t roofLP) {
 
 		/*|
 			External build everything
@@ -675,7 +675,7 @@ namespace essSystem {
 			\param FC :: FixedComponent for origin
 		*/
 
-		ELog::RegMethod RegA("RectangularPinhole","createAll");
+		ELog::RegMethod RegA("RectangularPinholeArray","createAll");
 
 		populate(System.getDataBase());
 
