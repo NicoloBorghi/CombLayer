@@ -246,7 +246,6 @@ namespace essSystem {
 		Geometry::Plane *frontWall = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
 		Geometry::Plane *tmp;
 
-		Geometry::Vec3D norm = backWall->getNormal();
 		Geometry::Vec3D tmpPos;
 
 		double pinholeElementLength = length/pinholeNumber;
@@ -263,16 +262,19 @@ namespace essSystem {
 
 		// Put backWall as the first element of the array
 		radialWalls.push_back(backWall);
+		ELog::EM << "=== NORMAL No. " << 0 << " COORDINATES === X: " << backWall->getNormal().X() << " - Y: " << backWall->getNormal().Y() << " - Z: " << backWall->getNormal().Z() << ELog::endDiag;
 
 		for (int i=1; i < pinholeNumber; i++) {
 
-			tmp = ModelSupport::buildPlane(SMap,pinholeIndex+i*10+1, norm, i*pinholeElementLength);
+			tmp = ModelSupport::buildPlane(SMap,pinholeIndex+i*10+1, Y, ((Origin - Y*length/2.0) + Y*i*pinholeElementLength).abs());
+			ELog::EM << "=== NORMAL No. " << i+1 << " COORDINATES === X: " << tmp->getNormal().X() << " - Y: " << tmp->getNormal().Y() << " - Z: " << tmp->getNormal().Z() << ELog::endDiag;
 			radialWalls.push_back(tmp);
 
 		}
 
 		// Put the frontWall as the last element of the array
 		radialWalls.push_back(frontWall);
+		ELog::EM << "=== NORMAL No. XXX  COORDINATES === X: " << frontWall->getNormal().X() << " - Y: " << frontWall->getNormal().Y() << " - Z: " << frontWall->getNormal().Z() << ELog::endDiag;
 
 		return;
 
