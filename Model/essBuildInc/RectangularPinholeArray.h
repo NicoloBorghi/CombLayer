@@ -62,6 +62,7 @@ namespace essSystem {
 						    int   pinholeNumber;						///< Number of pinhole to insert
 
 			  std::vector<Geometry::Plane*>   radialWalls;							///< Radial boundary walls for the pinhole array
+			   std::vector<Geometry::Vec3D>   pinholePositions;						///< Coordinates of the centers of all the pinholes
 
 		private:
 
@@ -81,26 +82,30 @@ namespace essSystem {
 									       const attachSystem::FixedComp&,		/*floorFC*/
 									       const size_t,				/*floorLP*/
 									       const attachSystem::FixedComp&,		/*roofFC*/
-									       const size_t);				/*roofLP*/
+									       const size_t,				/*roofLP*/
+									       int);					/*Element index*/
 
 						   void   createTransversalSurfaces(const attachSystem::FixedComp&,	/*FC*/
 										    const attachSystem::FixedComp&,	/*floorFC*/
 										    const size_t,			/*floorLP*/
 										    const attachSystem::FixedComp&,	/*roofFC*/
-										    const size_t);			/*roofLP*/
+										    const size_t,			/*roofLP*/
+										    int);				/*Element index*/
 
 						   void   createSideSurfaces(const attachSystem::FixedComp&,		/*FC*/
 									     const attachSystem::FixedComp&,		/*floorFC*/
 									     const size_t,				/*floorLP*/
 									     const attachSystem::FixedComp&,		/*roofFC*/
-									     const size_t);				/*roofLP*/
+									     const size_t,				/*roofLP*/
+									     int);					/*Element index*/
 
 						   void   createObjects(Simulation&,
 									attachSystem::FixedComp&,			/*FC*/
 									const attachSystem::FixedComp&,			/*floorFC*/
 									const size_t,					/*floorLP*/
 									const attachSystem::FixedComp&,			/*roofFC*/
-									const size_t);					/*roofLP*/
+									const size_t);//,					/*roofLP*/
+									//int);						/*Element index*/
 
 						   void   createLinks();
 
