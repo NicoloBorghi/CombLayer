@@ -148,7 +148,7 @@ namespace essSystem {
 
 		radialPinholeWidth      = Control.EvalVar<double>(keyName+"RadialPinholeWidth");
 		transversalPinholeWidth = Control.EvalVar<double>(keyName+"TransversalPinholeWidth");
-		pinholeNumber           = Control.EvalVar<double>(keyName+"PinholeNumber");
+		pinholeNumber           = Control.EvalVar<int>(keyName+"PinholeNumber");
 
 		if ( (radialPinholeWidth <= 0.0) || (radialPinholeWidth >= length) ) {
 
@@ -180,7 +180,7 @@ namespace essSystem {
 
 		if ( pinholeNumber <= 0) {
 
-			throw ColErr::InContainerError<int>(pinholeNumber,"There must be at least one pinhole (not 0 or negative).");
+			throw ColErr::InContainerError<int>(pinholeNumber,"There must be at least one pinhole (" + keyName + "PinholeNumber > 0).");
 
 		}
 
@@ -224,9 +224,39 @@ namespace essSystem {
 		// Imaging plane
 		ModelSupport::buildPlane(SMap,pinholeIndex+5,Origin+Z*zImagingPlane,Z);
 
+		createBoundaryWalls(FC);
 		createTransversalSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
 		createRadialSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
 		createSideSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
+
+		return;
+
+	}
+
+	void RectangularPinholeArray::createBoundaryWalls(const attachSystem::FixedComp& FC) {
+
+		ELog::RegMethod RegA("RectangularPinholeArray","createBoundaryWalls");
+
+		Geometry::Plane *backWall = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(0));
+		Geometry::Plane *frontWall = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(1));
+		Geometry::Plane *tmp;
+
+		Geometry::Vec3D norm = backWall->getNormal();
+
+		double pinholeElementLength = length/pinholeNumber;
+
+		// Put backWall as the first element of the array
+		radialWalls.push_back(backWall);
+
+		for (int i=1; i < pinholeNumber; i++) {
+
+			tmp = ModelSupport::buildPlane(SMap,pinholeIndex+i*10, norm, i*pinholeElementLength);
+			radialWalls.push_back(tmp);
+
+		}
+
+		// Put the frontWall as the last element of the array
+		radialWalls.push_back(frontWall);
 
 		return;
 

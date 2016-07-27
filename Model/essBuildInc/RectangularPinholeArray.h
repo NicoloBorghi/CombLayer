@@ -59,7 +59,9 @@ namespace essSystem {
 
 						 double   radialPinholeWidth;						///< Radial width of the Pinhole
 						 double   transversalPinholeWidth;					///< Transversal width of the Pinhole
-						 double   pinholeNumber;						///< Number of pinhole to insert
+						    int   pinholeNumber;						///< Number of pinhole to insert
+
+			  std::vector<Geometry::Plane*>   radialWalls;							///< Radial boundary walls for the pinhole array
 
 		private:
 
@@ -72,6 +74,8 @@ namespace essSystem {
 									 const size_t,					/*floorLP*/
 									 const attachSystem::FixedComp&,		/*roofFC*/
 									 const size_t);					/*roofLP*/
+
+						   void   createBoundaryWalls(const attachSystem::FixedComp&);
 
 						   void   createRadialSurfaces(const attachSystem::FixedComp&,		/*FC*/
 									       const attachSystem::FixedComp&,		/*floorFC*/
