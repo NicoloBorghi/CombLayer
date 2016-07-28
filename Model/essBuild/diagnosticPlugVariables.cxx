@@ -60,13 +60,13 @@ namespace setVariable {
 		*/
 
 		// Diagnostic plug
-		Control.addVariable("DiagnosticPlugXStep",-18.0);
-		Control.addVariable("DiagnosticPlugYStep",217.4);
+		Control.addVariable("DiagnosticPlugXStep",-17.2);
+		Control.addVariable("DiagnosticPlugYStep",211.0);
 		Control.addVariable("DiagnosticPlugZStep",0.0);
 		Control.addVariable("DiagnosticPlugXYangle",10.0);
 		Control.addVariable("DiagnosticPlugZangle",0.0);
 		Control.addVariable("DiagnosticPlugWidth",5.0);
-		Control.addVariable("DiagnosticPlugLength",40.0);
+		Control.addVariable("DiagnosticPlugLength",50.0);
 		/* |  */
 		/* |  */
 		/* +->*/Control.addVariable("RectangularPinholeRadialPinholeOffset",0.0);
