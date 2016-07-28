@@ -318,7 +318,8 @@ setDefaultPhysics(Simulation& System,
 
   physicsSystem::PhysicsCards& PC=System.getPC();
   PC.setMode("n p "+PList+elcAdd);
-  PC.setPrintNum("10 110");
+  //PC.setPrintNum("10 110");
+  PC.setPrintNum("10 30 40 50 60 70 85 98 100 102 110 118 120 126 130 140 160 161 162 170 180 190 198 200");
   System.processCellsImp();
 
   PC.setCells("imp",1,0);            // Set a zero cell	  
