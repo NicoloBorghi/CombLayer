@@ -206,6 +206,8 @@ namespace essSystem {
 
 		zImagingPlane = distanceTargetSurfImagingPlane + targetTopSurfZ;
 
+		ELog::EM << "=== zImagingPlane === " << zImagingPlane << ELog::endDiag;
+
 		if ( (zImagingPlane <= floorSurfaceZ) || (zImagingPlane >= roofSurfaceZ) ) { 
 
 			throw ColErr::RangeError<double>(distanceTargetSurfImagingPlane, 
