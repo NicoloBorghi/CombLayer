@@ -247,13 +247,15 @@ namespace essSystem {
 		Geometry::Plane *tmp;
 
 		Geometry::Vec3D tmpPos;
+		Geometry::Vec3D norm = backWall->getNormal();
 
 		double pinholeElementLength = length/pinholeNumber;
 
 		for (int i=0; i < pinholeNumber; i++) {
 
-			tmpPos = (Origin - Y*length/2.0) + Y*i*pinholeElementLength + Y*(pinholeElementLength/2.0);
-			tmpPos = tmpPos + X*transversalPinholeOffset + Y*radialPinholeOffset + Z*zPinholePos;
+			tmpPos = (Origin - Y*length/2.0) + Y*i*pinholeElementLength + Y*(pinholeElementLength/2.0) +
+				  X*transversalPinholeOffset + Y*radialPinholeOffset + Z*zPinholePos;
+			
 			ELog::EM << "=== PINHOLE No. " << i+1 << " CENTER COORDINATES === X: " << tmpPos.X() << " - Y: " << tmpPos.Y() << " - Z: " << tmpPos.Z() << ELog::endDiag;
 
 			pinholePositions.push_back(tmpPos);
@@ -262,19 +264,16 @@ namespace essSystem {
 
 		// Put backWall as the first element of the array
 		radialWalls.push_back(backWall);
-		ELog::EM << "=== NORMAL No. " << 0 << " COORDINATES === X: " << backWall->getNormal().X() << " - Y: " << backWall->getNormal().Y() << " - Z: " << backWall->getNormal().Z() << ELog::endDiag;
 
 		for (int i=1; i < pinholeNumber; i++) {
 
-			tmp = ModelSupport::buildPlane(SMap,pinholeIndex+i*10+1, Y, ((Origin - Y*length/2.0) + Y*i*pinholeElementLength).abs());
-			ELog::EM << "=== NORMAL No. " << i+1 << " COORDINATES === X: " << tmp->getNormal().X() << " - Y: " << tmp->getNormal().Y() << " - Z: " << tmp->getNormal().Z() << ELog::endDiag;
+			tmp = ModelSupport::buildPlane(SMap,pinholeIndex+i*10+1, (Origin - Y*length/2.0) + Y*i*pinholeElementLength, norm);
 			radialWalls.push_back(tmp);
 
 		}
 
 		// Put the frontWall as the last element of the array
 		radialWalls.push_back(frontWall);
-		ELog::EM << "=== NORMAL No. XXX  COORDINATES === X: " << frontWall->getNormal().X() << " - Y: " << frontWall->getNormal().Y() << " - Z: " << frontWall->getNormal().Z() << ELog::endDiag;
 
 		return;
 
@@ -295,25 +294,25 @@ namespace essSystem {
 
 		// Get three points for the first PH collimator face
 
-		const Geometry::Plane *pl1 = radialWalls.at(elementIndex);
+		const Geometry::Plane *pl1 = (radialWalls.at(elementIndex))->clone();
 		const Geometry::Plane *pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		const Geometry::Plane *pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex);
+		pl1 = (radialWalls.at(elementIndex))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		Geometry::Vec3D p3 = pinholePositions.at(elementIndex) - Y*fabs(radialPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+7),p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -321,25 +320,25 @@ namespace essSystem {
 
 		// Get three points for the second PH collimator face
 
-		pl1 = radialWalls.at(elementIndex);
+		pl1 = (radialWalls.at(elementIndex))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex);
+		pl1 = (radialWalls.at(elementIndex))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePositions.at(elementIndex) - Y*fabs(radialPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+8),p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -347,25 +346,25 @@ namespace essSystem {
 
 		// Get three points for the third PH collimator face
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePositions.at(elementIndex) + Y*fabs(radialPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+17),p1,p2,p3,(p3-p2)*(p3-p1));
   
@@ -373,25 +372,25 @@ namespace essSystem {
 
 		// Get three points for the fourth PH collimator face
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePositions.at(elementIndex) + Y*fabs(radialPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+18),p1,p2,p3,(p3-p2)*(p3-p1));
 
@@ -416,25 +415,25 @@ namespace essSystem {
 
 		// Get three points for the first PH collimator face
 
-		const Geometry::Plane *pl1 = radialWalls.at(elementIndex);
+		const Geometry::Plane *pl1 = (radialWalls.at(elementIndex))->clone();
 		const Geometry::Plane *pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		const Geometry::Plane *pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		Geometry::Vec3D p3 = pinholePositions.at(elementIndex) - X*fabs(transversalPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+27),p1,p2,p3,(p3-p2)*(p3-p1));
   
@@ -442,25 +441,25 @@ namespace essSystem {
 
 		// Get three points for the second PH collimator face
 
-		pl1 = radialWalls.at(elementIndex);
+		pl1 = (radialWalls.at(elementIndex))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePositions.at(elementIndex) - X*fabs(transversalPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+28),p1,p2,p3,(p3-p2)*(p3-p1));
   
@@ -468,25 +467,25 @@ namespace essSystem {
 
 		// Get three points for the third PH collimator face
 
-		pl1 = radialWalls.at(elementIndex);
+		pl1 = (radialWalls.at(elementIndex))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePositions.at(elementIndex) + X*fabs(transversalPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+37),p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -494,25 +493,25 @@ namespace essSystem {
 
 		// Get three points for the fourth PH collimator face
 
-		pl1 = radialWalls.at(elementIndex);
+		pl1 = (radialWalls.at(elementIndex))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePositions.at(elementIndex) + X*fabs(transversalPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+38),p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -537,25 +536,25 @@ namespace essSystem {
 
 		// Get three points for the first PH collimator face
 
-		const Geometry::Plane *pl1 = radialWalls.at(elementIndex);
+		const Geometry::Plane *pl1 = (radialWalls.at(elementIndex))->clone();
 		const Geometry::Plane *pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		const Geometry::Plane *pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		Geometry::Vec3D p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex);
+		pl1 = (radialWalls.at(elementIndex))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		Geometry::Vec3D p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		Geometry::Vec3D p3 = pinholePositions.at(elementIndex) - X*fabs(transversalPinholeWidth/2.0) - Y*fabs(radialPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+9),p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -563,25 +562,25 @@ namespace essSystem {
 
 		// Get three points for the second PH collimator face
 
-		pl1 = radialWalls.at(elementIndex);
+		pl1 = (radialWalls.at(elementIndex))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex);
+		pl1 = (radialWalls.at(elementIndex))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePositions.at(elementIndex) + X*fabs(transversalPinholeWidth/2.0) - Y*fabs(radialPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+19),p1,p2,p3,(p3-p1)*(p3-p2));
   
@@ -589,25 +588,25 @@ namespace essSystem {
 
 		// Get three points for the third PH collimator face
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(2));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePositions.at(elementIndex) - X*fabs(transversalPinholeWidth/2.0) + Y*fabs(radialPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+29),p1,p2,p3,(p3-p2)*(p3-p1));
   
@@ -615,25 +614,25 @@ namespace essSystem {
 
 		// Get three points for the third PH collimator face
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(pinholeIndex+5);
 
 		p1 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
+		//ELog::EM << "Point 1 ==> X: " << p1.X() << " - Y: " << p1.Y() << " - Z: " << p1.Z() << ELog::endDiag;
 
-		pl1 = radialWalls.at(elementIndex+1);
+		pl1 = (radialWalls.at(elementIndex+1))->clone();
 		pl2 = SMap.realPtr<Geometry::Plane>(FC.getLinkSurf(3));
 		pl3 = SMap.realPtr<Geometry::Plane>(floorFC.getLinkSurf(floorLP));
 
 		p2 = SurInter::getPoint(pl1,pl2,pl3);
 
-		ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
+		//ELog::EM << "Point 2 ==> X: " << p2.X() << " - Y: " << p2.Y() << " - Z: " << p2.Z() << ELog::endDiag;
 
 		p3 = pinholePositions.at(elementIndex) + X*fabs(transversalPinholeWidth/2.0) + Y*fabs(radialPinholeWidth/2.0);
 
-		ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
+		//ELog::EM << "Point 3 ==> X: " << p3.X() << " - Y: " << p3.Y() << " - Z: " << p3.Z() << ELog::endDiag;
 
 		ModelSupport::buildPlane(SMap,pinholeIndex+(100*elementIndex+39),p1,p2,p3,(p3-p2)*(p3-p1));
   
