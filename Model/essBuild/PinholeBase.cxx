@@ -121,6 +121,7 @@ namespace essSystem {
 			attachSystem::ContainedComp::operator=(A);
 			attachSystem::FixedComp::operator=(A);
 			CellMap::operator=(A);
+			pinholeIndex=A.pinholeIndex;
 			cellIndex=A.cellIndex;
 			zImagingPlane=A.zImagingPlane;
 			radialPinholeOffset=A.radialPinholeOffset;
