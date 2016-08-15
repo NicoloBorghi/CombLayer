@@ -73,6 +73,7 @@
 #include "DiagnosticPlug.h"
 #include "PinholeBase.h"
 #include "RectangularPinhole.h"
+#include "StrawCollimator.h"
 #include "Plane.h"
 #include "SurInter.h"
 
@@ -203,6 +204,19 @@ DiagnosticPlug::setPinhole(PinholeBase *ph)
   ELog::RegMethod RegA("DiagnosticPlug","setPinhole");
 
   Pinhole = ph;
+
+}
+
+void
+DiagnosticPlug::setStraws(StrawCollimator *sc)
+  /*!
+    Load the straw collimator class to build the corresponding collimator
+  */
+{
+
+  ELog::RegMethod RegA("DiagnosticPlug","setStraws");
+
+  Straws = sc;
 
 }
 

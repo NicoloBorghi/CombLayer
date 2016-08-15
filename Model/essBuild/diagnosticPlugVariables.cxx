@@ -100,6 +100,12 @@ namespace setVariable {
 		/* |  */
 		/* |  */
 //		/* +->*/Control.addVariable("CircularPinholeRadius",1.0);
+		/* |  */
+		/* |  */
+		/* +->*/Control.addVariable("StrawCollimatorSide",0.01);
+		/* +->*/Control.addVariable("StrawCollimatorRadialSpacing",0.02);
+		/* +->*/Control.addVariable("StrawCollimatorTransversalSpacing",3.0);
+		/* +->*/Control.addVariable("StrawCollimatorOddRowOffset",1);
 
 		return;
 

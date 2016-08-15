@@ -97,6 +97,7 @@
 	#include "PinholeBase.h"
 	#include "RectangularPinhole.h"
 	#include "RectangularPinholeArray.h"
+	#include "StrawCollimator.h"
 	#include "ShutterBay.h"
 	#include "GuideBay.h"
 	#include "TaperedDiskPreMod.h"
@@ -768,18 +769,22 @@
 	  if (pinholeType == "Rectangular") {
 
 		pinhole = new RectangularPinhole("RectangularPinhole");
+	  	DPlug->setPinhole(pinhole);
 
 	  } else if (pinholeType == "RectangularArray") {
 
 		pinhole = new RectangularPinholeArray("RectangularPinholeArray");
+	  	DPlug->setPinhole(pinhole);
+
+	  } else if (pinholeType == "Straws") {
+
+		DPlug->setStraws( new StrawCollimator("StrawCollimator") );
 
 	  } else {
 
 		throw ColErr::InContainerError<std::string>(pinholeType,"Unknown pinholeType");
 
 	  }
-
-	  DPlug->setPinhole(pinhole);
 
 	  DPlug->createAll(System, *Bulk, *Target, 5, *ShutterBayObj, 5);
 	  // ??? how to exclude DPlug from Bulk and ShutterBayObj in such a way that if DPlug
