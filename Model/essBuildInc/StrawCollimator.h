@@ -53,8 +53,6 @@ namespace essSystem {
 							    const attachSystem::FixedComp&,		/*roofFC*/
 							    const size_t);				/*roofLP*/
 
-					   void   populate(const FuncDataBase&);
-
 					   void   setXYZSteps(double, double, double);
 					   void   setAngles(double, double);
 					   void   setDimensions(double, double, double);
@@ -83,15 +81,35 @@ namespace essSystem {
 
 					 double   heightImagingSystem;					///< Height of the imaging system measured from the DiagnosticPlug floor to the imaging plane
 					 double   zImagingPlane;					///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
+					 double   distanceTargetSurfImagingPlane;			///< Distance between the target upper surface and the imaging plane
 
 			// Variables relative to the straw collimator
 
-					 double   side;							///< Side of the square straw
-					 double   radialSpacing;					///< Spacing between the straws in the radial direction
-					 double   transversalSpacing;					///< Spacing between the rows of straws
-					    int   oddRowOffset;						///< Offset of the odd straw rows (this adds the flexibility in the straw layout)
+					 double   strawWidth;						///< Width of the straws in the transversal direction
+					 double   strawLength;						///< Length of the straws in the radial direction
+					 double   rowDistance;						///< Distance between straw rows
+					    int   nStraws;						///< Number of straws that can be fitted inside the diagnostic plug
 
+		private:
 
+					   void   populate(const FuncDataBase&);
+
+					   void   createUnitVector(const attachSystem::FixedComp&);
+
+					   void   createSurfaces(const attachSystem::FixedComp&,	/*FC*/
+								 const attachSystem::FixedComp&,	/*floorFC*/
+								 const size_t,				/*floorLP*/
+								 const attachSystem::FixedComp&,	/*roofFC*/
+								 const size_t);				/*roofLP*/
+
+					   void   createObjects(Simulation&,
+								attachSystem::FixedComp&,		/*FC*/
+								const attachSystem::FixedComp&,		/*floorFC*/
+								const size_t,				/*floorLP*/
+								const attachSystem::FixedComp&,		/*roofFC*/
+								const size_t);				/*roofLP*/
+
+					   void   createLinks();
 
 	};
 

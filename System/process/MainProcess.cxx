@@ -673,7 +673,7 @@ createESSInputs(inputParam& IParam)
   IParam.setValue("targetType",std::string("Bilbao"));
 
   //  Set default Pinhole collimator type
-  IParam.setValue("pinholeType",std::string("RectangularArray"));
+  IParam.setValue("pinholeType",std::string("Straws"));
 
   IParam.regDefItem<std::string>("matDB","materialDatabase",1,std::string("shielding"));
   

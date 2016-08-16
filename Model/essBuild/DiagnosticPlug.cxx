@@ -171,10 +171,21 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
 
   height = fabs(roofPlane->getDistance() - floorPlane->getDistance());
 
-  Pinhole->setXYZSteps(xStep,yStep,zStep);
-  Pinhole->setAngles(xyAngle,zAngle);
-  Pinhole->setDimensions(length,width, height);
-  Pinhole->setBoundarySurfacesZ(floorPlane->getDistance(), roofPlane->getDistance(), targetTopSurf->getDistance());
+  if (Pinhole) {
+
+     Pinhole->setXYZSteps(xStep,yStep,zStep);
+     Pinhole->setAngles(xyAngle,zAngle);
+     Pinhole->setDimensions(length,width, height);
+     Pinhole->setBoundarySurfacesZ(floorPlane->getDistance(), roofPlane->getDistance(), targetTopSurf->getDistance());
+
+  } else if (Straws) {
+
+    Straws->setXYZSteps(xStep,yStep,zStep);
+    Straws->setAngles(xyAngle,zAngle);
+    Straws->setDimensions(length,width, height);
+    Straws->setBoundarySurfacesZ(floorPlane->getDistance(), roofPlane->getDistance(), targetTopSurf->getDistance());
+
+  }
 
   return;
 }
@@ -204,6 +215,7 @@ DiagnosticPlug::setPinhole(PinholeBase *ph)
   ELog::RegMethod RegA("DiagnosticPlug","setPinhole");
 
   Pinhole = ph;
+  Straws = 0;
 
 }
 
@@ -217,6 +229,7 @@ DiagnosticPlug::setStraws(StrawCollimator *sc)
   ELog::RegMethod RegA("DiagnosticPlug","setStraws");
 
   Straws = sc;
+  Pinhole = 0;
 
 }
 
@@ -327,7 +340,17 @@ DiagnosticPlug::createAll(Simulation& System,
   createSurfaces();
   createObjects(System, floorFC, floorLP, roofFC, roofLP);
   createLinks();
-  Pinhole->createAll(System, *this, floorFC, floorLP, roofFC, roofLP);
+
+  if (Pinhole) {
+
+     Pinhole->createAll(System, *this, floorFC, floorLP, roofFC, roofLP);
+
+  } else if (Straws) {
+
+     Straws->createAll(System, *this, floorFC, floorLP, roofFC, roofLP);
+
+  }
+
   insertObjects(System);       
 
   return;

@@ -187,33 +187,231 @@ namespace essSystem {
 
 		ELog::RegMethod RegA("StrawCollimator","populate");
 
-		side = Control.EvalVar<double>(keyName+"Radius");
+		distanceTargetSurfImagingPlane = Control.EvalVar<double>(keyName+"DistanceTargetSurfImagingPlane");
+		zImagingPlane = distanceTargetSurfImagingPlane + targetTopSurfZ;
 
-		if (side <= 0.0) {
+		ELog::EM << "=== zImagingPlane === " << zImagingPlane << ELog::endDiag;
 
-			throw ColErr::RangeError<double>(side, 0.0, INFINITY, "The straw side must be positive");
+		if ( (zImagingPlane <= floorSurfaceZ) || (zImagingPlane >= roofSurfaceZ) ) {
+
+			throw ColErr::RangeError<double>(distanceTargetSurfImagingPlane,
+							(floorSurfaceZ - targetTopSurfZ),
+							(roofSurfaceZ - targetTopSurfZ),
+							"DistanceTargetSurfImagingPlane must be set within the diagnostic plug hole.");
+
+                }
+	
+
+		strawWidth = Control.EvalVar<double>(keyName+"StrawWidth");
+		strawLength = Control.EvalVar<double>(keyName+"StrawLength");
+		rowDistance = Control.EvalVar<double>(keyName+"RowDistance");
+
+		if ( (strawWidth <= 0) || (strawWidth >= (width/2.0)) ) {
+
+			throw ColErr::RangeError<double>(strawWidth,0.0,(width/2.0),"Straw width must be positive and within the plug.");
 
 		}
 
-		radialSpacing = Control.EvalVar<double>(keyName+"RadialSpacing");
-		transversalSpacing = Control.EvalVar<double>(keyName+"TransversalSpacing");
+		if ( (strawLength <= 0) || (strawLength >= length) ) {
 
-		oddRowOffset = Control.EvalVar<double>(keyName+"OddRowOffset");
-
-		if ( radialSpacing <= side ) {
-
-			throw ColErr::RangeError<double>(radialSpacing, 0.0, INFINITY,"Straws along the same row are overlapping (set " + keyName + "RadialSpacing > " + keyName + "Radius).");
+			throw ColErr::RangeError<double>(strawLength,0.0,length,"Straw length must be positive and within the plug.");
 
 		}
 
-		if ( transversalSpacing <= 0.0 ) {
+		if ( (rowDistance <= 0) || (rowDistance >= (width/2.0)) ) {
 
-			throw ColErr::RangeError<double>(transversalSpacing, 0.0, INFINITY,"Distance between rows must be positive.");
+			throw ColErr::RangeError<double>(rowDistance,0.0,(width/2.0),"Row distance must be positive and within the plug.");
 
 		}
 
+		double checkWidth = 2.0*strawWidth + rowDistance;
 
-		
+		if (checkWidth >= width) {
+
+			throw ColErr::RangeError<double>(checkWidth,0.0,width,"The width of the two straws plus the distance between the rows must not exceed the plug width.");
+
+		}
+
+		return;
+
+	}
+
+	void StrawCollimator::createUnitVector(const attachSystem::FixedComp& FC) {
+
+		/*!
+			Create the unit vectors
+			\param FC :: Fixed Component
+		*/
+
+		ELog::RegMethod RegA("StrawCollimator","createUnitVector");
+
+		attachSystem::FixedComp::createUnitVector(FC); // The UnitVector is created with respect to FC, which is relative to the DiagnosticPlug, so it shouldn't be necessary to apply any shift or rotations.
+		//applyShift(xStep,yStep,zStep);
+		//applyAngleRotate(xyAngle,zAngle);
+
+		return;
+
+	}
+
+	void StrawCollimator::createSurfaces(const attachSystem::FixedComp& FC,
+					     const attachSystem::FixedComp& floorFC,
+					     const size_t floorLP,
+					     const attachSystem::FixedComp& roofFC,
+					     const size_t roofLP) {
+
+		/*!
+			Create the collimator surfaces
+		*/
+
+		ELog::RegMethod RegA("StrawCollimator","createSurfaces");
+
+		// Imaging plane
+		ModelSupport::buildPlane(SMap,strawIndex+5,Origin+Z*zImagingPlane,Z);
+
+		// Central straw walls
+		ModelSupport::buildPlane(SMap,strawIndex+13,Origin-X*(rowDistance/2.0),X);
+		ModelSupport::buildPlane(SMap,strawIndex+14,Origin+X*(rowDistance/2.0),X);
+
+		// External straw walls
+		ModelSupport::buildPlane(SMap,strawIndex+23,Origin-X*(rowDistance/2.0+strawWidth),X);
+		ModelSupport::buildPlane(SMap,strawIndex+24,Origin+X*(rowDistance/2.0+strawWidth),X);
+
+		Geometry::Vec3D backWallPos = Origin - Y*(length/2.0);
+		Geometry::Vec3D frontWallPos = Origin + Y*(length/2.0);
+
+		Geometry::Vec3D wallPos;
+		nStraws = 0;
+
+		// Transversal straw walls
+		for (;;) {
+
+			wallPos = backWallPos + Y*((nStraws+1)*strawLength);
+
+			if (wallPos.abs() < frontWallPos.abs()) {
+
+				ModelSupport::buildPlane(SMap,strawIndex+((nStraws+1)*10 + 1),wallPos,Y);
+				nStraws++;
+
+			} else if (wallPos == frontWallPos) {
+
+				nStraws++;
+				break;
+
+			} else {
+
+				break;
+
+			}
+
+		}
+
+		ELog::EM << "=== nStraws = " << nStraws << " ===" << ELog::endDiag;
+
+		return;
+
+	}
+
+	void StrawCollimator::createObjects(Simulation& System,
+					    attachSystem::FixedComp& FC,
+					    const attachSystem::FixedComp& floorFC,
+					    const size_t floorLP,
+					    const attachSystem::FixedComp& roofFC,
+					    const size_t roofLP) {
+
+		/*!
+			Create the objects for the straw collimator
+		*/
+
+		ELog::RegMethod RegA("StrawCollimator","createObjects");
+
+		std::string strFloor = floorFC.getLinkString(floorLP);
+		std::string strRoof  = roofFC.getLinkComplement(roofLP);
+		std::string strBackWall = FC.getLinkString(0);
+		std::string strFrontWall = FC.getLinkComplement(1);
+		std::string strLeftWall = FC.getLinkString(2);
+		std::string strRightWall = FC.getLinkComplement(3);
+
+		attachSystem::CellMap* CM = dynamic_cast<attachSystem::CellMap*>(&FC);
+		CM->deleteCellWithData(System, "main");
+
+		std::string Out=ModelSupport::getComposite(SMap,strawIndex," 5") + strRoof + strBackWall + strFrontWall + strLeftWall + strRightWall;
+		System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+		// Central structure
+		Out = ModelSupport::getComposite(SMap,strawIndex," -5 13 -14") + strFloor + strBackWall + strFrontWall;
+		System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, Out));
+
+		// Outer straw surfaces
+		Out = ModelSupport::getComposite(SMap,strawIndex," -5 -23") + strLeftWall + strFloor + strBackWall + strFrontWall;
+		System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, Out));
+
+		Out = ModelSupport::getComposite(SMap,strawIndex," -5 24") + strRightWall + strFloor + strBackWall + strFrontWall;
+		System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, Out));
+
+		std::string OutLeft = ModelSupport::getComposite(SMap,strawIndex,"-5 23 -13") + strFloor;
+		std::string OutRight = ModelSupport::getComposite(SMap,strawIndex,"-5 14 -24") + strFloor;
+
+		for (int i = 1; i <= nStraws; i++) {
+
+			if (i == 1) {
+
+				Out = ModelSupport::getComposite(SMap,strawIndex + 10*i," -1") + strBackWall;
+
+			} else if (i == nStraws) {
+
+				Out = ModelSupport::getComposite(SMap,strawIndex + 10*(i-1)," 1") + strFrontWall;
+
+			} else {
+
+				Out = ModelSupport::getComposite(SMap,strawIndex + 10*(i-1)," 1 -11");
+
+			}
+
+			System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, OutLeft + Out));
+			System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, OutRight + Out));
+
+		}
+
+		Out = strFloor + strRoof + FC.getLinkString(0) + FC.getLinkComplement(1) + strLeftWall + strRightWall;
+		addOuterSurf(Out);
+
+		return;
+
+	}
+
+	void StrawCollimator::createLinks() {
+
+		/*!
+			Create the link points
+		*/
+
+		ELog::RegMethod RegA("StrawCollimator","createLinks");
+
+		return;
+
+	}
+
+	void StrawCollimator::createAll(Simulation& System,
+					attachSystem::FixedComp& FC,
+					const attachSystem::FixedComp& floorFC,
+					const size_t floorLP,
+					const attachSystem::FixedComp& roofFC,
+					const size_t roofLP) {
+
+		/*!
+			External build everything
+			\param System :: Simulation
+			\param FC :: FixedComponent for origin
+		*/
+
+		ELog::RegMethod RegA("StrawCollimator","createAll");
+
+		populate(System.getDataBase());
+
+		createUnitVector(FC);
+		createSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
+		createObjects(System,FC,floorFC,floorLP,roofFC,roofLP);
+		createLinks();
 
 		return;
 
