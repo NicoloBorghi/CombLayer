@@ -80,7 +80,8 @@ void addESSMaterial()
 
   ELog::RegMethod RegA("essDBMaterial[F]","addESSMaterial");
 
-  const std::string MLib="hlib=.70h pnlib=70u";
+  //const std::string MLib="hlib=.70h pnlib=70u";
+  const std::string MLib="hlib=.70h pnlib=70u plib=04p"; //N. Borghi
   ModelSupport::DBMaterial& MDB=ModelSupport::DBMaterial::Instance();
 
   MonteCarlo::Material MObj;
@@ -474,6 +475,24 @@ MObj.setMaterial(2660, "Invar36",
 		   "74186.71c  0.284300000 ",
 		   "",MLib);
   MObj.setDensity(-15.6);
+  MDB.resetMaterial(MObj);
+
+  // Materials for the Target Diagnostic System
+  // N. Borghi
+
+  MObj.setMaterial(26303,"SS303AISI",
+		   "26054  1.00",MLib);
+  MObj.setDensity(-7.9);
+  MDB.resetMaterial(MObj);
+
+  MObj.setMaterial(26304,"SS304",
+		   "26054  1.00",MLib);
+  MObj.setDensity(-8.03);
+  MDB.resetMaterial(MObj);
+
+  MObj.setMaterial(26045,"C45Steel",
+		   "26054  1.00",MLib);
+  MObj.setDensity(-7.85);
   MDB.resetMaterial(MObj);
 
 
