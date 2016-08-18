@@ -90,6 +90,8 @@ namespace essSystem {
 					 double   rowDistance;						///< Distance between straw rows
 					    int   nStraws;						///< Number of straws that can be fitted inside the diagnostic plug
 
+					    int   bulkMat;						///< Material for the collimator structure
+
 		private:
 
 					   void   populate(const FuncDataBase&);

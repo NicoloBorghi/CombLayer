@@ -232,6 +232,8 @@ namespace essSystem {
 
 		}
 
+		bulkMat = ModelSupport::EvalMat<int>(Control,keyName+"BulkMat");
+
 		return;
 
 	}
@@ -339,17 +341,20 @@ namespace essSystem {
 
 		// Central structure
 		Out = ModelSupport::getComposite(SMap,strawIndex," -5 13 -14") + strFloor + strBackWall + strFrontWall;
-		System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, Out));
+		System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
 
 		// Outer straw surfaces
 		Out = ModelSupport::getComposite(SMap,strawIndex," -5 -23") + strLeftWall + strFloor + strBackWall + strFrontWall;
-		System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, Out));
+		System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
 
 		Out = ModelSupport::getComposite(SMap,strawIndex," -5 24") + strRightWall + strFloor + strBackWall + strFrontWall;
-		System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, Out));
+		System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
 
 		std::string OutLeft = ModelSupport::getComposite(SMap,strawIndex,"-5 23 -13") + strFloor;
 		std::string OutRight = ModelSupport::getComposite(SMap,strawIndex,"-5 14 -24") + strFloor;
+
+		int tmpMatLeft = 0;
+		int tmpMatRight = bulkMat;
 
 		for (int i = 1; i <= nStraws; i++) {
 
@@ -367,8 +372,11 @@ namespace essSystem {
 
 			}
 
-			System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, OutLeft + Out));
-			System.addCell(MonteCarlo::Qhull(cellIndex++,0, 0.0, OutRight + Out));
+			tmpMatLeft = ((i % 2) == 0) ? 0 : bulkMat;
+			tmpMatRight = ((i % 2) == 1) ? 0 : bulkMat;
+			
+			System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatLeft, 300.0, OutLeft + Out));
+			System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatRight, 300.0, OutRight + Out));
 
 		}
 
