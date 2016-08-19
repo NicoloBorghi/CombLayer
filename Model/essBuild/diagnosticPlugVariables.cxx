@@ -102,8 +102,8 @@ namespace setVariable {
 //		/* +->*/Control.addVariable("CircularPinholeRadius",1.0);
 		/* |  */
 		/* |  */
-		/* +->*/Control.addVariable("StrawCollimatorStrawWidth",0.01);
-		/* +->*/Control.addVariable("StrawCollimatorStrawLength",0.01);
+		/* +->*/Control.addVariable("StrawCollimatorStrawWidth",0.1);
+		/* +->*/Control.addVariable("StrawCollimatorStrawLength",0.1);
 		/* +->*/Control.addVariable("StrawCollimatorRowDistance",1.0);
 		/* +->*/Control.addVariable("StrawCollimatorDistanceTargetSurfImagingPlane",200.0);
 		/* +->*/Control.addVariable("StrawCollimatorBulkMat","SS304");
