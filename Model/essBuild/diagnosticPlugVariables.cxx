@@ -104,7 +104,7 @@ namespace setVariable {
 		/* |  */
 		/* +->*/Control.addVariable("StrawCollimatorStrawWidth",0.1);
 		/* +->*/Control.addVariable("StrawCollimatorStrawLength",0.1);
-		/* +->*/Control.addVariable("StrawCollimatorRowDistance",1.0);
+		/* +->*/Control.addVariable("StrawCollimatorRowDistance",0.1);
 		/* +->*/Control.addVariable("StrawCollimatorDistanceTargetSurfImagingPlane",200.0);
 		/* +->*/Control.addVariable("StrawCollimatorBulkMat","SS304");
 
