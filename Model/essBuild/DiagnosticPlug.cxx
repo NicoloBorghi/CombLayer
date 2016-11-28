@@ -256,14 +256,14 @@ DiagnosticPlug::createSurfaces()
   ModelSupport::buildPlane(SMap,tIndex+32,Origin+Y*length/2.0+Y*activationLayerThick3,Y);
 
   ModelSupport::buildPlane(SMap,tIndex+3,Origin-X*width/2.0,X);
-  ModelSupport::buildPlane(SMap,tIndex+13,Origin-X*length/2.0-X*activationLayerThick1,X);
-  ModelSupport::buildPlane(SMap,tIndex+23,Origin-X*length/2.0-X*activationLayerThick2,X);
-  ModelSupport::buildPlane(SMap,tIndex+33,Origin-X*length/2.0-X*activationLayerThick3,X);
+  ModelSupport::buildPlane(SMap,tIndex+13,Origin-X*width/2.0-X*activationLayerThick1,X);
+  ModelSupport::buildPlane(SMap,tIndex+23,Origin-X*width/2.0-X*activationLayerThick2,X);
+  ModelSupport::buildPlane(SMap,tIndex+33,Origin-X*width/2.0-X*activationLayerThick3,X);
 
   ModelSupport::buildPlane(SMap,tIndex+4,Origin+X*width/2.0,X);
-  ModelSupport::buildPlane(SMap,tIndex+14,Origin+X*length/2.0+X*activationLayerThick1,X);
-  ModelSupport::buildPlane(SMap,tIndex+24,Origin+X*length/2.0+X*activationLayerThick2,X);
-  ModelSupport::buildPlane(SMap,tIndex+34,Origin+X*length/2.0+X*activationLayerThick3,X);
+  ModelSupport::buildPlane(SMap,tIndex+14,Origin+X*width/2.0+X*activationLayerThick1,X);
+  ModelSupport::buildPlane(SMap,tIndex+24,Origin+X*width/2.0+X*activationLayerThick2,X);
+  ModelSupport::buildPlane(SMap,tIndex+34,Origin+X*width/2.0+X*activationLayerThick3,X);
 
   return;
 }
@@ -294,11 +294,23 @@ DiagnosticPlug::createObjects(Simulation& System,
   
   std::string Out;
 
+  Out=ModelSupport::getComposite(SMap,tIndex," 31 -32 33 -34") + strFloor + strRoof; 
+  addOuterSurf(Out);
+
+  Out=ModelSupport::getComposite(SMap,tIndex," 31 -32 33 -34 (-21:22:-23:24)") + strFloor + strRoof; 
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+  Out=ModelSupport::getComposite(SMap,tIndex," 21 -22 23 -24 (-11:12:-13:14)") + strFloor + strRoof; 
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+  Out=ModelSupport::getComposite(SMap,tIndex," 11 -12 13 -14 (-1:2:-3:4)") + strFloor + strRoof; 
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
   Out=ModelSupport::getComposite(SMap,tIndex," 1 -2 3 -4") + strFloor + strRoof; 
   System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
   setCell("main",cellIndex-1);
 
-  addOuterSurf(Out);
+  //addOuterSurf(Out);
 
   return; 
 }
