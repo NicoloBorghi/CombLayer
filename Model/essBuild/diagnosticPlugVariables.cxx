@@ -52,64 +52,67 @@
 
 namespace setVariable {
 
-	void EssDiagnosticPlug(FuncDataBase& Control) {
+        void EssDiagnosticPlug(FuncDataBase& Control) {
 
-		/*!
-			Variables that are used for the segmented wheel
-			\param Control :: Segment variables
-		*/
+                /*!
+                        Variables that are used for the segmented wheel
+                        \param Control :: Segment variables
+                */
 
-		// Diagnostic plug
-		Control.addVariable("DiagnosticPlugXStep",-17.2);
-		Control.addVariable("DiagnosticPlugYStep",211.0);
-		Control.addVariable("DiagnosticPlugZStep",0.0);
-		Control.addVariable("DiagnosticPlugXYangle",10.0);
-		Control.addVariable("DiagnosticPlugZangle",0.0);
-		Control.addVariable("DiagnosticPlugWidth",5.0);
-		Control.addVariable("DiagnosticPlugLength",50.0);
-		/* |  */
-		/* |  */
-		/* +->*/Control.addVariable("RectangularPinholeRadialPinholeOffset",0.0);
-		/* +->*/Control.addVariable("RectangularPinholeTransversalPinholeOffset",0.0);
-		/* +->*/Control.addVariable("RectangularPinholeDistancePinholeImagingPlane",100.0);
-		/* +->*/Control.addVariable("RectangularPinholeDistanceTargetSurfImagingPlane",200.0);
-		/* |  */
-		/* |  */
-		/* +->*/Control.addVariable("RectangularPinholeRadialPinholeWidth",0.02);
-		/* +->*/Control.addVariable("RectangularPinholeTransversalPinholeWidth",0.02);
-		/* |  */
-		/* |  */
-		/* +->*/Control.addVariable("RectangularPinholeArrayRadialPinholeOffset",0.0);
-		/* +->*/Control.addVariable("RectangularPinholeArrayTransversalPinholeOffset",0.0);
-		/* +->*/Control.addVariable("RectangularPinholeArrayDistancePinholeImagingPlane",100.0);
-		/* +->*/Control.addVariable("RectangularPinholeArrayDistanceTargetSurfImagingPlane",200.0);
-		/* |  */
-		/* |  */
-		/* +->*/Control.addVariable("RectangularPinholeArrayRadialPinholeWidth",0.02);
-		/* +->*/Control.addVariable("RectangularPinholeArrayTransversalPinholeWidth",0.02);
-		/* |  */
-		/* |  */
-		/* +->*/Control.addVariable("RectangularPinholeArrayPinholeNumber",5);
-		/* |  */
-		/* |  */
-//		/* |  */	/* --- NOT IMPLEMENTED YET --- */
-//		/* +->*/Control.addVariable("CircularPinholeRadialPinholeOffset",0.0);
-//		/* +->*/Control.addVariable("CircularPinholeTransversalPinholeOffset",0.0);
-//		/* +->*/Control.addVariable("CircularPinholeDistancePinholeImagingPlane",100.0);
-//		/* +->*/Control.addVariable("CircularPinholeDistanceTargetSurfImagingPlane",200.0);
-		/* |  */
-		/* |  */
-//		/* +->*/Control.addVariable("CircularPinholeRadius",1.0);
-		/* |  */
-		/* |  */
-		/* +->*/Control.addVariable("StrawCollimatorStrawWidth",0.1);
-		/* +->*/Control.addVariable("StrawCollimatorStrawLength",0.1);
-		/* +->*/Control.addVariable("StrawCollimatorRowDistance",0.1);
-		/* +->*/Control.addVariable("StrawCollimatorDistanceTargetSurfImagingPlane",200.0);
-		/* +->*/Control.addVariable("StrawCollimatorBulkMat","SS304");
+                // Diagnostic plug
+                Control.addVariable("DiagnosticPlugXStep",-17.2);
+                Control.addVariable("DiagnosticPlugYStep",211.0);
+                Control.addVariable("DiagnosticPlugZStep",0.0);
+                Control.addVariable("DiagnosticPlugXYangle",10.0);
+                Control.addVariable("DiagnosticPlugZangle",0.0);
+                Control.addVariable("DiagnosticPlugWidth",5.0);
+                Control.addVariable("DiagnosticPlugLength",50.0);
+                Control.addVariable("DiagnosticPlugActivationLayerThick1",1.0);
+                Control.addVariable("DiagnosticPlugActivationLayerThick2",2.0);
+                Control.addVariable("DiagnosticPlugActivationLayerThick3",5.0);
+                /* |  */
+                /* |  */
+                /* +->*/Control.addVariable("RectangularPinholeRadialPinholeOffset",0.0);
+                /* +->*/Control.addVariable("RectangularPinholeTransversalPinholeOffset",0.0);
+                /* +->*/Control.addVariable("RectangularPinholeDistancePinholeImagingPlane",100.0);
+                /* +->*/Control.addVariable("RectangularPinholeDistanceTargetSurfImagingPlane",200.0);
+                /* |  */
+                /* |  */
+                /* +->*/Control.addVariable("RectangularPinholeRadialPinholeWidth",0.02);
+                /* +->*/Control.addVariable("RectangularPinholeTransversalPinholeWidth",0.02);
+                /* |  */
+                /* |  */
+                /* +->*/Control.addVariable("RectangularPinholeArrayRadialPinholeOffset",0.0);
+                /* +->*/Control.addVariable("RectangularPinholeArrayTransversalPinholeOffset",0.0);
+                /* +->*/Control.addVariable("RectangularPinholeArrayDistancePinholeImagingPlane",100.0);
+                /* +->*/Control.addVariable("RectangularPinholeArrayDistanceTargetSurfImagingPlane",200.0);
+                /* |  */
+                /* |  */
+                /* +->*/Control.addVariable("RectangularPinholeArrayRadialPinholeWidth",0.02);
+                /* +->*/Control.addVariable("RectangularPinholeArrayTransversalPinholeWidth",0.02);
+                /* |  */
+                /* |  */
+                /* +->*/Control.addVariable("RectangularPinholeArrayPinholeNumber",5);
+                /* |  */
+                /* |  */
+//              /* |  */        /* --- NOT IMPLEMENTED YET --- */
+//              /* +->*/Control.addVariable("CircularPinholeRadialPinholeOffset",0.0);
+//              /* +->*/Control.addVariable("CircularPinholeTransversalPinholeOffset",0.0);
+//              /* +->*/Control.addVariable("CircularPinholeDistancePinholeImagingPlane",100.0);
+//              /* +->*/Control.addVariable("CircularPinholeDistanceTargetSurfImagingPlane",200.0);
+                /* |  */
+                /* |  */
+//              /* +->*/Control.addVariable("CircularPinholeRadius",1.0);
+                /* |  */
+                /* |  */
+                /* +->*/Control.addVariable("StrawCollimatorStrawWidth",0.1);
+                /* +->*/Control.addVariable("StrawCollimatorStrawLength",0.1);
+                /* +->*/Control.addVariable("StrawCollimatorRowDistance",0.1);
+                /* +->*/Control.addVariable("StrawCollimatorDistanceTargetSurfImagingPlane",200.0);
+                /* +->*/Control.addVariable("StrawCollimatorBulkMat","SS304");
 
-		return;
+                return;
 
-	}
+        }
   
 }  // NAMESPACE setVariable

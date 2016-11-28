@@ -165,6 +165,10 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
   width=Control.EvalVar<double>(keyName+"Width");
   length=Control.EvalVar<double>(keyName+"Length");
 
+  activationLayerThick1=Control.EvalVar<double>(keyName+"ActivationLayerThick1");
+  activationLayerThick2=Control.EvalVar<double>(keyName+"ActivationLayerThick2");
+  activationLayerThick3=Control.EvalVar<double>(keyName+"ActivationLayerThick3");
+
   const Geometry::Plane *floorPlane    = SMap.realPtr<Geometry::Plane>(floorSurfaceNumber);
   const Geometry::Plane *roofPlane     = SMap.realPtr<Geometry::Plane>(roofSurfaceNumber);
   const Geometry::Plane *targetTopSurf = SMap.realPtr<Geometry::Plane>(targetTopSurfaceNumber);
