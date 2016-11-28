@@ -246,10 +246,24 @@ DiagnosticPlug::createSurfaces()
   ELog::RegMethod RegA("DiagnosticPlug","createSurfaces");
 
   ModelSupport::buildPlane(SMap,tIndex+1,Origin-Y*length/2.0,Y);
+  ModelSupport::buildPlane(SMap,tIndex+11,Origin-Y*length/2.0-Y*activationLayerThick1,Y);
+  ModelSupport::buildPlane(SMap,tIndex+21,Origin-Y*length/2.0-Y*activationLayerThick2,Y);
+  ModelSupport::buildPlane(SMap,tIndex+31,Origin-Y*length/2.0-Y*activationLayerThick3,Y);
+
   ModelSupport::buildPlane(SMap,tIndex+2,Origin+Y*length/2.0,Y);
+  ModelSupport::buildPlane(SMap,tIndex+12,Origin+Y*length/2.0+Y*activationLayerThick1,Y);
+  ModelSupport::buildPlane(SMap,tIndex+22,Origin+Y*length/2.0+Y*activationLayerThick2,Y);
+  ModelSupport::buildPlane(SMap,tIndex+32,Origin+Y*length/2.0+Y*activationLayerThick3,Y);
 
   ModelSupport::buildPlane(SMap,tIndex+3,Origin-X*width/2.0,X);
+  ModelSupport::buildPlane(SMap,tIndex+13,Origin-X*length/2.0-X*activationLayerThick1,X);
+  ModelSupport::buildPlane(SMap,tIndex+23,Origin-X*length/2.0-X*activationLayerThick2,X);
+  ModelSupport::buildPlane(SMap,tIndex+33,Origin-X*length/2.0-X*activationLayerThick3,X);
+
   ModelSupport::buildPlane(SMap,tIndex+4,Origin+X*width/2.0,X);
+  ModelSupport::buildPlane(SMap,tIndex+14,Origin+X*length/2.0+X*activationLayerThick1,X);
+  ModelSupport::buildPlane(SMap,tIndex+24,Origin+X*length/2.0+X*activationLayerThick2,X);
+  ModelSupport::buildPlane(SMap,tIndex+34,Origin+X*length/2.0+X*activationLayerThick3,X);
 
   return;
 }
