@@ -324,24 +324,22 @@ DiagnosticPlug::createObjects(Simulation& System,
 
   std::string top,bottom;
 
-  for (size_t i = 1; i < (activationZPlanes.size() + 2); i++) {
+  for (size_t i = 0; i < (activationZPlanes.size()+1); i++) {
 
-        if (i == 1) {
+        if (i == 0) {
 
                 bottom = strFloor;
-                top = ModelSupport::getComposite(SMap,tIndex,10*(const int)(i-1)," -5M");
+                top = ModelSupport::getComposite(SMap,tIndex,tIndex+10*(const int)i," -5M");
 
-                std::cout << "=======================" << top << "  " << bottom << "==================" << std::endl;
+        } else if (i == (activationZPlanes.size())) {
 
-        } else if (i == (activationZPlanes.size()+1)) {
-
-                bottom = ModelSupport::getComposite(SMap,tIndex,10*(const int)(i-1)," 5M");
+                bottom = ModelSupport::getComposite(SMap,tIndex,tIndex+10*(const int)(i-1)," 5M");
                 top = strRoof;
 
         } else {
 
-                top = ModelSupport::getComposite(SMap,tIndex,10*(const int)(i-1)," -5M");
-                bottom = ModelSupport::getComposite(SMap,tIndex,10*(const int)(i-2)," 5M");
+                bottom = ModelSupport::getComposite(SMap,tIndex,tIndex+10*(const int)(i-1)," 5M");
+                top = ModelSupport::getComposite(SMap,tIndex,tIndex+10*(const int)(i)," -5M");
 
         }
 
