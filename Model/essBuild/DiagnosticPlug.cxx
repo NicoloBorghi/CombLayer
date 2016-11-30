@@ -166,14 +166,36 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
   length=Control.EvalVar<double>(keyName+"Length");
 
   activationLayerThick1=Control.EvalVar<double>(keyName+"ActivationLayerThick1");
-  activationLayerThick2=Control.EvalVar<double>(keyName+"ActivationLayerThick2");
-  activationLayerThick3=Control.EvalVar<double>(keyName+"ActivationLayerThick3");
+  activationLayerThick2=Control.EvalVar<double>(keyName+"ActivationLayerThick2") + activationLayerThick1;
+  activationLayerThick3=Control.EvalVar<double>(keyName+"ActivationLayerThick3") + activationLayerThick2;
+  activationLayerHeight=Control.EvalVar<double>(keyName+"ActivationLayerHeight");
 
   const Geometry::Plane *floorPlane    = SMap.realPtr<Geometry::Plane>(floorSurfaceNumber);
   const Geometry::Plane *roofPlane     = SMap.realPtr<Geometry::Plane>(roofSurfaceNumber);
   const Geometry::Plane *targetTopSurf = SMap.realPtr<Geometry::Plane>(targetTopSurfaceNumber);
 
   height = fabs(roofPlane->getDistance() - floorPlane->getDistance());
+
+  int i = 0;
+  double zPlane;
+
+  for (;;) {
+
+     zPlane = floorPlane->getDistance() + i*activationLayerHeight;
+
+     if (zPlane <= roofPlane->getDistance()) {
+
+        std::cout << "=============== zPlane ==================" << zPlane << std::endl;
+        activationZPlanes.push_back(zPlane);
+        i++;
+
+     } else {
+
+        break;
+
+     }
+
+  }
 
   if (Pinhole) {
 
@@ -265,6 +287,12 @@ DiagnosticPlug::createSurfaces()
   ModelSupport::buildPlane(SMap,tIndex+24,Origin+X*width/2.0+X*activationLayerThick2,X);
   ModelSupport::buildPlane(SMap,tIndex+34,Origin+X*width/2.0+X*activationLayerThick3,X);
 
+  for (size_t i = 0; i < activationZPlanes.size(); i++) {
+
+        ModelSupport::buildPlane(SMap,tIndex+(10*(const int)i+5),Z*activationZPlanes.at(i),Z);
+
+  }
+
   return;
 }
 
@@ -294,9 +322,44 @@ DiagnosticPlug::createObjects(Simulation& System,
   
   std::string Out;
 
+  std::string top,bottom;
+
+  for (size_t i = 1; i < (activationZPlanes.size() + 2); i++) {
+
+        if (i == 1) {
+
+                bottom = strFloor;
+                top = ModelSupport::getComposite(SMap,tIndex,10*(const int)(i-1)," -5M");
+
+                std::cout << "=======================" << top << "  " << bottom << "==================" << std::endl;
+
+        } else if (i == (activationZPlanes.size()+1)) {
+
+                bottom = ModelSupport::getComposite(SMap,tIndex,10*(const int)(i-1)," 5M");
+                top = strRoof;
+
+        } else {
+
+                top = ModelSupport::getComposite(SMap,tIndex,10*(const int)(i-1)," -5M");
+                bottom = ModelSupport::getComposite(SMap,tIndex,10*(const int)(i-2)," 5M");
+
+        }
+
+  Out=ModelSupport::getComposite(SMap,tIndex," 31 -32 33 -34 (-21:22:-23:24)") + bottom + top; 
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+  Out=ModelSupport::getComposite(SMap,tIndex," 21 -22 23 -24 (-11:12:-13:14)") + bottom + top; 
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+  Out=ModelSupport::getComposite(SMap,tIndex," 11 -12 13 -14 (-1:2:-3:4)") + bottom + top;
+  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+  }
+
   Out=ModelSupport::getComposite(SMap,tIndex," 31 -32 33 -34") + strFloor + strRoof; 
   addOuterSurf(Out);
 
+/*
   Out=ModelSupport::getComposite(SMap,tIndex," 31 -32 33 -34 (-21:22:-23:24)") + strFloor + strRoof; 
   System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
 
@@ -305,6 +368,7 @@ DiagnosticPlug::createObjects(Simulation& System,
 
   Out=ModelSupport::getComposite(SMap,tIndex," 11 -12 13 -14 (-1:2:-3:4)") + strFloor + strRoof; 
   System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+*/
 
   Out=ModelSupport::getComposite(SMap,tIndex," 1 -2 3 -4") + strFloor + strRoof; 
   System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));

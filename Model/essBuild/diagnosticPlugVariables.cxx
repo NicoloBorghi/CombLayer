@@ -70,6 +70,7 @@ namespace setVariable {
                 Control.addVariable("DiagnosticPlugActivationLayerThick1",1.0);
                 Control.addVariable("DiagnosticPlugActivationLayerThick2",2.0);
                 Control.addVariable("DiagnosticPlugActivationLayerThick3",5.0);
+                Control.addVariable("DiagnosticPlugActivationLayerHeight",50.0);
                 /* |  */
                 /* |  */
                 /* +->*/Control.addVariable("RectangularPinholeRadialPinholeOffset",0.0);

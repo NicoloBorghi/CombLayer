@@ -59,6 +59,8 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   double activationLayerThick1;   ///< Thickness of the first layer for activation calculation
   double activationLayerThick2;   ///< Thickness of the second layer for activation calculation
   double activationLayerThick3;   ///< Thickness of the third layer for activation calculation
+  double activationLayerHeight;   ///< Height of the activation segments
+  std::vector<double> activationZPlanes; ///< Z coordinate of the horizontal segmentation planes
 
   int floorSurfaceNumber;          ///< Diagnostic plug floor surface number
   int roofSurfaceNumber;          ///< Diagnostic plug roof surface number
