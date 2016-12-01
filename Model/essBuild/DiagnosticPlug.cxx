@@ -329,17 +329,17 @@ DiagnosticPlug::createObjects(Simulation& System,
         if (i == 0) {
 
                 bottom = strFloor;
-                top = ModelSupport::getComposite(SMap,tIndex,tIndex+10*(const int)i," -5M");
+                top = ModelSupport::getComposite(SMap,tIndex+10*(const int)i," -5");
 
         } else if (i == (activationZPlanes.size())) {
 
-                bottom = ModelSupport::getComposite(SMap,tIndex,tIndex+10*(const int)(i-1)," 5M");
+                bottom = ModelSupport::getComposite(SMap,tIndex+10*(const int)(i-1)," 5");
                 top = strRoof;
 
         } else {
 
-                bottom = ModelSupport::getComposite(SMap,tIndex,tIndex+10*(const int)(i-1)," 5M");
-                top = ModelSupport::getComposite(SMap,tIndex,tIndex+10*(const int)(i)," -5M");
+                bottom = ModelSupport::getComposite(SMap,tIndex+10*(const int)(i-1)," 5");
+                top = ModelSupport::getComposite(SMap,tIndex+10*(const int)(i)," -5");
 
         }
 
