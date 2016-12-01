@@ -232,6 +232,12 @@ namespace essSystem {
 
                 }
 
+		// Segmentation for activation calculations
+
+		activationLayerThick1 = Control.EvalVar<double>(keyName+"ActivationLayerThick1");
+		activationLayerThick2 = Control.EvalVar<double>(keyName+"ActivationLayerThick2") + activationLayerThick1;
+		activationLayerThick3 = Control.EvalVar<double>(keyName+"ActivationLayerThick3") + activationLayerThick2;
+
                 bulkMat = ModelSupport::EvalMat<int>(Control,keyName+"BulkMat");
 
                 return;
@@ -306,6 +312,13 @@ namespace essSystem {
                         }
 
                 }
+
+		// Horizontal planes for segmentation (activation)
+		// Planes are positioned with reference to the Imaging plane defined above
+
+		ModelSupport::buildPlane(SMap,strawIndex+6,Origin+Z*zImagingPlane-Z*activationLayerThick1,Z);
+		ModelSupport::buildPlane(SMap,strawIndex+16,Origin+Z*zImagingPlane-Z*activationLayerThick2,Z);
+		ModelSupport::buildPlane(SMap,strawIndex+26,Origin+Z*zImagingPlane-Z*activationLayerThick3,Z);
 
                 ELog::EM << "=== nStraws = " << nStraws << " ===" << ELog::endDiag;
 

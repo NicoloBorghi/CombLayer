@@ -65,7 +65,7 @@ namespace essSystem {
 
 			// Variables relative to the DiagnosticPlug, necessary for building the straw collimator
 
-  					 double   xStep;						///< X step (obtained from DiagnosticPlug)
+					 double   xStep;						///< X step (obtained from DiagnosticPlug)
 					 double   yStep;						///< Y step (obtained from DiagnosticPlug)
 					 double   zStep;						///< Z step (obtained from DiagnosticPlug)
 					 double   xyAngle;						///< XY Angle (obtained from DiagnosticPlug)
@@ -82,6 +82,12 @@ namespace essSystem {
 					 double   heightImagingSystem;					///< Height of the imaging system measured from the DiagnosticPlug floor to the imaging plane
 					 double   zImagingPlane;					///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
 					 double   distanceTargetSurfImagingPlane;			///< Distance between the target upper surface and the imaging plane
+
+			// Variables relative to the segmentation for activation calculations
+
+					 double   activationLayerThick1;
+					 double   activationLayerThick2;
+					 double   activationLayerThick3;
 
 			// Variables relative to the straw collimator
 
