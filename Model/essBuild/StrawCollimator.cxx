@@ -353,15 +353,54 @@ namespace essSystem {
                 System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
 
                 // Central structure
-                Out = ModelSupport::getComposite(SMap,strawIndex," -5 13 -14") + strFloor + strBackWall + strFrontWall;
-                System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                // Out = ModelSupport::getComposite(SMap,strawIndex," -5 13 -14") + strFloor + strBackWall + strFrontWall;
+                // System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			// Redefinition of the cental structure for activation calculations
+			Out = ModelSupport::getComposite(SMap,strawIndex," -5 6 13 -14") + strBackWall + strFrontWall;
+                	System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
+			Out = ModelSupport::getComposite(SMap,strawIndex," -6 16 13 -14") + strBackWall + strFrontWall;
+                	System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
+			Out = ModelSupport::getComposite(SMap,strawIndex," -16 26 13 -14") + strBackWall + strFrontWall;
+                	System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
+			Out = ModelSupport::getComposite(SMap,strawIndex," -26 13 -14") + strFloor + strBackWall + strFrontWall;
+                	System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
 
                 // Outer straw surfaces
-                Out = ModelSupport::getComposite(SMap,strawIndex," -5 -23") + strLeftWall + strFloor + strBackWall + strFrontWall;
-                System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                // Out = ModelSupport::getComposite(SMap,strawIndex," -5 -23") + strLeftWall + strFloor + strBackWall + strFrontWall;
+                // System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			// Redefinition of the outer straw surfaces for activation calculations
+			Out = ModelSupport::getComposite(SMap,strawIndex," -5 6 -23") + strLeftWall + strBackWall + strFrontWall;
+			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
+			Out = ModelSupport::getComposite(SMap,strawIndex," -6 16 -23") + strLeftWall + strBackWall + strFrontWall;
+			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
+			Out = ModelSupport::getComposite(SMap,strawIndex," -16 26 -23") + strLeftWall + strBackWall + strFrontWall;
+			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
+			Out = ModelSupport::getComposite(SMap,strawIndex," -26 -23") + strFloor + strLeftWall + strBackWall + strFrontWall;
+			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
 
-                Out = ModelSupport::getComposite(SMap,strawIndex," -5 24") + strRightWall + strFloor + strBackWall + strFrontWall;
-                System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                //Out = ModelSupport::getComposite(SMap,strawIndex," -5 24") + strRightWall + strFloor + strBackWall + strFrontWall;
+                //System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			// Redefinition of the outer straw surfaces for activation calculations
+			Out = ModelSupport::getComposite(SMap,strawIndex," -5 6 24") + strRightWall + strBackWall + strFrontWall;
+			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
+			Out = ModelSupport::getComposite(SMap,strawIndex," -6 16 24") + strRightWall + strBackWall + strFrontWall;
+			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
+			Out = ModelSupport::getComposite(SMap,strawIndex," -16 26 24") + strRightWall + strBackWall + strFrontWall;
+			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
+			Out = ModelSupport::getComposite(SMap,strawIndex," -26 24") + strFloor + strRightWall + strBackWall + strFrontWall;
+			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+			//===
 
                 //std::string OutLeft = ModelSupport::getComposite(SMap,strawIndex,"-5 23 -13") + strFloor;
                 //std::string OutRight = ModelSupport::getComposite(SMap,strawIndex,"-5 14 -24") + strFloor;
