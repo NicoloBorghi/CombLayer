@@ -363,8 +363,25 @@ namespace essSystem {
                 Out = ModelSupport::getComposite(SMap,strawIndex," -5 24") + strRightWall + strFloor + strBackWall + strFrontWall;
                 System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
 
-                std::string OutLeft = ModelSupport::getComposite(SMap,strawIndex,"-5 23 -13") + strFloor;
-                std::string OutRight = ModelSupport::getComposite(SMap,strawIndex,"-5 14 -24") + strFloor;
+                //std::string OutLeft = ModelSupport::getComposite(SMap,strawIndex,"-5 23 -13") + strFloor;
+                //std::string OutRight = ModelSupport::getComposite(SMap,strawIndex,"-5 14 -24") + strFloor;
+
+		// Redefinition of OutLeft and OutRight to accommodate the three new surfaces for activation calculations
+		std::vector<std::string> ActivationOutLeft;
+		std::vector<std::string> ActivationOutRight;
+		//=======================================================================================================
+		ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-5 6 23 -13"));
+		ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-5 6 14 -24"));
+		//===
+		ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-6 16 23 -13"));
+		ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-6 16 14 -24"));
+		//===
+		ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-16 26 23 -13"));
+		ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-16 26 14 -24"));
+		//===
+		ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-26 23 -13") + strFloor);
+		ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-26 14 -24") + strFloor);
+		//=======================================================================================================
 
                 int tmpMatLeft = 0;
                 int tmpMatRight = bulkMat;
@@ -387,9 +404,13 @@ namespace essSystem {
 
                         tmpMatLeft = ((i % 2) == 0) ? 0 : bulkMat;
                         tmpMatRight = ((i % 2) == 1) ? 0 : bulkMat;
+
+			for (size_t j = 0; j < ActivationOutLeft.size(); j++) { // Remove this for cycle and adjust ActivationOutLeft accordingly in case of slow geometry
                         
-                        System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatLeft, 300.0, OutLeft + Out));
-                        System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatRight, 300.0, OutRight + Out));
+                        	System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatLeft, 300.0, ActivationOutLeft.at(j) + Out));
+                        	System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatRight, 300.0, ActivationOutRight.at(j) + Out));
+
+			}
 
                 }
 
