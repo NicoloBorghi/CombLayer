@@ -213,6 +213,8 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
 
   }
 
+  activationWallsMaterial = ModelSupport::EvalMat<int>(Control,keyName+"ActivationWallsMaterial");
+
   return;
 }
 
@@ -344,13 +346,13 @@ DiagnosticPlug::createObjects(Simulation& System,
         }
 
   Out=ModelSupport::getComposite(SMap,tIndex," 31 -32 33 -34 (-21:22:-23:24)") + bottom + top; 
-  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+  System.addCell(MonteCarlo::Qhull(cellIndex++, activationWallsMaterial, 0.0, Out));
 
   Out=ModelSupport::getComposite(SMap,tIndex," 21 -22 23 -24 (-11:12:-13:14)") + bottom + top; 
-  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+  System.addCell(MonteCarlo::Qhull(cellIndex++, activationWallsMaterial, 0.0, Out));
 
   Out=ModelSupport::getComposite(SMap,tIndex," 11 -12 13 -14 (-1:2:-3:4)") + bottom + top;
-  System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+  System.addCell(MonteCarlo::Qhull(cellIndex++, activationWallsMaterial, 0.0, Out));
 
   }
 
