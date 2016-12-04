@@ -74,182 +74,182 @@
 
 namespace essSystem {
 
-	PinholeBase::PinholeBase(const std::string& Key)   :	attachSystem::ContainedComp(),
-								attachSystem::FixedComp(Key, 20),
-								attachSystem::CellMap(),
-								pinholeIndex( ModelSupport::objectRegister::Instance().cell(Key) ),
-								cellIndex( pinholeIndex+1 ) {
+        PinholeBase::PinholeBase(const std::string& Key)   :    attachSystem::ContainedComp(),
+                                                                attachSystem::FixedComp(Key, 20),
+                                                                attachSystem::CellMap(),
+                                                                pinholeIndex( ModelSupport::objectRegister::Instance().cell(Key) ),
+                                                                cellIndex( pinholeIndex+1 ) {
 
-		/*!
-			Constructor
-			\param Key :: Name of construction key
-		*/
+                /*!
+                        Constructor
+                        \param Key :: Name of construction key
+                */
 
-	}
+        }
 
-	PinholeBase::PinholeBase(const PinholeBase& A)    :	attachSystem::ContainedComp(A),
-								attachSystem::FixedComp(A),
-								attachSystem::CellMap(A),  
-								pinholeIndex(A.pinholeIndex),
-								cellIndex(A.cellIndex),
-								zImagingPlane(A.zImagingPlane),
-								radialPinholeOffset(A.radialPinholeOffset),
-								radialPinholeWidth(A.radialPinholeWidth),
-								transversalPinholeOffset(A.transversalPinholeOffset),
-								transversalPinholeWidth(A.transversalPinholeWidth),
-								distancePinholeImagingPlane(A.distancePinholeImagingPlane),
-								distanceTargetSurfImagingPlane(A.distanceTargetSurfImagingPlane),
-								zPinholePos(A.zPinholePos),
-								pinholePos(A.pinholePos) {
-		/*!
-			Copy constructor
-			\param A :: PinholeBase to copy
-		*/
+        PinholeBase::PinholeBase(const PinholeBase& A)    :     attachSystem::ContainedComp(A),
+                                                                attachSystem::FixedComp(A),
+                                                                attachSystem::CellMap(A),  
+                                                                pinholeIndex(A.pinholeIndex),
+                                                                cellIndex(A.cellIndex),
+                                                                zImagingPlane(A.zImagingPlane),
+                                                                radialPinholeOffset(A.radialPinholeOffset),
+                                                                radialPinholeWidth(A.radialPinholeWidth),
+                                                                transversalPinholeOffset(A.transversalPinholeOffset),
+                                                                transversalPinholeWidth(A.transversalPinholeWidth),
+                                                                distancePinholeImagingPlane(A.distancePinholeImagingPlane),
+                                                                distanceTargetSurfImagingPlane(A.distanceTargetSurfImagingPlane),
+                                                                zPinholePos(A.zPinholePos),
+                                                                pinholePos(A.pinholePos) {
+                /*!
+                        Copy constructor
+                        \param A :: PinholeBase to copy
+                */
 
-	}
+        }
 
-	PinholeBase& PinholeBase::operator=(const PinholeBase& A) {
+        PinholeBase& PinholeBase::operator=(const PinholeBase& A) {
 
-		/*!
-			Assignment operator
-			\param A :: PinholeBase to copy
-			\return *this
-		*/
+                /*!
+                        Assignment operator
+                        \param A :: PinholeBase to copy
+                        \return *this
+                */
 
-		if (this!=&A)     {
+                if (this!=&A)     {
 
-			attachSystem::ContainedComp::operator=(A);
-			attachSystem::FixedComp::operator=(A);
-			CellMap::operator=(A);
-			cellIndex=A.cellIndex;
-			zImagingPlane=A.zImagingPlane;
-			radialPinholeOffset=A.radialPinholeOffset;
-			radialPinholeWidth=A.radialPinholeWidth;
-			transversalPinholeOffset=A.transversalPinholeOffset;
-			transversalPinholeWidth=A.transversalPinholeWidth;
-			distancePinholeImagingPlane=A.distancePinholeImagingPlane;
-			distanceTargetSurfImagingPlane=A.distanceTargetSurfImagingPlane;
-			zPinholePos=A.zPinholePos;
-			pinholePos=A.pinholePos;
-		}
+                        attachSystem::ContainedComp::operator=(A);
+                        attachSystem::FixedComp::operator=(A);
+                        CellMap::operator=(A);
+                        cellIndex=A.cellIndex;
+                        zImagingPlane=A.zImagingPlane;
+                        radialPinholeOffset=A.radialPinholeOffset;
+                        radialPinholeWidth=A.radialPinholeWidth;
+                        transversalPinholeOffset=A.transversalPinholeOffset;
+                        transversalPinholeWidth=A.transversalPinholeWidth;
+                        distancePinholeImagingPlane=A.distancePinholeImagingPlane;
+                        distanceTargetSurfImagingPlane=A.distanceTargetSurfImagingPlane;
+                        zPinholePos=A.zPinholePos;
+                        pinholePos=A.pinholePos;
+                }
 
-		return *this;
+                return *this;
 
-	}
+        }
   
-	PinholeBase::~PinholeBase() {
+        PinholeBase::~PinholeBase() {
 
-		/*!
-			Destructor
-		*/
+                /*!
+                        Destructor
+                */
 
-	}
+        }
 
-	void PinholeBase::setXYZSteps(double xS, double yS, double zS) {
+        void PinholeBase::setXYZSteps(double xS, double yS, double zS) {
 
-		ELog::RegMethod RegA("PinholeBase","setXYZSteps");
+                ELog::RegMethod RegA("PinholeBase","setXYZSteps");
 
-		xStep = xS;
-		yStep = yS;
-		zStep = zS;
+                xStep = xS;
+                yStep = yS;
+                zStep = zS;
 
-		return;
+                return;
 
-	}
+        }
 
-	void PinholeBase::setAngles(double xyA, double zA) {
+        void PinholeBase::setAngles(double xyA, double zA) {
 
-		ELog::RegMethod RegA("PinholeBase","setAngles");
+                ELog::RegMethod RegA("PinholeBase","setAngles");
 
-		xyAngle = xyA;
-		zAngle = zA;
+                xyAngle = xyA;
+                zAngle = zA;
 
-		return;
+                return;
 
-	}
+        }
 
-	void PinholeBase::setDimensions(double l, double w, double h) {
+        void PinholeBase::setDimensions(double l, double w, double h) {
 
-		ELog::RegMethod RegA("PinholeBase","setDimensions");
+                ELog::RegMethod RegA("PinholeBase","setDimensions");
 
-		length = l;
-		width = w;
-		height = h;
+                length = l;
+                width = w;
+                height = h;
 
-		return;
+                return;
 
-	}
+        }
 
-	void PinholeBase::setBoundarySurfacesZ(double fZ, double rZ, double tZ) {
+        void PinholeBase::setBoundarySurfacesZ(double fZ, double rZ, double tZ) {
 
-		ELog::RegMethod RegA("PinholeBase","setTargetTopSurf");
+                ELog::RegMethod RegA("PinholeBase","setTargetTopSurf");
 
-		floorSurfaceZ = fZ;
-		roofSurfaceZ = rZ;
-		targetTopSurfZ = tZ;
+                floorSurfaceZ = fZ;
+                roofSurfaceZ = rZ;
+                targetTopSurfZ = tZ;
 
-		return;
+                return;
 
-	}
+        }
 
-	void PinholeBase::populateBase(const FuncDataBase& Control) {
+        void PinholeBase::populateBase(const FuncDataBase& Control) {
 
-		ELog::RegMethod RegA("PinholeBase","populateBase");
+                ELog::RegMethod RegA("PinholeBase","populateBase");
 
 
-		distancePinholeImagingPlane    = Control.EvalVar<double>(keyName+"DistancePinholeImagingPlane");
-		distanceTargetSurfImagingPlane = Control.EvalVar<double>(keyName+"DistanceTargetSurfImagingPlane");
+                distancePinholeImagingPlane    = Control.EvalVar<double>(keyName+"DistancePinholeImagingPlane");
+                distanceTargetSurfImagingPlane = Control.EvalVar<double>(keyName+"DistanceTargetSurfImagingPlane");
 
-		radialPinholeOffset            = Control.EvalVar<double>(keyName+"RadialPinholeOffset");
+                radialPinholeOffset            = Control.EvalVar<double>(keyName+"RadialPinholeOffset");
 
-		transversalPinholeOffset       = Control.EvalVar<double>(keyName+"TransversalPinholeOffset");
+                transversalPinholeOffset       = Control.EvalVar<double>(keyName+"TransversalPinholeOffset");
 
-		zImagingPlane = distanceTargetSurfImagingPlane + targetTopSurfZ;
+                zImagingPlane = distanceTargetSurfImagingPlane + targetTopSurfZ;
 
-		ELog::EM << "=== zImagingPlane === " << zImagingPlane << ELog::endDiag;
+                ELog::EM << "=== zImagingPlane === " << zImagingPlane << ELog::endDiag;
 
-		if ( (zImagingPlane <= floorSurfaceZ) || (zImagingPlane >= roofSurfaceZ) ) { 
+                if ( (zImagingPlane <= floorSurfaceZ) || (zImagingPlane >= roofSurfaceZ) ) { 
 
-			throw ColErr::RangeError<double>(distanceTargetSurfImagingPlane, 
-							(floorSurfaceZ - targetTopSurfZ),
-							(roofSurfaceZ - targetTopSurfZ),
-							"DistanceTargetSurfImagingPlane must be set within the diagnostic plug hole.");
+                        throw ColErr::RangeError<double>(distanceTargetSurfImagingPlane, 
+                                                        (floorSurfaceZ - targetTopSurfZ),
+                                                        (roofSurfaceZ - targetTopSurfZ),
+                                                        "DistanceTargetSurfImagingPlane must be set within the diagnostic plug hole.");
 
-		}
+                }
 
-		heightImagingSystem = zImagingPlane - floorSurfaceZ;
+                heightImagingSystem = zImagingPlane - floorSurfaceZ;
 
-		if ( (distancePinholeImagingPlane <= 0) || (distancePinholeImagingPlane >= heightImagingSystem) ) {
+                if ( (distancePinholeImagingPlane <= 0) || (distancePinholeImagingPlane >= heightImagingSystem) ) {
 
-			throw ColErr::RangeError<double>(distancePinholeImagingPlane,
-							0.0,
-							heightImagingSystem,
-							"DistancePinholeImagingPlane must be larger than 0 and must be be within the allowed gap in the diagnostic plug.");
+                        throw ColErr::RangeError<double>(distancePinholeImagingPlane,
+                                                        0.0,
+                                                        heightImagingSystem,
+                                                        "DistancePinholeImagingPlane must be larger than 0 and must be be within the allowed gap in the diagnostic plug.");
 
-		}
+                }
 
-		zPinholePos = zImagingPlane - distancePinholeImagingPlane;
+                zPinholePos = zImagingPlane - distancePinholeImagingPlane;
 
-		if ( fabs(radialPinholeOffset) >= (length/2.0) ) {
+                if ( fabs(radialPinholeOffset) >= (length/2.0) ) {
 
-			throw ColErr::RangeError<double>(radialPinholeOffset,
-							-1.0*(length/2.0),
-							(length/2.0),
-							"The radial offset must not exceed the diagnostic plug radial borders.");
+                        throw ColErr::RangeError<double>(radialPinholeOffset,
+                                                        -1.0*(length/2.0),
+                                                        (length/2.0),
+                                                        "The radial offset must not exceed the diagnostic plug radial borders.");
 
-		}
+                }
 
-		if ( fabs(transversalPinholeOffset) >= (width/2.0) ) {
+                if ( fabs(transversalPinholeOffset) >= (width/2.0) ) {
 
-			throw ColErr::RangeError<double>(transversalPinholeOffset,
-							-1.0*(width/2.0),
-							(width/2.0),
-							"The transversal offset must not exceed the diagnostic plug transversal borders.");
+                        throw ColErr::RangeError<double>(transversalPinholeOffset,
+                                                        -1.0*(width/2.0),
+                                                        (width/2.0),
+                                                        "The transversal offset must not exceed the diagnostic plug transversal borders.");
 
-		}
+                }
 
-		return;
+                return;
 
-	}
+        }
 
 }

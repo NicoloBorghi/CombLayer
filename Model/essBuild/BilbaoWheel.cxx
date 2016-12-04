@@ -209,8 +209,8 @@ BilbaoWheel::populate(const FuncDataBase& Control)
       M = Control.EvalVar<int>(keyName+"MatTYPE"+nStr);   
 
       if (i && R-radius.back()<Geometry::zeroTol)
-	ELog::EM<<"Radius["<<i+1<<"] not ordered "
-		<<R<<" "<<radius.back()<<ELog::endErr;
+        ELog::EM<<"Radius["<<i+1<<"] not ordered "
+                <<R<<" "<<radius.back()<<ELog::endErr;
       radius.push_back(R);
       matTYPE.push_back(M);
     }
@@ -238,8 +238,8 @@ BilbaoWheel::populate(const FuncDataBase& Control)
       R = Control.EvalVar<double>(keyName+"ShaftRadius"+nStr);
       M = ModelSupport::EvalMat<int>(Control,keyName+"ShaftMat"+nStr);
       if (i && R-shaftRadius.back()<Geometry::zeroTol)
-	ELog::EM<<"ShaftRadius["<<i+1<<"] not ordered "
-		<<R<<" "<<shaftRadius.back()<<ELog::endErr;
+        ELog::EM<<"ShaftRadius["<<i+1<<"] not ordered "
+                <<R<<" "<<shaftRadius.back()<<ELog::endErr;
       shaftRadius.push_back(R);
       shaftMat.push_back(M);
     }
@@ -287,7 +287,7 @@ BilbaoWheel::makeShaftObjects(Simulation& System)
   std::string Out;
 
   // Main body [disk]
-  Out=ModelSupport::getComposite(SMap,wheelIndex,"-7 5 -6");	  
+  Out=ModelSupport::getComposite(SMap,wheelIndex,"-7 5 -6");      
   System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,mainTemp,Out));
 
   // steel : inner shroud above/below
@@ -297,7 +297,7 @@ BilbaoWheel::makeShaftObjects(Simulation& System)
 
   // void
   Out=ModelSupport::getComposite
-    (SMap,wheelIndex, " -1027 55 -56 (-45 : 46 2027)" );	
+    (SMap,wheelIndex, " -1027 55 -56 (-45 : 46 2027)" );        
   System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
 
   // shaft
@@ -305,23 +305,23 @@ BilbaoWheel::makeShaftObjects(Simulation& System)
   for (size_t i=0; i<nShaftLayers; i++)
     {
       if (i==0)
-	{
-	  Out=ModelSupport::getComposite
-	    (SMap,SI,wheelIndex," -2007 6M -2006M ");
-	  System.addCell(MonteCarlo::Qhull
-			 (cellIndex++,shaftMat[i],mainTemp,Out));
-	}
+        {
+          Out=ModelSupport::getComposite
+            (SMap,SI,wheelIndex," -2007 6M -2006M ");
+          System.addCell(MonteCarlo::Qhull
+                         (cellIndex++,shaftMat[i],mainTemp,Out));
+        }
       else
-	{
-	  Out=ModelSupport::getComposite
-	    (SMap,SI,SI-10,wheelIndex," -2007 2007M 26 -2006N ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,shaftMat[i],mainTemp,Out));
-	}
+        {
+          Out=ModelSupport::getComposite
+            (SMap,SI,SI-10,wheelIndex," -2007 2007M 26 -2006N ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,shaftMat[i],mainTemp,Out));
+        }
       if (i==nShaftLayers-1)
-	{
-	  Out=ModelSupport::getComposite(SMap,SI,wheelIndex," -2007 56M -2006M ");
-	  addOuterSurf("Shaft",Out);  
-	}
+        {
+          Out=ModelSupport::getComposite(SMap,SI,wheelIndex," -2007 56M -2006M ");
+          addOuterSurf("Shaft",Out);  
+        }
       SI += 10;
     }
   
@@ -461,7 +461,7 @@ BilbaoWheel::createSurfaces()
 
   // step to outer radius:
   ModelSupport::buildCylinder(SMap,wheelIndex+1027,Origin,
-			      Z,coolantRadiusIn);
+                              Z,coolantRadiusIn);
 
 
   H  = targetHeight/2.0;
@@ -495,7 +495,7 @@ BilbaoWheel::createSurfaces()
 
   Geometry::EllipticCyl* ECPtr=
     ModelSupport::buildEllipticCyl(SMap,wheelIndex+528,Origin,Z,
-				   X,caseRadius,caseRadius);
+                                   X,caseRadius,caseRadius);
 
   GA->normalizeGEQ(0);
   //  ELog::EM<<"XXN ="<<*GA<<ELog::endDiag;
@@ -534,14 +534,14 @@ BilbaoWheel::createObjects(Simulation& System)
       Out=ModelSupport::getComposite(SMap,wheelIndex,SI," 7M -17M 5 -6 ");
 
       if ((matTYPE[i]==3) && (engActive))
-	{
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,matNum[matTYPE[i]],mainTemp,Out));  
-	  CellMap::setCell("Inner",cellIndex-1);
-	  nInner++;
-	  if (nInner>1)
-	    ELog::EM << "More than one spallation layer" << ELog::endErr;
-	} else
-	  divideRadial(System, Out, matNum[matTYPE[i]]);
+        {
+          System.addCell(MonteCarlo::Qhull(cellIndex++,matNum[matTYPE[i]],mainTemp,Out));  
+          CellMap::setCell("Inner",cellIndex-1);
+          nInner++;
+          if (nInner>1)
+            ELog::EM << "More than one spallation layer" << ELog::endErr;
+        } else
+          divideRadial(System, Out, matNum[matTYPE[i]]);
 
       SI+=10;
     }
@@ -552,38 +552,38 @@ BilbaoWheel::createObjects(Simulation& System)
 
   // Void above/below W
   Out=ModelSupport::getComposite(SMap,wheelIndex,SI,
-				 " -7M 15 -16 (-5 : 6 2007)" );
+                                 " -7M 15 -16 (-5 : 6 2007)" );
   System.addCell(MonteCarlo::Qhull(cellIndex++,0,mainTemp,Out));
 
   // Steel above/below W
   Out=ModelSupport::getComposite(SMap,wheelIndex,SI,
-				 " -7M 25 -26 (-15 : 16 2007)" );
+                                 " -7M 25 -26 (-15 : 16 2007)" );
   System.addCell(MonteCarlo::Qhull(cellIndex++,steelMat,mainTemp,Out));
 
 
   // Coolant
   Out=ModelSupport::getComposite(SMap,wheelIndex,SI,
-				 " -7M 35 -36 (-25 : 26 2007)" );	// He above/below W
+                                 " -7M 35 -36 (-25 : 26 2007)" );       // He above/below W
   System.addCell(MonteCarlo::Qhull(cellIndex++,ssVoidMat,mainTemp,Out));
 
   // Metal surround [ UNACCEPTABLE JUNK CELL]
   // Metal front:
-  Out=ModelSupport::getComposite(SMap,wheelIndex,"-527 517 35 -36");	
+  Out=ModelSupport::getComposite(SMap,wheelIndex,"-527 517 35 -36");    
   divideRadial(System, Out, steelMat);
 
   // forward Main sections:
-  Out=ModelSupport::getComposite(SMap,wheelIndex,"-527 1027 -126 36");	 // outer above W
+  Out=ModelSupport::getComposite(SMap,wheelIndex,"-527 1027 -126 36");   // outer above W
   System.addCell(MonteCarlo::Qhull(cellIndex++,steelMat,mainTemp,Out));
 
-  Out=ModelSupport::getComposite(SMap,wheelIndex,"-527 1027 125 -35");	
+  Out=ModelSupport::getComposite(SMap,wheelIndex,"-527 1027 125 -35");  
   System.addCell(MonteCarlo::Qhull(cellIndex++,steelMat,mainTemp,Out)); // outer below W
 
   // Void surround
   Out=ModelSupport::getComposite(SMap,wheelIndex,
-				 "1027 55 -56 -537 (-125:126:527)");
+                                 "1027 55 -56 -537 (-125:126:527)");
   divideRadial(System, Out, 0);
   
-  Out=ModelSupport::getComposite(SMap,wheelIndex,"-537 55 -56");	
+  Out=ModelSupport::getComposite(SMap,wheelIndex,"-537 55 -56");        
   addOuterSurf("Wheel",Out);
 
   return; 
@@ -636,18 +636,18 @@ BilbaoWheel::createLinks()
   for (size_t i=0; i<nLayers; i++)
     {
       if (matTYPE[i]==3) // Tungsten layer
-	{
-	  FixedComp::setConnect(8, Origin+Y*radius[i-1], Y);
-	  FixedComp::setLinkSurf(8, SMap.realSurf(SI+7));
+        {
+          FixedComp::setConnect(8, Origin+Y*radius[i-1], Y);
+          FixedComp::setLinkSurf(8, SMap.realSurf(SI+7));
 
-	  FixedComp::setConnect(9, Origin+Y*radius[i], -Y);
-	  FixedComp::setLinkSurf(9, -SMap.realSurf(SI+17));
+          FixedComp::setConnect(9, Origin+Y*radius[i], -Y);
+          FixedComp::setLinkSurf(9, -SMap.realSurf(SI+17));
 
-	  FixedComp::setConnect(10, Origin+Z*targetZTopSurface, Z);
-	  FixedComp::setLinkSurf(10, SMap.realSurf(wheelIndex+126));
+          FixedComp::setConnect(10, Origin+Z*targetZTopSurface, Z);
+          FixedComp::setLinkSurf(10, SMap.realSurf(wheelIndex+126));
 
-	  return; // !!! we assume that there is only one Tungsten layer
-	}
+          return; // !!! we assume that there is only one Tungsten layer
+        }
       SI+=10;
     }
 
@@ -656,7 +656,7 @@ BilbaoWheel::createLinks()
 
 void
 BilbaoWheel::createAll(Simulation& System,
-		     const attachSystem::FixedComp& FC)
+                     const attachSystem::FixedComp& FC)
   /*!
     Extrenal build everything
     \param System :: Simulation

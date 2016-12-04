@@ -214,9 +214,9 @@ CylPreMod::checkItems(const attachSystem::FixedComp& Mod)
       OutPt=Mod.getLinkPt(i)-Origin;
       const Geometry::Vec3D TP=Mod.getLinkPt(i);
       if (OutPt.dotProd(Z)>0.0)
-	innerHeight=OutPt.abs();
+        innerHeight=OutPt.abs();
       else
-	innerDepth=OutPt.abs();
+        innerDepth=OutPt.abs();
     }
   for(size_t i=0;i<nLayers;i++)
     {
@@ -229,14 +229,14 @@ CylPreMod::checkItems(const attachSystem::FixedComp& Mod)
       Geometry::Vec3D OVec(Y);
       Geometry::Vec3D WVec(X);
       const Geometry::Quaternion Qxy=
-	Geometry::Quaternion::calcQRotDeg(viewAngle[i],Z);
+        Geometry::Quaternion::calcQRotDeg(viewAngle[i],Z);
       Qxy.rotate(OVec);
       Qxy.rotate(WVec);
 
       Geometry::Vec3D leftView(-WVec);
       Geometry::Vec3D rightView(WVec);
       const Geometry::Quaternion Qview=
-	Geometry::Quaternion::calcQRotDeg(viewOpenAngle[i],Z);
+        Geometry::Quaternion::calcQRotDeg(viewOpenAngle[i],Z);
 
       Qview.rotate(leftView);
       Qview.invRotate(rightView);
@@ -279,16 +279,16 @@ CylPreMod::populate(const FuncDataBase& Control)
   for(size_t i=0;i<nLayers;i++)
     {
       H+=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"Height",i+1));   
+        (StrFunc::makeString(keyName+"Height",i+1));   
       D+=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"Depth",i+1));   
+        (StrFunc::makeString(keyName+"Depth",i+1));   
       R+=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"Thick",i+1));   
+        (StrFunc::makeString(keyName+"Thick",i+1));   
       M=ModelSupport::EvalMat<int>(Control,
-	StrFunc::makeString(keyName+"Material",i+1));   
+        StrFunc::makeString(keyName+"Material",i+1));   
       const std::string TStr=StrFunc::makeString(keyName+"Temp",i+1);
       T=(!M || !Control.hasVariable(TStr)) ?
-	0.0 : Control.EvalVar<double>(TStr); 
+        0.0 : Control.EvalVar<double>(TStr); 
       
       radius.push_back(R);
       height.push_back(H);
@@ -303,13 +303,13 @@ CylPreMod::populate(const FuncDataBase& Control)
   for(size_t i=0;i<nView;i++)
     {
       vH=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"ViewHeight",i+1));   
+        (StrFunc::makeString(keyName+"ViewHeight",i+1));   
       vA=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"ViewAngle",i+1));   
+        (StrFunc::makeString(keyName+"ViewAngle",i+1));   
       vW=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"ViewWidth",i+1));   
+        (StrFunc::makeString(keyName+"ViewWidth",i+1));   
       vO=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"ViewOpenAngle",i+1));   
+        (StrFunc::makeString(keyName+"ViewOpenAngle",i+1));   
       viewAngle.push_back(vA);
       viewWidth.push_back(vW);
       viewOpenAngle.push_back(vO);
@@ -367,24 +367,24 @@ CylPreMod::createSurfaces()
       
       double step[]={0.0,0.0,0.0,0.0};
       for(size_t i=0;i<(nLayers+1)/2;i++)
-	{
-	  SI=baseIndex+10*static_cast<int>(i);
-	  // SPECIAL moves inner layer in by thickness
-	  for(size_t jIndex=0;jIndex<4;jIndex++)
-	    {
-	      const size_t j(jIndex+flIndex*4);
-	      ModelSupport::buildPlane(SMap,SI+3,
-				       FLpts[j]+FLunit[j]*step[jIndex],
-				       FLunit[j]);  
-	      SI++;
-	      if (jIndex<2)
-		step[jIndex]+=(i) ? radius[i]-radius[i-1] : radius[i]-innerRadius;
-	      else if (jIndex==2)
-		step[jIndex]+=(i) ? depth[i]-depth[i-1] : depth[i]-innerDepth;
-	      else if (jIndex==3)
-		step[jIndex]+=(i) ? height[i]-height[i-1] : height[i]-innerHeight;
-	    }
-	}
+        {
+          SI=baseIndex+10*static_cast<int>(i);
+          // SPECIAL moves inner layer in by thickness
+          for(size_t jIndex=0;jIndex<4;jIndex++)
+            {
+              const size_t j(jIndex+flIndex*4);
+              ModelSupport::buildPlane(SMap,SI+3,
+                                       FLpts[j]+FLunit[j]*step[jIndex],
+                                       FLunit[j]);  
+              SI++;
+              if (jIndex<2)
+                step[jIndex]+=(i) ? radius[i]-radius[i-1] : radius[i]-innerRadius;
+              else if (jIndex==2)
+                step[jIndex]+=(i) ? depth[i]-depth[i-1] : depth[i]-innerDepth;
+              else if (jIndex==3)
+                step[jIndex]+=(i) ? height[i]-height[i-1] : height[i]-innerHeight;
+            }
+        }
     }
 
   return; 
@@ -392,7 +392,7 @@ CylPreMod::createSurfaces()
 
 void
 CylPreMod::createObjects(Simulation& System,
-			 const attachSystem::ContainedComp* CMod)
+                         const attachSystem::ContainedComp* CMod)
   /*!
     Create the vaned moderator
     \param System :: Simulation to add results
@@ -413,22 +413,22 @@ CylPreMod::createObjects(Simulation& System,
     {
       Out=ModelSupport::getComposite(SMap,SI," -7 5 -6 ");
       if (i==nLayers-1)
-	{
-	  addOuterSurf("Main",Out);
-	}
+        {
+          addOuterSurf("Main",Out);
+        }
       for(size_t viewIndex=0;viewIndex<viewAngle.size();viewIndex++)
-	Out+=ModelSupport::getComposite(SMap,CI+100*static_cast<int>(viewIndex),
-					modIndex+100*static_cast<int>(viewIndex),
-					" (-101M:103:104:105:106) ");
+        Out+=ModelSupport::getComposite(SMap,CI+100*static_cast<int>(viewIndex),
+                                        modIndex+100*static_cast<int>(viewIndex),
+                                        " (-101M:103:104:105:106) ");
       if (i)
-	Out+=ModelSupport::getComposite(SMap,SI-10," (7:-5:6) ");
+        Out+=ModelSupport::getComposite(SMap,SI-10," (7:-5:6) ");
       else if (CMod)
-	Out+=CMod->getExclude();
+        Out+=CMod->getExclude();
       System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],Out));
       layerCells.push_back(cellIndex-1);
       SI+=10;
       if (i!=even)
-	CI+= (i+1>=(nLayers+1)/2) ? -10 : 10;
+        CI+= (i+1>=(nLayers+1)/2) ? -10 : 10;
     }
   // Interstical end caps:
   const size_t evenCut(1-(nLayers%2));
@@ -439,26 +439,26 @@ CylPreMod::createObjects(Simulation& System,
       const int CI(modIndex+10*static_cast<int>(nLayers-2-evenCut-i));
 
       for(size_t viewIndex=0;viewIndex<viewAngle.size();viewIndex++)
-	{	  
-	  const int divideN(modIndex+100*static_cast<int>(viewIndex));
-	  Out=ModelSupport::getComposite(SMap,SI,CI," 7 -7M ");
-	  Out+=ModelSupport::getComposite
-	    (SMap,SI+100*static_cast<int>(viewIndex),
-	     divideN," 101M (103:104:105:106) -113 -114 -115 -116");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],Out));
-	  layerCells.push_back(cellIndex-1);
-	}
+        {         
+          const int divideN(modIndex+100*static_cast<int>(viewIndex));
+          Out=ModelSupport::getComposite(SMap,SI,CI," 7 -7M ");
+          Out+=ModelSupport::getComposite
+            (SMap,SI+100*static_cast<int>(viewIndex),
+             divideN," 101M (103:104:105:106) -113 -114 -115 -116");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],Out));
+          layerCells.push_back(cellIndex-1);
+        }
     }
   
   // Finally the void cell:
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 modIndex+10*static_cast<int>(nLayers-1),"9 -7M ");
+                                 modIndex+10*static_cast<int>(nLayers-1),"9 -7M ");
 
   for(size_t viewIndex=0;viewIndex<viewAngle.size();viewIndex++)
-    {	  
+    {     
       std::string OComp(Out);
       OComp+=ModelSupport::getComposite(SMap,modIndex+100*static_cast<int>(viewIndex),
-				 "101 -103 -104 -105 -106 " );
+                                 "101 -103 -104 -105 -106 " );
       System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,OComp));
     }
   return; 
@@ -508,7 +508,7 @@ CylPreMod::createLinks()
 
 Geometry::Vec3D
 CylPreMod::getSurfacePoint(const size_t layerIndex,
-			   const size_t sideIndex) const
+                           const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param sideIndex :: Side [0-5]
@@ -524,39 +524,39 @@ CylPreMod::getSurfacePoint(const size_t layerIndex,
   if (layerIndex>0)
     {
       switch(sideIndex)
-	{
-	case 0:
-	  return Origin-Y*(radius[layerIndex-1]);
-	case 1:
-	  return Origin+Y*(radius[layerIndex-1]);
-	case 2:
-	  return Origin-Z*(height[layerIndex-1]);
-	case 3:
-	  return Origin+Z*(height[layerIndex-1]);
-	case 4:
-	  return Origin-X*(radius[layerIndex-1]);
-	case 5:
-	  return Origin+X*(radius[layerIndex-1]);
-	}
+        {
+        case 0:
+          return Origin-Y*(radius[layerIndex-1]);
+        case 1:
+          return Origin+Y*(radius[layerIndex-1]);
+        case 2:
+          return Origin-Z*(height[layerIndex-1]);
+        case 3:
+          return Origin+Z*(height[layerIndex-1]);
+        case 4:
+          return Origin-X*(radius[layerIndex-1]);
+        case 5:
+          return Origin+X*(radius[layerIndex-1]);
+        }
     }
   else
     {
       switch(sideIndex)
-	{
-	case 0:
-	  return Origin-Y*innerRadius;
-	case 1:
-	  return Origin+Y*innerRadius;
-	case 2:
-	  return Origin-Z*innerDepth;
-	case 3:
-	  return Origin+Z*innerHeight;
-	case 4:
-	  return Origin-X*innerRadius;
-	case 5:
-	  return Origin+X*innerRadius;
+        {
+        case 0:
+          return Origin-Y*innerRadius;
+        case 1:
+          return Origin+Y*innerRadius;
+        case 2:
+          return Origin-Z*innerDepth;
+        case 3:
+          return Origin+Z*innerHeight;
+        case 4:
+          return Origin-X*innerRadius;
+        case 5:
+          return Origin+X*innerRadius;
 
-	}
+        }
     }
   throw ColErr::IndexError<size_t>(sideIndex,6,"sideIndex ");
 }
@@ -564,7 +564,7 @@ CylPreMod::getSurfacePoint(const size_t layerIndex,
 
 int
 CylPreMod::getLayerSurf(const size_t layerIndex,
-			const size_t sideIndex) const
+                        const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link surf
     \param sideIndex :: Side [0-5]
@@ -578,8 +578,8 @@ CylPreMod::getLayerSurf(const size_t layerIndex,
     throw ColErr::IndexError<size_t>(layerIndex,nLayers,"layer");
 
   const int SI(!layerIndex ? modIndex :
-	       10*static_cast<int>(layerIndex-1)+modIndex);
-	       
+               10*static_cast<int>(layerIndex-1)+modIndex);
+               
   switch(sideIndex)
     {
     case 0:
@@ -587,8 +587,8 @@ CylPreMod::getLayerSurf(const size_t layerIndex,
     case 4:
     case 5:
       return (layerIndex) ? 
-	SMap.realSurf(SI+7) :
-	SMap.realSurf(modIndex+9);
+        SMap.realSurf(SI+7) :
+        SMap.realSurf(modIndex+9);
     case 2:
       return -SMap.realSurf(SI+5);
     case 3:
@@ -599,7 +599,7 @@ CylPreMod::getLayerSurf(const size_t layerIndex,
 
 std::string
 CylPreMod::getLayerString(const size_t layerIndex,
-			 const size_t sideIndex) const
+                         const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the layerstring [outlooking]
     \param layerIndex :: layer, 0 is inner moderator [0-4]
@@ -613,22 +613,22 @@ CylPreMod::getLayerString(const size_t layerIndex,
     throw ColErr::IndexError<size_t>(layerIndex,nLayers,"layer");
 
   const int SI(!layerIndex ? modIndex :
-	       10*static_cast<int>(layerIndex-1)+modIndex);
+               10*static_cast<int>(layerIndex-1)+modIndex);
 
   std::ostringstream cx;
   switch(sideIndex)
     {
     case 0:
       cx<<" "<<((layerIndex) ? 
-		SMap.realSurf(SI+7) :
-		SMap.realSurf(modIndex+9)) <<" "
-	<< -SMap.realSurf(modIndex+1)<<" ";
+                SMap.realSurf(SI+7) :
+                SMap.realSurf(modIndex+9)) <<" "
+        << -SMap.realSurf(modIndex+1)<<" ";
       return cx.str();
     case 1:
       cx<<" "<<((layerIndex) ? 
-		SMap.realSurf(SI+7) :
-		SMap.realSurf(modIndex+9)) <<" "
-	<<SMap.realSurf(modIndex+1)<<" ";
+                SMap.realSurf(SI+7) :
+                SMap.realSurf(modIndex+9)) <<" "
+        <<SMap.realSurf(modIndex+1)<<" ";
       return cx.str();
     case 2:
       cx<<" "<<-SMap.realSurf(SI+5)<<" ";
@@ -638,15 +638,15 @@ CylPreMod::getLayerString(const size_t layerIndex,
       return cx.str();
     case 4:
       cx<<" "<<((layerIndex) ? 
-		SMap.realSurf(SI+7) :
-		SMap.realSurf(modIndex+9)) <<" "
-	<< -SMap.realSurf(modIndex+1)<<" ";
+                SMap.realSurf(SI+7) :
+                SMap.realSurf(modIndex+9)) <<" "
+        << -SMap.realSurf(modIndex+1)<<" ";
       return cx.str();
     case 5:
       cx<<" "<<((layerIndex) ? 
-		SMap.realSurf(SI+7) :
-		SMap.realSurf(modIndex+9)) <<" "
-	<< SMap.realSurf(modIndex+1)<<" ";
+                SMap.realSurf(SI+7) :
+                SMap.realSurf(modIndex+9)) <<" "
+        << SMap.realSurf(modIndex+1)<<" ";
       return cx.str();
 
     }
@@ -655,7 +655,7 @@ CylPreMod::getLayerString(const size_t layerIndex,
 
 Geometry::Vec3D 
 CylPreMod::calcViewIntercept(const size_t viewIndex,
-			     const size_t sideIndex) const
+                             const size_t sideIndex) const
   /*!
     Calculate the intercept point on the view edge
     \param viewIndex :: View number
@@ -670,28 +670,28 @@ CylPreMod::calcViewIntercept(const size_t viewIndex,
     throw ColErr::IndexError<size_t>(sideIndex,2,"sideIndex");
   
   const int VI(modIndex+100*static_cast<int>(viewIndex) 
-	       +static_cast<int>(sideIndex));
+               +static_cast<int>(sideIndex));
 
   const Geometry::Vec3D BulkPtA=
     SurInter::getPoint(SMap.realSurfPtr(modIndex+17),
-		       SMap.realSurfPtr(VI+113),
-		       SMap.realSurfPtr(modIndex+15),
-		       FLpts[4*viewIndex+sideIndex]);
+                       SMap.realSurfPtr(VI+113),
+                       SMap.realSurfPtr(modIndex+15),
+                       FLpts[4*viewIndex+sideIndex]);
 
   const Geometry::Vec3D BulkPtB=
     SurInter::getPoint(SMap.realSurfPtr(modIndex+17),
-		       SMap.realSurfPtr(VI+113),
-		       SMap.realSurfPtr(modIndex+16),
-		       FLpts[4*viewIndex+sideIndex]);
+                       SMap.realSurfPtr(VI+113),
+                       SMap.realSurfPtr(modIndex+16),
+                       FLpts[4*viewIndex+sideIndex]);
 
   return (BulkPtA+BulkPtB)/2.0;
 }
 
 void
 CylPreMod::updateLayers(Simulation& System,
-			const char flag,
-			const size_t layerN,
-			const size_t levelN) const
+                        const char flag,
+                        const size_t layerN,
+                        const size_t levelN) const
   /*!
     If an item intersects the layered pre-moderator. Allows all 
     particular layer to have the ExtA or ExtB object intersect it
@@ -716,7 +716,7 @@ CylPreMod::updateLayers(Simulation& System,
 
 void
 CylPreMod::createAll(Simulation& System,
-		     const attachSystem::FixedComp& CylMod)
+                     const attachSystem::FixedComp& CylMod)
   /*!
     Extrenal build everything
     \param System :: Simulation
@@ -742,7 +742,7 @@ CylPreMod::createAll(Simulation& System,
   ExtAObj->setActive(blockActiveA);
   ExtAObj->setCentRotate(Origin);
   ExtAObj->setEdgeSurf(SMap.realSurf(modIndex+103+
-				     static_cast<int>(aSide)));  //103
+                                     static_cast<int>(aSide)));  //103
   ExtAObj->copyInterObj(this->getCC("Main"));
   ExtAObj->createAll(System,IPt,*this,nLayers-2,4+aSide);   //4
   addOuterSurf("BlockA",ExtAObj->getCompExclude());
@@ -751,7 +751,7 @@ CylPreMod::createAll(Simulation& System,
   IPt=calcViewIntercept(1,1-bSide);   // view : side
   ExtBObj->setActive(blockActiveB);
   ExtBObj->setEdgeSurf(SMap.realSurf(modIndex+204-
-				     static_cast<int>(bSide)));  // 204
+                                     static_cast<int>(bSide)));  // 204
   ExtBObj->setCentRotate(Origin);
   ExtBObj->copyInterObj(this->getCC("Main"));
 

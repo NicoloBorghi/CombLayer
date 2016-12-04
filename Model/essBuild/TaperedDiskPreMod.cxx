@@ -160,8 +160,8 @@ TaperedDiskPreMod::~TaperedDiskPreMod()
 
 void
 TaperedDiskPreMod::populate(const FuncDataBase& Control,
-		     const double zShift,
-		     const double outRadius)
+                     const double zShift,
+                     const double outRadius)
   /*!
     Populate all the variables
     \param Control :: Variable table to use
@@ -190,11 +190,11 @@ TaperedDiskPreMod::populate(const FuncDataBase& Control,
       H+=Control.EvalVar<double>(keyName+"Height"+NStr);
       D+=Control.EvalVar<double>(keyName+"Depth"+NStr);
       R+=Control.EvalPair<double>(keyName+"Radius"+NStr,
-				  keyName+"Thick"+NStr);
+                                  keyName+"Thick"+NStr);
       M=ModelSupport::EvalMat<int>(Control,keyName+"Mat"+NStr);   
       const std::string TStr=keyName+"Temp"+NStr;
       T=(!M || !Control.hasVariable(TStr)) ?
-	0.0 : Control.EvalVar<double>(TStr); 
+        0.0 : Control.EvalVar<double>(TStr); 
       
       radius.push_back(R);
       height.push_back(H);
@@ -211,7 +211,7 @@ TaperedDiskPreMod::populate(const FuncDataBase& Control,
 
 void
 TaperedDiskPreMod::createUnitVector(const attachSystem::FixedComp& refCentre,
-			     const long int sideIndex,const bool zRotate)
+                             const long int sideIndex,const bool zRotate)
   /*!
     Create the unit vectors
     \param refCentre :: Centre for object
@@ -256,10 +256,10 @@ TaperedDiskPreMod::createSurfaces()
       ModelSupport::buildCylinder(SMap,SI+7,Origin,Z,radius[i]);  
       // tilting:
       if (tiltAngle>Geometry::zeroTol)
-	{
-	  ModelSupport::buildCylinder(SMap,SI+8,Origin,Z,tiltRadius);  
-	  ModelSupport::buildCone(SMap, SI+9, Origin+Z*(depth[i]+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
-	}
+        {
+          ModelSupport::buildCylinder(SMap,SI+8,Origin,Z,tiltRadius);  
+          ModelSupport::buildCone(SMap, SI+9, Origin+Z*(depth[i]+h)*tiltSign, Z, 90-tiltAngle, -tiltSign);
+        }
       ModelSupport::buildPlane(SMap,SI+5,Origin-Z*depth[i],Z);  
       ModelSupport::buildPlane(SMap,SI+6,Origin+Z*height[i],Z);
       SI+=10;
@@ -287,39 +287,39 @@ TaperedDiskPreMod::createObjects(Simulation& System)
   for(size_t i=0;i<nLayers;i++)
     {
       if (tiltAngle>Geometry::zeroTol)
-	{
-	  if (radius[i]>tiltRadius)
-	    {
-	      Out = ModelSupport::getComposite(SMap, SI, " ((-8 5 -6) : (8 -7 5 -9 -6)) "); // need this to define Inner. below
-	      Out1 = ModelSupport::getComposite(SMap, SI, " -8 5 -6 ");
-	      System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i], Out1+Inner.display()));
-	    }
-	  else
-	    {
-	      Out = ModelSupport::getComposite(SMap, SI, " ((-7 5 -6) : (8 -7 5 -9 -6)) "); // need this to define Inner. below
-	      Out1 = ModelSupport::getComposite(SMap, SI, " -7 5 -6 ");
-	      System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i], Out1+Inner.display()));
-	    }
-	  Out1 = ModelSupport::getComposite(SMap, SI, " 8 -7 5 -9 -6 ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i], Out1+Inner.display()));
-	  if (i==nLayers-1)
-	    {
-	      if (tiltSide)
-		Out1 = ModelSupport::getComposite(SMap, SI, " -7 -6 9 ");
-	      else
-		Out1 = ModelSupport::getComposite(SMap, SI, " -7  5 9 ");
-	      System.addCell(MonteCarlo::Qhull(cellIndex++,0,0, Out1));
-	      }
-	    }
+        {
+          if (radius[i]>tiltRadius)
+            {
+              Out = ModelSupport::getComposite(SMap, SI, " ((-8 5 -6) : (8 -7 5 -9 -6)) "); // need this to define Inner. below
+              Out1 = ModelSupport::getComposite(SMap, SI, " -8 5 -6 ");
+              System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i], Out1+Inner.display()));
+            }
+          else
+            {
+              Out = ModelSupport::getComposite(SMap, SI, " ((-7 5 -6) : (8 -7 5 -9 -6)) "); // need this to define Inner. below
+              Out1 = ModelSupport::getComposite(SMap, SI, " -7 5 -6 ");
+              System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i], Out1+Inner.display()));
+            }
+          Out1 = ModelSupport::getComposite(SMap, SI, " 8 -7 5 -9 -6 ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i], Out1+Inner.display()));
+          if (i==nLayers-1)
+            {
+              if (tiltSide)
+                Out1 = ModelSupport::getComposite(SMap, SI, " -7 -6 9 ");
+              else
+                Out1 = ModelSupport::getComposite(SMap, SI, " -7  5 9 ");
+              System.addCell(MonteCarlo::Qhull(cellIndex++,0,0, Out1));
+              }
+            }
       else
-	{
-	  Out=ModelSupport::getComposite(SMap,SI," -7 5 -6 ");
+        {
+          Out=ModelSupport::getComposite(SMap,SI," -7 5 -6 ");
       
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i], Out+Inner.display()));
-	}
+          System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i], Out+Inner.display()));
+        }
 
       if (!i)
-	CellMap::setCell("Inner", cellIndex-1);
+        CellMap::setCell("Inner", cellIndex-1);
 
       Inner.procString(Out);
       Inner.makeComplement();
@@ -401,7 +401,7 @@ TaperedDiskPreMod::createLinks()
 
 Geometry::Vec3D
 TaperedDiskPreMod::getSurfacePoint(const size_t layerIndex,
-			   const size_t sideIndex) const
+                           const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param sideIndex :: Side [0-5]
@@ -435,7 +435,7 @@ TaperedDiskPreMod::getSurfacePoint(const size_t layerIndex,
 
 int
 TaperedDiskPreMod::getLayerSurf(const size_t layerIndex,
-			const size_t sideIndex) const
+                        const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link surf
     \param sideIndex :: Side [0-3]
@@ -449,7 +449,7 @@ TaperedDiskPreMod::getLayerSurf(const size_t layerIndex,
     throw ColErr::IndexError<size_t>(layerIndex,nLayers,"layer");
 
   const int SI(10*static_cast<int>(layerIndex)+modIndex);
-	       
+               
   switch(sideIndex)
     {
     case 0:
@@ -467,7 +467,7 @@ TaperedDiskPreMod::getLayerSurf(const size_t layerIndex,
 
 std::string
 TaperedDiskPreMod::getLayerString(const size_t layerIndex,
-			 const size_t sideIndex) const
+                         const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link surf
     \param layerIndex :: layer, 0 is inner moderator [0-4]
@@ -487,19 +487,19 @@ TaperedDiskPreMod::getLayerString(const size_t layerIndex,
     {
     case 0:
       cx<<" "<<SMap.realSurf(SI+7)<<" "
-	<< -SMap.realSurf(modIndex+2)<<" ";
+        << -SMap.realSurf(modIndex+2)<<" ";
       return cx.str();
     case 1:
       cx<<" "<<SMap.realSurf(SI+7)<<" "
-	<< SMap.realSurf(modIndex+2)<<" ";
+        << SMap.realSurf(modIndex+2)<<" ";
       return cx.str();
     case 2:
       cx<<" "<<SMap.realSurf(SI+7)<<" "
-	<< -SMap.realSurf(modIndex+1)<<" ";
+        << -SMap.realSurf(modIndex+1)<<" ";
       return cx.str();
     case 3:
       cx<<" "<<SMap.realSurf(SI+7)<<" "
-	<< SMap.realSurf(modIndex+1)<<" ";
+        << SMap.realSurf(modIndex+1)<<" ";
       return cx.str();
     case 4:
       cx<<" "<<-SMap.realSurf(SI+5)<<" ";
@@ -514,16 +514,16 @@ TaperedDiskPreMod::getLayerString(const size_t layerIndex,
 
 void
 TaperedDiskPreMod::createAll(Simulation& System,
-		      const attachSystem::FixedComp& FC,
-		      const long int sideIndex,
-		      const bool zRotate,
-		      const double VOffset,
-		      const double ORad,
-		      const bool ts)
+                      const attachSystem::FixedComp& FC,
+                      const long int sideIndex,
+                      const bool zRotate,
+                      const double VOffset,
+                      const double ORad,
+                      const bool ts)
   /*!
     Extrenal build everything
     \param System :: Simulation
-    \param FC :: Attachment point	       
+    \param FC :: Attachment point              
     \param sideIndex :: side of object
     \param zRotate :: Rotate to -ve Z
     \param VOffset :: Vertical offset from target

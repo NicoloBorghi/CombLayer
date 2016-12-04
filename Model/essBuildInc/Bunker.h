@@ -116,22 +116,22 @@ class Bunker : public attachSystem::ContainedComp,
   std::string outFile;             ///< Bunker output file
 
   void createWallSurfaces(const Geometry::Vec3D&,
-			  const Geometry::Vec3D&);
+                          const Geometry::Vec3D&);
   
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,
-			const attachSystem::FixedComp&,
-			const long int,const bool);
+                        const attachSystem::FixedComp&,
+                        const long int,const bool);
 
   void createSurfaces();
   void createLinks();
   void createObjects(Simulation&,const attachSystem::FixedComp&,
-		     const long int);
+                     const long int);
 
   void layerProcess(Simulation&);
 
   void createSideLinks(const Geometry::Vec3D&,const Geometry::Vec3D&,
-		       const Geometry::Vec3D&,const Geometry::Vec3D&);
+                       const Geometry::Vec3D&,const Geometry::Vec3D&);
 
 
   void createMainWall(Simulation&);
@@ -145,15 +145,15 @@ class Bunker : public attachSystem::ContainedComp,
   virtual ~Bunker();
 
   std::string calcSegment(const Simulation&,
-			  const Geometry::Vec3D&,
-			  const Geometry::Vec3D&) const;
+                          const Geometry::Vec3D&,
+                          const Geometry::Vec3D&) const;
   
   void setCutWall(const bool,const bool);
 
   void cutInsert(Simulation&,const BunkerInsert&) const;
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const attachSystem::FixedComp&,
-		 const long int,const bool);
+                 const attachSystem::FixedComp&,
+                 const long int,const bool);
 
 };
 

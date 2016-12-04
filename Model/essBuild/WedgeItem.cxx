@@ -120,7 +120,7 @@ WedgeItem::populate(const FuncDataBase& Control)
     (keyNum+"Zangle",keyName+"Zangle");
 
   mat=ModelSupport::EvalMat<int>
-    (Control,keyNum+"NLayer",keyName+"NLayer");				 
+    (Control,keyNum+"NLayer",keyName+"NLayer");                          
 
   nLayer=Control.EvalPair<size_t>
     (keyNum+"NLayer",keyName+"NLayer");
@@ -132,17 +132,17 @@ WedgeItem::populate(const FuncDataBase& Control)
       const std::string AStr=StrFunc::makeString(i);
       const std::string BStr=StrFunc::makeString(i+1);
       if (i) 
-	radius.push_back
-	  (SimProcess::getIndexVar<double>
-	   (Control,keyName,"Radius"+AStr,beamNumber));
+        radius.push_back
+          (SimProcess::getIndexVar<double>
+           (Control,keyName,"Radius"+AStr,beamNumber));
 
       width.push_back
-	(SimProcess::getIndexVar<double>
-	 (Control,keyName,"Width"+BStr,beamNumber));
+        (SimProcess::getIndexVar<double>
+         (Control,keyName,"Width"+BStr,beamNumber));
 
       height.push_back
-	(SimProcess::getIndexVar<double>
-	 (Control,keyName,"Height"+BStr,beamNumber));
+        (SimProcess::getIndexVar<double>
+         (Control,keyName,"Height"+BStr,beamNumber));
     }
   return;
 }
@@ -178,7 +178,7 @@ WedgeItem::createSurfaces()
   for(size_t i=0;i<nLayer;i++)
     {
       if (i)
-	ModelSupport::buildCylinder(SMap,RI+7,Origin,Z,radius[i-1]);
+        ModelSupport::buildCylinder(SMap,RI+7,Origin,Z,radius[i-1]);
       ModelSupport::buildPlane(SMap,RI+3,Origin-X*(width[i]/2.0),X);
       ModelSupport::buildPlane(SMap,RI+4,Origin+X*(width[i]/2.0),X);
       ModelSupport::buildPlane(SMap,RI+5,Origin-Z*(height[i]/2.0),Z);
@@ -191,9 +191,9 @@ WedgeItem::createSurfaces()
 
 void
 WedgeItem::createObjects(Simulation& System,
-			 const attachSystem::FixedComp& FC,
-			 const size_t innerIndex,
-			 const size_t outerIndex)
+                         const attachSystem::FixedComp& FC,
+                         const size_t innerIndex,
+                         const size_t outerIndex)
   /*!
     Adds the all the components
     \param System :: Simulation to create objects in
@@ -210,12 +210,12 @@ WedgeItem::createObjects(Simulation& System,
     {
       Out=ModelSupport::getComposite(SMap,RI,wedgeIndex,"1M 3 -4 5 -6 ");
       Out+=(i) ? 
-	ModelSupport::getComposite(SMap,RI," 7 ") :
-	FC.getLinkString(innerIndex);
+        ModelSupport::getComposite(SMap,RI," 7 ") :
+        FC.getLinkString(innerIndex);
 
       Out+=(i!=nLayer-1) ? 
-	ModelSupport::getComposite(SMap,RI+10," -7 ") :
-	FC.getLinkString(outerIndex);
+        ModelSupport::getComposite(SMap,RI+10," -7 ") :
+        FC.getLinkString(outerIndex);
       System.addCell(MonteCarlo::Qhull(cellIndex++,mat,0.0,Out));
       RI+=10;
     }
@@ -237,18 +237,18 @@ WedgeItem::createLinks()
       size_t index(0);
       for(size_t j=0;j<2;j++)
         {
-	  const size_t i(nLayer-(j+1));
-	  
-	  FixedComp::setConnect(index,Origin-Z*height[i]/2.0,-Z);  // base
-	  FixedComp::setConnect(index+1,Origin+Z*height[i]/2.0,Z);  // base
-	  FixedComp::setConnect(index+2,Origin+Y*radius[i],Y);   // outer point
-	  
-	  const int RI(static_cast<int>(i)*10+wedgeIndex);
-	  FixedComp::setLinkSurf(index,-SMap.realSurf(RI+5));
-	  FixedComp::setLinkSurf(index+1,SMap.realSurf(RI+6));
-	  FixedComp::setLinkSurf(index+2,SMap.realSurf(RI+7));
-	  index+=3;
-	}
+          const size_t i(nLayer-(j+1));
+          
+          FixedComp::setConnect(index,Origin-Z*height[i]/2.0,-Z);  // base
+          FixedComp::setConnect(index+1,Origin+Z*height[i]/2.0,Z);  // base
+          FixedComp::setConnect(index+2,Origin+Y*radius[i],Y);   // outer point
+          
+          const int RI(static_cast<int>(i)*10+wedgeIndex);
+          FixedComp::setLinkSurf(index,-SMap.realSurf(RI+5));
+          FixedComp::setLinkSurf(index+1,SMap.realSurf(RI+6));
+          FixedComp::setLinkSurf(index+2,SMap.realSurf(RI+7));
+          index+=3;
+        }
     }
   return;
 }
@@ -256,9 +256,9 @@ WedgeItem::createLinks()
 
 void
 WedgeItem::createAll(Simulation& System,
-		     const attachSystem::FixedComp& FC,
-		     const size_t innerSide, 
-		     const size_t outerSide)
+                     const attachSystem::FixedComp& FC,
+                     const size_t innerSide, 
+                     const size_t outerSide)
   /*!
     Generic function to create everything
     \param System :: Simulation item

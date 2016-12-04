@@ -90,7 +90,7 @@ namespace essSystem
 {
 
 MidWaterDivider::MidWaterDivider(const std::string& baseKey,
-				 const std::string& extraKey) :
+                                 const std::string& extraKey) :
   attachSystem::ContainedComp(),
   attachSystem::LayerComp(0,0),
   attachSystem::FixedComp(baseKey+extraKey,10),
@@ -332,15 +332,15 @@ MidWaterDivider::createSurfaces()
 
   
   ModelSupport::buildPlane(SMap,divIndex+111,
-			   Origin+leftNorm*(length+wallThick),leftNorm); // x-y+
+                           Origin+leftNorm*(length+wallThick),leftNorm); // x-y+
   ModelSupport::buildPlane(SMap,divIndex+112,
-			   Origin+rightNorm*(length+wallThick),rightNorm); // x-y-
+                           Origin+rightNorm*(length+wallThick),rightNorm); // x-y-
 
   // Length below [note reverse of normals]
   ModelSupport::buildPlane(SMap,divIndex+131,
-			   Origin-rightNorm*(wallThick+length),-rightNorm); // x+y+
+                           Origin-rightNorm*(wallThick+length),-rightNorm); // x+y+
   ModelSupport::buildPlane(SMap,divIndex+132,
-			   Origin-leftNorm*(wallThick+length),-leftNorm); // x+y-
+                           Origin-leftNorm*(wallThick+length),-leftNorm); // x+y-
 
 
   return;
@@ -348,8 +348,8 @@ MidWaterDivider::createSurfaces()
  
 void
 MidWaterDivider::createObjects(Simulation& System,
-			       const H2Wing& leftWing,
-			       const H2Wing& rightWing)
+                               const H2Wing& leftWing,
+                               const H2Wing& rightWing)
   /*!
     Adds the main components
     \param System :: Simulation to create objects in
@@ -373,26 +373,26 @@ MidWaterDivider::createObjects(Simulation& System,
 
   // Aluminium
   Out=ModelSupport::getComposite(SMap,divIndex,
-				 "100 (-103 : 104) -111 -112 "
-				 " ( (3  -4) : 11 : 12 ) ");
-				 
+                                 "100 (-103 : 104) -111 -112 "
+                                 " ( (3  -4) : 11 : 12 ) ");
+                                 
   Out+=LCut.display()+RCut.display()+Base;
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,modTemp,Out));
 
   Out=ModelSupport::getComposite(SMap,divIndex,
-				 "100 (-103 : 104)  -111 -112 ");
+                                 "100 (-103 : 104)  -111 -112 ");
   addOuterSurf(Out);
   // Reverse layer
   Out=ModelSupport::getComposite(SMap,divIndex,"-100 (-23 : 24) -31 -32 ");
   Out+=LCut.display()+RCut.display()+Base;
   System.addCell(MonteCarlo::Qhull(cellIndex++,modMat,modTemp,Out));
   Out=ModelSupport::getComposite(SMap,divIndex,
-				 "-100 (-123 : 124)  -131 -132 "
-				 "((23  -24) : 31 : 32 )");
+                                 "-100 (-123 : 124)  -131 -132 "
+                                 "((23  -24) : 31 : 32 )");
   Out+=LCut.display()+RCut.display()+Base;
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,modTemp,Out));
   Out=ModelSupport::getComposite(SMap,divIndex,
-				 "-100 (-123 : 124) -131 -132 ");
+                                 "-100 (-123 : 124) -131 -132 ");
   addOuterUnionSurf(Out);
 
   HeadRule HR;
@@ -404,8 +404,8 @@ MidWaterDivider::createObjects(Simulation& System,
 
 void
 MidWaterDivider::cutOuterWing(Simulation& System,
-			      const H2Wing& leftWing,
-			      const H2Wing& rightWing) const
+                              const H2Wing& leftWing,
+                              const H2Wing& rightWing) const
   /*!
     Cut the outer surface layer of the wings with the
     exclude version of the water layer
@@ -432,9 +432,9 @@ MidWaterDivider::cutOuterWing(Simulation& System,
       
       MonteCarlo::Qhull* OPtr=System.findQhull(cellA);
       if (!OPtr)
-	throw ColErr::InContainerError<int>(cellA,"leftWing Cell: Outer");
+        throw ColErr::InContainerError<int>(cellA,"leftWing Cell: Outer");
       Out=ModelSupport::getComposite(SMap,divIndex,
-				     " (100: -11) (-100:-31) ");
+                                     " (100: -11) (-100:-31) ");
       cutRule.procString(Out);
       cutRule.makeComplement();
       OPtr->addSurfString(cutRule.display());
@@ -444,9 +444,9 @@ MidWaterDivider::cutOuterWing(Simulation& System,
       const int cellB=rightWing.getCell("Outer");
       MonteCarlo::Qhull* OPtr=System.findQhull(cellB);
       if (!OPtr)
-	throw ColErr::InContainerError<int>(cellB,"rightWing Cell: Outer");
+        throw ColErr::InContainerError<int>(cellB,"rightWing Cell: Outer");
       Out=ModelSupport::getComposite(SMap,divIndex,
-				     " (100:-12) : (-100:-32) ");
+                                     " (100:-12) : (-100:-32) ");
       cutRule.procString(Out);
       cutRule.makeComplement();
       OPtr->addSurfString(cutRule.display());
@@ -457,7 +457,7 @@ MidWaterDivider::cutOuterWing(Simulation& System,
   
 Geometry::Vec3D
 MidWaterDivider::getSurfacePoint(const size_t,
-			const size_t) const
+                        const size_t) const
   /*!
     Given a side and a layer calculate the link point
     \param layerIndex :: layer, 0 is inner moderator [0-6]
@@ -471,7 +471,7 @@ MidWaterDivider::getSurfacePoint(const size_t,
 
 int
 MidWaterDivider::getLayerSurf(const size_t layerIndex,
-		     const size_t sideIndex) const
+                     const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param layerIndex :: layer, 0 is inner moderator [0-3]
@@ -485,7 +485,7 @@ MidWaterDivider::getLayerSurf(const size_t layerIndex,
 
 std::string
 MidWaterDivider::getLayerString(const size_t layerIndex,
-		       const size_t sideIndex) const
+                       const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param layerIndex :: layer, 0 is inner moderator [0-6]
@@ -501,9 +501,9 @@ MidWaterDivider::getLayerString(const size_t layerIndex,
 
 void
 MidWaterDivider::createAll(Simulation& System,
-			   const attachSystem::FixedComp& FC,
-			   const H2Wing& LA,
-			   const H2Wing& RA)
+                           const attachSystem::FixedComp& FC,
+                           const H2Wing& LA,
+                           const H2Wing& RA)
   /*!
     Generic function to create everything
     \param System :: Simulation item

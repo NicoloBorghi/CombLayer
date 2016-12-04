@@ -133,7 +133,7 @@ BunkerInsert::populate(const FuncDataBase& Control)
   
 void
 BunkerInsert::createUnitVector(const attachSystem::FixedComp& FC,
-			       const long int orgIndex)
+                               const long int orgIndex)
   /*!
     Create the unit vectors
     \param MainCentre :: Main rotation centre
@@ -191,9 +191,9 @@ BunkerInsert::objectCut(const std::vector<Geometry::Vec3D>& Corners) const
   for(const Geometry::Vec3D& Pt : Corners)
     {
       if (outCut.isValid(Pt))
-	good=1;
+        good=1;
       else
-	fail=1;
+        fail=1;
       if (good & fail) return -1;
     }
   return (!fail) ? 1 : 0;
@@ -216,7 +216,7 @@ BunkerInsert::addCalcPoint()
   
 void
 BunkerInsert::createObjects(Simulation& System,
-			    const std::string& BCell)
+                            const std::string& BCell)
   /*!
     Adds the all the components
     \param System :: Simulation to create objects in
@@ -231,7 +231,7 @@ BunkerInsert::createObjects(Simulation& System,
   setCell("Void",cellIndex-1);
 
   Out=ModelSupport::getComposite(SMap,insIndex,
-				 " 13 -14 15 -16 (-3 : 4: -5: 6) ");
+                                 " 13 -14 15 -16 (-3 : 4: -5: 6) ");
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out+BCell));
   
   Out=ModelSupport::getComposite(SMap,insIndex," 1 13 -14 15 -16 ");
@@ -250,7 +250,7 @@ void
 BunkerInsert::createLinks(const attachSystem::FixedComp& BUnit)
   /*!
     Create all the linkes [OutGoing]
-    \param BUnit :: Bunker unit						
+    \param BUnit :: Bunker unit                                         
   */
 {
   ELog::RegMethod RegA("BunkerInsert","createLinks");
@@ -286,9 +286,9 @@ BunkerInsert::createLinks(const attachSystem::FixedComp& BUnit)
 
 void
 BunkerInsert::createAll(Simulation& System,
-			const attachSystem::FixedComp& FC,
-			const long int orgIndex,
-			const attachSystem::FixedComp& bunkerObj)
+                        const attachSystem::FixedComp& FC,
+                        const long int orgIndex,
+                        const attachSystem::FixedComp& bunkerObj)
 
 /*!
     Generic function to create everything

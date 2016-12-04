@@ -134,7 +134,7 @@ RoofPillars::populate(const FuncDataBase& Control)
   
 void
 RoofPillars::createUnitVector(const attachSystem::FixedComp& MainCentre,
-			      const long int sideIndex)
+                              const long int sideIndex)
   /*!
     Create the unit vectors
     \param MainCentre :: Main rotation centre

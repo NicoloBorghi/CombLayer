@@ -74,7 +74,7 @@ class WedgeItem : public attachSystem::ContainedComp,
   virtual ~WedgeItem();
 
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const size_t,const size_t);
+                 const size_t,const size_t);
   
 };
 

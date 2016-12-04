@@ -551,10 +551,10 @@ Control.addVariable("BeRefInnerStructureMat5", "Be30H2O");
 
   Control.Parse("BeRefHeight/2.0+BeRefWallThick+"
                 "TopBeRefWaterDiscHeight0+TopBeRefWaterDiscDepth0+"
-		"TopBeRefWaterDiscHeight1+0.2");
+                "TopBeRefWaterDiscHeight1+0.2");
   Control.addVariable("BulkHeight1");
   Control.Parse("BeRefHeight/2.0+BeRefWallThick+LowBeRefWaterDiscHeight0"
-		"+LowBeRefWaterDiscDepth0+LowBeRefWaterDiscHeight1+0.2");
+                "+LowBeRefWaterDiscDepth0+LowBeRefWaterDiscHeight1+0.2");
   Control.addVariable("BulkDepth1");
   Control.addVariable("BulkMat1","Void");
 
@@ -2318,7 +2318,7 @@ EssBeamLinesVariables(FuncDataBase& Control)
   for(size_t i=0;i<4;i++)
     {
       const std::string baseKey=
-	StrFunc::makeString("G",i+1)+"BLine";
+        StrFunc::makeString("G",i+1)+"BLine";
       // BeamLine in guide bay
       Control.addVariable(baseKey+"XStep",0.0);  
       Control.addVariable(baseKey+"YStep",0.0);  
@@ -2337,9 +2337,9 @@ EssBeamLinesVariables(FuncDataBase& Control)
       Control.addVariable(baseKey+"TopGap",0.8); 
       Control.addVariable(baseKey+"Width1",16.0);
       if (i==3)
-	Control.addVariable(baseKey+"Depth1",5.5);
+        Control.addVariable(baseKey+"Depth1",5.5);
       else 
-	Control.addVariable(baseKey+"Depth1",5.0);
+        Control.addVariable(baseKey+"Depth1",5.0);
 
       Control.addVariable(baseKey+"Height1",12.0);
       Control.addVariable(baseKey+"Width2",28.0);

@@ -169,17 +169,17 @@ BulkModule::populate(const Simulation& System)
   for(size_t i=0;i<nLayer;i++)
     {
       radius[i]=Control.EvalVar<double>
-	(keyName+StrFunc::makeString("Radius",i+1));
+        (keyName+StrFunc::makeString("Radius",i+1));
       height[i]=Control.EvalVar<double>
-	(keyName+StrFunc::makeString("Height",i+1));
+        (keyName+StrFunc::makeString("Height",i+1));
       depth[i]=Control.EvalVar<double>
-	(keyName+StrFunc::makeString("Depth",i+1));
+        (keyName+StrFunc::makeString("Depth",i+1));
       Mat[i]=ModelSupport::EvalMat<int>(Control,
-	keyName+StrFunc::makeString("Mat",i+1));
+        keyName+StrFunc::makeString("Mat",i+1));
       if (i)
-	COffset[i]=Control.EvalDefVar<Geometry::Vec3D>
-	  (keyName+StrFunc::makeString("Offset",i+1),
-	   Geometry::Vec3D(0,0,0));
+        COffset[i]=Control.EvalDefVar<Geometry::Vec3D>
+          (keyName+StrFunc::makeString("Offset",i+1),
+           Geometry::Vec3D(0,0,0));
     }
   return;
 }
@@ -219,7 +219,7 @@ BulkModule::createSurfaces()
       ModelSupport::buildPlane(SMap,RI+5,Origin-Z*depth[i],Z);
       ModelSupport::buildPlane(SMap,RI+6,Origin+Z*height[i],Z);
       ModelSupport::buildCylinder(SMap,RI+7,Origin+COffset[i]
-				  ,Z,radius[i]);
+                                  ,Z,radius[i]);
       RI+=10;
     }
 
@@ -228,7 +228,7 @@ BulkModule::createSurfaces()
 
 void
 BulkModule::createObjects(Simulation& System,
-			  const attachSystem::ContainedComp& CC)
+                          const attachSystem::ContainedComp& CC)
   /*!
     Adds the all the components
     \param System :: Simulation to create objects in
@@ -243,9 +243,9 @@ BulkModule::createObjects(Simulation& System,
     {
       Out=ModelSupport::getComposite(SMap,RI,"5 -6 -7 ");
       if (i)
-	OutX=ModelSupport::getComposite(SMap,RI-10,"(-5:6:7)");
+        OutX=ModelSupport::getComposite(SMap,RI-10,"(-5:6:7)");
       else
-	OutX=CC.getExclude();
+        OutX=CC.getExclude();
       System.addCell(MonteCarlo::Qhull(cellIndex++,Mat[i],0.0,Out+OutX));
       RI+=10;
     }
@@ -278,28 +278,28 @@ BulkModule::createLinks()
       size_t index(0);
       for(size_t j=0;j<2;j++)
         {
-	  const size_t i(nLayer-(j+1));
-	  
-	  FixedComp::setConnect
-	    (index,Origin+COffset[i]-Z*depth[i],-Z);  // base
-	  FixedComp::setConnect
-	    (index+1,Origin+COffset[i]+Z*height[i],Z);  // top
-	  FixedComp::setConnect
-	    (index+2,Origin+COffset[i]+Y*radius[i],Y);   // outer point
-	  
-	  const int RI(static_cast<int>(i)*10+bulkIndex);
-	  FixedComp::setLinkSurf(index,-SMap.realSurf(RI+5));
-	  FixedComp::setLinkSurf(index+1,SMap.realSurf(RI+6));
-	  FixedComp::setLinkSurf(index+2,SMap.realSurf(RI+7));
-	  index+=3;
-	}
+          const size_t i(nLayer-(j+1));
+          
+          FixedComp::setConnect
+            (index,Origin+COffset[i]-Z*depth[i],-Z);  // base
+          FixedComp::setConnect
+            (index+1,Origin+COffset[i]+Z*height[i],Z);  // top
+          FixedComp::setConnect
+            (index+2,Origin+COffset[i]+Y*radius[i],Y);   // outer point
+          
+          const int RI(static_cast<int>(i)*10+bulkIndex);
+          FixedComp::setLinkSurf(index,-SMap.realSurf(RI+5));
+          FixedComp::setLinkSurf(index+1,SMap.realSurf(RI+6));
+          FixedComp::setLinkSurf(index+2,SMap.realSurf(RI+7));
+          index+=3;
+        }
     }
   return;
 }
 
 void 
 BulkModule::addFlightUnit(Simulation& System,
-			  const attachSystem::FixedComp& FC)
+                          const attachSystem::FixedComp& FC)
   /*!
     Adds a flight unit based on an existing flight line
     it is effectively an extension. This method only works
@@ -322,7 +322,7 @@ BulkModule::addFlightUnit(Simulation& System,
     {
       MonteCarlo::Qhull* OPtr=System.findQhull(bulkIndex+i+1);
       if (!OPtr)
-	throw ColErr::InContainerError<int>(bulkIndex+i+1,"layerCells");
+        throw ColErr::InContainerError<int>(bulkIndex+i+1,"layerCells");
       OPtr->addSurfString(cx.str());
     }
   // Now make internal surface
@@ -331,8 +331,8 @@ BulkModule::addFlightUnit(Simulation& System,
     cx<<FC.getLinkComplement(index)<<" ";
 
   Out=ModelSupport::getComposite(SMap,bulkIndex,
-				 bulkIndex+10*static_cast<int>(nLayer-1),
-				 " 7 -7M ");
+                                 bulkIndex+10*static_cast<int>(nLayer-1),
+                                 " 7 -7M ");
   // Dividing surface ?
   System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out+cx.str()));
   return;
@@ -340,8 +340,8 @@ BulkModule::addFlightUnit(Simulation& System,
 
 void
 BulkModule::createAll(Simulation& System,
-		      const attachSystem::FixedComp& FC,
-		      const attachSystem::ContainedComp& CC)
+                      const attachSystem::FixedComp& FC,
+                      const attachSystem::ContainedComp& CC)
   /*!
     Generic function to create everything
     \param System :: Simulation item

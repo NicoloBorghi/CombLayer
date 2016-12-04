@@ -54,18 +54,18 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
 
   double width;                   ///< Width
   double length;                  ///< Length
-  double height;		  ///< Height
+  double height;                  ///< Height
 
   double activationLayerThick1;   ///< Thickness of the first layer for activation calculation
   double activationLayerThick2;   ///< Thickness of the second layer for activation calculation
   double activationLayerThick3;   ///< Thickness of the third layer for activation calculation
   double activationLayerHeight;   ///< Height of the activation segments
   std::vector<double> activationZPlanes; ///< Z coordinate of the horizontal segmentation planes
-  int activationWallsMaterial;	  ///< Material for the wall segments
+  int activationWallsMaterial;    ///< Material for the wall segments
 
   int floorSurfaceNumber;          ///< Diagnostic plug floor surface number
   int roofSurfaceNumber;          ///< Diagnostic plug roof surface number
-  int targetTopSurfaceNumber;	  //< Target top surface number
+  int targetTopSurfaceNumber;     //< Target top surface number
   
   // Functions:
 
@@ -74,10 +74,10 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
 
   void createSurfaces();
   void createObjects(Simulation&,
-		     const attachSystem::FixedComp& floorFC,
-		     const size_t floorLP,
-		     const attachSystem::FixedComp& roofFC,
-		     const size_t roofLP);
+                     const attachSystem::FixedComp& floorFC,
+                     const size_t floorLP,
+                     const attachSystem::FixedComp& roofFC,
+                     const size_t roofLP);
   void createLinks();
 
   PinholeBase *Pinhole;   ///< Pinhole object
@@ -95,11 +95,11 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   void setStraws(StrawCollimator *);
 
   void createAll(Simulation&,
-		 const attachSystem::FixedComp&,
-		 const attachSystem::FixedComp& floorFC,
-		 const size_t floorLP,
-		 const attachSystem::FixedComp& roofFC,
-		 const size_t roofLP);
+                 const attachSystem::FixedComp&,
+                 const attachSystem::FixedComp& floorFC,
+                 const size_t floorLP,
+                 const attachSystem::FixedComp& roofFC,
+                 const size_t roofLP);
 };
 
 }

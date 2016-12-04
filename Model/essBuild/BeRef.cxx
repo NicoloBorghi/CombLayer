@@ -151,9 +151,9 @@ BeRef::~BeRef()
 
 void
 BeRef::populate(const FuncDataBase& Control,
-		const double targetThick,
-		const double lowVThick,
-		const double topVThick)
+                const double targetThick,
+                const double lowVThick,
+                const double topVThick)
   /*!
     Populate all the variables
     \param Control :: Variable table to use
@@ -249,9 +249,9 @@ BeRef::createSurfaces()
   ModelSupport::buildPlane(SMap,refIndex+5,Origin-Z*(height/2.0),Z);  
   ModelSupport::buildPlane(SMap,refIndex+6,Origin+Z*(height/2.0),Z);  
   ModelSupport::buildPlane(SMap,refIndex+15,
-			   Origin-Z*(height/2.0+wallThick),Z);  
+                           Origin-Z*(height/2.0+wallThick),Z);  
   ModelSupport::buildPlane(SMap,refIndex+16,
-			   Origin+Z*(height/2.0+wallThick),Z);  
+                           Origin+Z*(height/2.0+wallThick),Z);  
 
   //define planes where the Be is substituted by Fe
 
@@ -259,14 +259,14 @@ BeRef::createSurfaces()
   
   // wall and all gaps
   ModelSupport::buildPlane(SMap,refIndex+105,Origin-
-			   Z*(lowVoidThick+targSepThick/2.0+wallThickLow),Z);  
+                           Z*(lowVoidThick+targSepThick/2.0+wallThickLow),Z);  
   ModelSupport::buildPlane(SMap,refIndex+106,Origin+
-			   Z*(topVoidThick+targSepThick/2.0+wallThickLow),Z);  
+                           Z*(topVoidThick+targSepThick/2.0+wallThickLow),Z);  
 
   ModelSupport::buildPlane(SMap,refIndex+115,Origin-
-			   Z*(lowVoidThick+targSepThick/2.0),Z);  
+                           Z*(lowVoidThick+targSepThick/2.0),Z);  
   ModelSupport::buildPlane(SMap,refIndex+116,Origin+
-			   Z*(topVoidThick+targSepThick/2.0),Z);  
+                           Z*(topVoidThick+targSepThick/2.0),Z);  
 
   
   ModelSupport::buildPlane(SMap,refIndex+205,Origin-Z*(targSepThick/2.0),Z);  
@@ -390,10 +390,10 @@ BeRef::createLinks()
 
 void
 BeRef::createAll(Simulation& System,
-		 const attachSystem::FixedComp& FC,
-		 const double tThick,
-		 const double lpThick,
-		 const double tpThick)
+                 const attachSystem::FixedComp& FC,
+                 const double tThick,
+                 const double lpThick,
+                 const double tpThick)
   /*!
     Extrenal build everything
     \param System :: Simulation

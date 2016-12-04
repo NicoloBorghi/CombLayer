@@ -87,7 +87,7 @@ namespace essSystem
 GuideItem::GuideItem(const std::string& Key,const size_t Index)  :
   attachSystem::ContainedGroup("Inner","Outer"),
   attachSystem::FixedGroup(Key+StrFunc::makeString(Index),
-			   "Main",6,"Beam",6),
+                           "Main",6,"Beam",6),
   attachSystem::CellMap(),
   baseName(Key),
   guideIndex(ModelSupport::objectRegister::Instance().cell(keyName)),
@@ -221,17 +221,17 @@ GuideItem::populate(const FuncDataBase& Control)
   for(size_t i=0;i<nSegment;i++)
     {
       W=Control.EvalPair<double>(keyName,baseName,
-				  StrFunc::makeString("Width",i+1));
+                                  StrFunc::makeString("Width",i+1));
       H=Control.EvalPair<double>(keyName,baseName,
-				 StrFunc::makeString("Height",i+1));
+                                 StrFunc::makeString("Height",i+1));
       D=Control.EvalPair<double>(keyName,baseName,
-				 StrFunc::makeString("Depth",i+1));
+                                 StrFunc::makeString("Depth",i+1));
       if (i!=nSegment-1)
-	{
-	  L+=Control.EvalPair<double>(keyName,baseName,
-				      StrFunc::makeString("Length",i+1));
-	  length.push_back(L);
-	}
+        {
+          L+=Control.EvalPair<double>(keyName,baseName,
+                                      StrFunc::makeString("Length",i+1));
+          length.push_back(L);
+        }
       height.push_back(H);
       depth.push_back(D);
       width.push_back(W);
@@ -245,7 +245,7 @@ GuideItem::populate(const FuncDataBase& Control)
   
 void
 GuideItem::createUnitVector(const attachSystem::FixedComp& FC,
-			    const size_t sideIndex)
+                            const size_t sideIndex)
   /*!
     Create the unit vectors
     \param FC :: Linked object
@@ -317,7 +317,7 @@ GuideItem::createSurfaces()
   for(size_t i=0;i<nSegment;i++)
     {
       if (i!=nSegment-1)
-	ModelSupport::buildCylinder(SMap,GI+57,Origin,Z,length[i]);
+        ModelSupport::buildCylinder(SMap,GI+57,Origin,Z,length[i]);
 
       ModelSupport::buildPlane(SMap,GI+3,Origin-X*(width[i]/2.0),X);
       ModelSupport::buildPlane(SMap,GI+4,Origin+X*(width[i]/2.0),X);
@@ -335,13 +335,13 @@ GuideItem::createSurfaces()
 
   // Beamline :: 
   ModelSupport::buildPlane(SMap,guideIndex+1103,
-			   beamOrigin-bX*(beamWidth/2.0),bX);
+                           beamOrigin-bX*(beamWidth/2.0),bX);
   ModelSupport::buildPlane(SMap,guideIndex+1104,
-			   beamOrigin+bX*(beamWidth/2.0),bX);
+                           beamOrigin+bX*(beamWidth/2.0),bX);
   ModelSupport::buildPlane(SMap,guideIndex+1105,
-			   beamOrigin-bZ*(beamHeight/2.0),bZ);
+                           beamOrigin-bZ*(beamHeight/2.0),bZ);
   ModelSupport::buildPlane(SMap,guideIndex+1106,
-			   beamOrigin+bZ*(beamHeight/2.0),bZ);
+                           beamOrigin+bZ*(beamHeight/2.0),bZ);
   
   
   return;
@@ -410,17 +410,17 @@ GuideItem::createObjects(Simulation& System,const GuideItem* GPtr)
     {
       // Outer layer
       if (i==0)
-	{
-	  Out=ModelSupport::getComposite(SMap,guideIndex,"1 7 3 -4 5 -6 -57");
-	  Out+=edgeStr;
-	}
+        {
+          Out=ModelSupport::getComposite(SMap,guideIndex,"1 7 3 -4 5 -6 -57");
+          Out+=edgeStr;
+        }
       else 
-	Out=ModelSupport::getComposite(SMap,GI,guideIndex,"1M 7 3 -4 5 -6 -57");
+        Out=ModelSupport::getComposite(SMap,GI,guideIndex,"1M 7 3 -4 5 -6 -57");
 
       if (!i)
-	addOuterSurf("Inner",Out);
+        addOuterSurf("Inner",Out);
       else 
-	addOuterUnionSurf("Outer",Out);
+        addOuterUnionSurf("Outer",Out);
 
 
 
@@ -432,21 +432,21 @@ GuideItem::createObjects(Simulation& System,const GuideItem* GPtr)
       
 
       if (!filled)
-	Out+=ModelSupport::getComposite(SMap,guideIndex,
-					"(-1103:1104:-1105:1106) ");
+        Out+=ModelSupport::getComposite(SMap,guideIndex,
+                                        "(-1103:1104:-1105:1106) ");
       if (i==0)
-	{
-	  Out=ModelSupport::getComposite
-	    (SMap,guideIndex,"1 7 13 -14 15 -16 -57");
-	  Out+=edgeStr;
-	}
+        {
+          Out=ModelSupport::getComposite
+            (SMap,guideIndex,"1 7 13 -14 15 -16 -57");
+          Out+=edgeStr;
+        }
       else 
-	Out=ModelSupport::getComposite
-	  (SMap,GI,guideIndex,"1M 7 13 -14 15 -16 -57");
+        Out=ModelSupport::getComposite
+          (SMap,GI,guideIndex,"1M 7 13 -14 15 -16 -57");
 
       if (!filled)
-	Out+=ModelSupport::getComposite
-	  (SMap,guideIndex,"(-1103:1104:-1105:1106) ");
+        Out+=ModelSupport::getComposite
+          (SMap,guideIndex,"(-1103:1104:-1105:1106) ");
       System.addCell(MonteCarlo::Qhull(cellIndex++,mat,0.0,Out));      
       if (filled) addCell("Void",cellIndex-1);
       GI+=50;
@@ -455,7 +455,7 @@ GuideItem::createObjects(Simulation& System,const GuideItem* GPtr)
   if (!filled)
     {
       Out=ModelSupport::getComposite(SMap,guideIndex,GI,
-				     "1 7 -7M 1103 -1104 1105 -1106 ");
+                                     "1 7 -7M 1103 -1104 1105 -1106 ");
       System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
       
       setCell("Void",cellIndex-1);
@@ -545,9 +545,9 @@ GuideItem::createLinks()
 
 void
 GuideItem::createAll(Simulation& System,
-		     const attachSystem::FixedComp& FC,
-		     const size_t sideIndex,
-		     const GuideItem* GPtr)
+                     const attachSystem::FixedComp& FC,
+                     const size_t sideIndex,
+                     const GuideItem* GPtr)
   /*!
     Generic function to create everything
     \param System :: Simulation item

@@ -192,7 +192,7 @@ ShutterBay::createSurfaces()
 
 void
 ShutterBay::createObjects(Simulation& System,
-			  const attachSystem::ContainedComp& CC)
+                          const attachSystem::ContainedComp& CC)
   /*!
     Adds the all the components
     \param System :: Simulation to create objects in
@@ -244,8 +244,8 @@ ShutterBay::createLinks()
 
 void
 ShutterBay::createAll(Simulation& System,
-		      const attachSystem::FixedComp& FC,
-		      const attachSystem::ContainedComp& CC)
+                      const attachSystem::FixedComp& FC,
+                      const attachSystem::ContainedComp& CC)
   /*!
     Generic function to create everything
     \param System :: Simulation item

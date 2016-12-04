@@ -242,20 +242,20 @@ TwisterModule::createSurfaces()
   double R = shaftRadius;
 
   ModelSupport::buildPlaneRotAxis(SMap,tIndex+1,
-				  Origin-Y*R*sin(angle)+X*R*cos(angle),
-				  X,-Z,plugFrameAngle/2.0);
+                                  Origin-Y*R*sin(angle)+X*R*cos(angle),
+                                  X,-Z,plugFrameAngle/2.0);
   ModelSupport::buildPlaneRotAxis(SMap,tIndex+11,
-				  Origin-Y*R*sin(angle)-X*R*cos(angle),
-				  X,-Z,-plugFrameAngle/2.0);
+                                  Origin-Y*R*sin(angle)-X*R*cos(angle),
+                                  X,-Z,-plugFrameAngle/2.0);
 
   R += shaftWallThick;
   ModelSupport::buildPlane(SMap,tIndex+2,Origin-Y*(R*sin(angle)),Y); // auxiliary dividing plane
   ModelSupport::buildPlaneRotAxis(SMap,tIndex+21,
-				  Origin-Y*R*sin(angle)+X*R*cos(angle),
-				  X,-Z,plugFrameAngle/2.0);
+                                  Origin-Y*R*sin(angle)+X*R*cos(angle),
+                                  X,-Z,plugFrameAngle/2.0);
   ModelSupport::buildPlaneRotAxis(SMap,tIndex+31,
-				  Origin-Y*R*sin(angle)-X*R*cos(angle),
-				  X,-Z,-plugFrameAngle/2.0);
+                                  Origin-Y*R*sin(angle)-X*R*cos(angle),
+                                  X,-Z,-plugFrameAngle/2.0);
 
   // shaft bearing
   ModelSupport::buildPlane(SMap,tIndex+35,Origin-Z*(plugFrameDepth+shaftBearingHeight),Z);
@@ -361,7 +361,7 @@ TwisterModule::createLinks()
 
 void
 TwisterModule::createAll(Simulation& System,
-		   const attachSystem::FixedComp& FC)
+                   const attachSystem::FixedComp& FC)
 /*!
     Extrenal build everything
     \param System :: Simulation

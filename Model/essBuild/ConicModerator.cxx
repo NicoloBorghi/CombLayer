@@ -223,31 +223,31 @@ ConicModerator::createSurfaces()
     {
       ModelSupport::buildPlane(SMap,CI+1,Origin-Y*HT[i],Y);  
       ModelSupport::buildPlane(SMap,CI+3,
-			       IVec[0]-X*(xRatio*HT[i]),
-			       OVec[0]-X*(xRatio*HT[i]),
-			       OVec[0]-X*(xRatio*HT[i])+Z,X);
+                               IVec[0]-X*(xRatio*HT[i]),
+                               OVec[0]-X*(xRatio*HT[i]),
+                               OVec[0]-X*(xRatio*HT[i])+Z,X);
       ModelSupport::buildPlane(SMap,CI+4,
-			       IVec[1]+X*(xRatio*HT[i]),
-			       OVec[1]+X*(xRatio*HT[i]),
-			       OVec[1]+X*(xRatio*HT[i])+Z,X);
+                               IVec[1]+X*(xRatio*HT[i]),
+                               OVec[1]+X*(xRatio*HT[i]),
+                               OVec[1]+X*(xRatio*HT[i])+Z,X);
       ModelSupport::buildPlane(SMap,CI+5,
-			       IVec[2]-Z*(zRatio*HT[i]),
-			       OVec[2]-Z*(zRatio*HT[i]),
-			       OVec[2]-Z*(zRatio*HT[i])+X,X);
+                               IVec[2]-Z*(zRatio*HT[i]),
+                               OVec[2]-Z*(zRatio*HT[i]),
+                               OVec[2]-Z*(zRatio*HT[i])+X,X);
       ModelSupport::buildPlane(SMap,CI+6,
-			       IVec[3]+Z*(zRatio*HT[i]),
-			       OVec[3]+Z*(zRatio*HT[i]),
-			       OVec[3]+Z*(zRatio*HT[i])+X,X);
+                               IVec[3]+Z*(zRatio*HT[i]),
+                               OVec[3]+Z*(zRatio*HT[i]),
+                               OVec[3]+Z*(zRatio*HT[i])+X,X);
       CI+=10;
     }
   FixedComp::setConnect(2,Origin+(IVec[0]+OVec[0])/2.0-
-			X*(xRatio*HT[8]),-X);
+                        X*(xRatio*HT[8]),-X);
   FixedComp::setConnect(3,Origin+(IVec[1]+OVec[1])/2.0+
-			X*(xRatio*HT[8]),X);
+                        X*(xRatio*HT[8]),X);
   FixedComp::setConnect(4,Origin+(IVec[1]+OVec[1])/2.0-
-			Z*(zRatio*HT[8]),-Z);
+                        Z*(zRatio*HT[8]),-Z);
   FixedComp::setConnect(5,Origin+(IVec[1]+OVec[1])/2.0+
-			Z*(zRatio*HT[8]),Z);
+                        Z*(zRatio*HT[8]),Z);
 
   return;
 }
@@ -292,44 +292,44 @@ ConicModerator::createObjects(Simulation& System)
   System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
 
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 "-2 11 13 -14 15 -16 (-1:-3:4:-5:6 )");
+                                 "-2 11 13 -14 15 -16 (-1:-3:4:-5:6 )");
   System.addCell(MonteCarlo::Qhull(cellIndex++,alMat,modTemp,Out));
 
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 "-22 21 23 -24 25 -26 (-11:-13:14:-15:16 )");
+                                 "-22 21 23 -24 25 -26 (-11:-13:14:-15:16 )");
   System.addCell(MonteCarlo::Qhull(cellIndex++,modMat,modTemp,Out));
 
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 "-2 31 33 -34 35 -36 (-21:-23:24:-25:26 )");
+                                 "-2 31 33 -34 35 -36 (-21:-23:24:-25:26 )");
   System.addCell(MonteCarlo::Qhull(cellIndex++,alMat,modTemp,Out));
 
   // Head piece
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 "-2 22 23 -24 25 -26 (-13:14:-15:16)");
+                                 "-2 22 23 -24 25 -26 (-13:14:-15:16)");
   System.addCell(MonteCarlo::Qhull(cellIndex++,alMat,modTemp,Out));
 
   // Vac layer:
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 "-2 41 43 -44 45 -46 (-31:-33:34:-35:36 )");
+                                 "-2 41 43 -44 45 -46 (-31:-33:34:-35:36 )");
   System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
 
   // Water Inner Al
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 "-2 51 53 -54 55 -56 (-41:-43:44:-45:46 )");
+                                 "-2 51 53 -54 55 -56 (-41:-43:44:-45:46 )");
   System.addCell(MonteCarlo::Qhull(cellIndex++,alMat,0.0,Out));
   // Water Inner
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 "-2 61 63 -64 65 -66 (-51:-53:54:-55:56 )");
+                                 "-2 61 63 -64 65 -66 (-51:-53:54:-55:56 )");
   System.addCell(MonteCarlo::Qhull(cellIndex++,waterMat,0.0,Out));
 
   // Water Inner
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 "-2 71 73 -74 75 -76 (-61:-63:64:-65:66 )");
+                                 "-2 71 73 -74 75 -76 (-61:-63:64:-65:66 )");
   System.addCell(MonteCarlo::Qhull(cellIndex++,alMat,0.0,Out));
 
   // Final void
   Out=ModelSupport::getComposite(SMap,modIndex,
-				 "-2 81 83 -84 85 -86 (-71:-73:74:-75:76 )");
+                                 "-2 81 83 -84 85 -86 (-71:-73:74:-75:76 )");
   System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
 
   return;
@@ -337,7 +337,7 @@ ConicModerator::createObjects(Simulation& System)
 
 Geometry::Vec3D
 ConicModerator::getSurfacePoint(const size_t layerIndex,
-			      const size_t sideIndex) const
+                              const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param sideIndex :: Side [0-5]
@@ -361,7 +361,7 @@ ConicModerator::getSurfacePoint(const size_t layerIndex,
 
 std::string
 ConicModerator::getLayerString(const size_t sideIndex,
-			       const size_t layerIndex) const
+                               const size_t layerIndex) const
   /*!
     Given a side and a layer calculate the link surf
     \param sideIndex :: Side [0-5]
@@ -384,7 +384,7 @@ ConicModerator::getLayerString(const size_t sideIndex,
 
 int
 ConicModerator::getLayerSurf(const size_t layerIndex,
-			     const size_t sideIndex) const
+                             const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link surf
     \param sideIndex :: Side [0-5]
@@ -408,9 +408,9 @@ ConicModerator::getLayerSurf(const size_t layerIndex,
   
 void
 ConicModerator::createAll(Simulation& System,
-			  const attachSystem::FixedComp& axisFC,
-			  const attachSystem::FixedComp* orgFC,
-			  const long int sideIndex)
+                          const attachSystem::FixedComp& axisFC,
+                          const attachSystem::FixedComp* orgFC,
+                          const long int sideIndex)
   /*!
     Generic function to create everything
     \param System :: Simulation to create objects in

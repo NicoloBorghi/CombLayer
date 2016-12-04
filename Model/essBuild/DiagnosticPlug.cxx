@@ -300,10 +300,10 @@ DiagnosticPlug::createSurfaces()
 
 void
 DiagnosticPlug::createObjects(Simulation& System,
-			      const attachSystem::FixedComp& floorFC,
-			      const size_t floorLP,
-			      const attachSystem::FixedComp& roofFC,
-			      const size_t roofLP)
+                              const attachSystem::FixedComp& floorFC,
+                              const size_t floorLP,
+                              const attachSystem::FixedComp& roofFC,
+                              const size_t roofLP)
 
   /*!
     Create the vaned moderator
@@ -407,11 +407,11 @@ DiagnosticPlug::createLinks()
 
 void
 DiagnosticPlug::createAll(Simulation& System,
-			  const attachSystem::FixedComp& FC,
-			  const attachSystem::FixedComp& floorFC,
-			  const size_t floorLP,
-			  const attachSystem::FixedComp& roofFC,
-			  const size_t roofLP)
+                          const attachSystem::FixedComp& FC,
+                          const attachSystem::FixedComp& floorFC,
+                          const size_t floorLP,
+                          const attachSystem::FixedComp& roofFC,
+                          const size_t roofLP)
 /*!
     Extrenal build everything
     \param System :: Simulation

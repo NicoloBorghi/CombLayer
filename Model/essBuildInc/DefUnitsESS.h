@@ -35,7 +35,7 @@ namespace mainSystem
   void setESSPortsOnly(defaultConfig&);
   void setESSFull(defaultConfig&); 
   void setESSSingle(defaultConfig&,const std::string&,
-		    const std::string&,int);
+                    const std::string&,int);
 
 }
 

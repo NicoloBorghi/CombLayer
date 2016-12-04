@@ -113,10 +113,10 @@ namespace essSystem
   {
     if (this!=&A)
       {
-	attachSystem::ContainedComp::operator=(A);
-	attachSystem::FixedComp::operator=(A);
-	cellIndex=A.cellIndex;
-	nLayers=A.nLayers;
+        attachSystem::ContainedComp::operator=(A);
+        attachSystem::FixedComp::operator=(A);
+        cellIndex=A.cellIndex;
+        nLayers=A.nLayers;
       }
     return *this;
   }
@@ -221,59 +221,59 @@ namespace essSystem
     ELog::RegMethod RegA("BeRefInnerStructure","layerProcess");
     if (nLayers>1)
       {
-	const int pS = Reflector.getLinkSurf(lpS);
-	const int sS = Reflector.getLinkSurf(lsS);
+        const int pS = Reflector.getLinkSurf(lpS);
+        const int sS = Reflector.getLinkSurf(lsS);
 
-	const attachSystem::CellMap* CM = dynamic_cast<const attachSystem::CellMap*>(&Reflector);
-	MonteCarlo::Object* beObj(0);
-	int beCell(0);
+        const attachSystem::CellMap* CM = dynamic_cast<const attachSystem::CellMap*>(&Reflector);
+        MonteCarlo::Object* beObj(0);
+        int beCell(0);
 
-	if (CM)
-	  {
-	    beCell=CM->getCell(cellName);
-	    beObj=System.findQhull(beCell);
-	  }
+        if (CM)
+          {
+            beCell=CM->getCell(cellName);
+            beObj=System.findQhull(beCell);
+          }
 
-	if (!beObj)
-	  throw ColErr::InContainerError<int>(beCell,"Reflector topBe cell not found");
+        if (!beObj)
+          throw ColErr::InContainerError<int>(beCell,"Reflector topBe cell not found");
 
-	ModelSupport::surfDivide DA;
-	for(size_t i=1;i<nLayers;i++)
-	  {
-	    DA.addFrac(baseFrac[i-1]);
-	    DA.addMaterial(mat[i-1]);
-	  }
-	DA.addMaterial(mat.back());
+        ModelSupport::surfDivide DA;
+        for(size_t i=1;i<nLayers;i++)
+          {
+            DA.addFrac(baseFrac[i-1]);
+            DA.addMaterial(mat[i-1]);
+          }
+        DA.addMaterial(mat.back());
 
-	DA.setCellN(beCell);
-	DA.setOutNum(cellIndex, insIndex+10000);
+        DA.setCellN(beCell);
+        DA.setOutNum(cellIndex, insIndex+10000);
 
-	ModelSupport::mergeTemplate<Geometry::Plane,
-				    Geometry::Plane> surroundRule;
+        ModelSupport::mergeTemplate<Geometry::Plane,
+                                    Geometry::Plane> surroundRule;
 
-	surroundRule.setSurfPair(SMap.realSurf(pS),
-				 SMap.realSurf(sS));
+        surroundRule.setSurfPair(SMap.realSurf(pS),
+                                 SMap.realSurf(sS));
 
-	std::string OutA = Reflector.getLinkString(lpS);
-	std::string OutB = Reflector.getLinkComplement(lsS);
+        std::string OutA = Reflector.getLinkString(lpS);
+        std::string OutB = Reflector.getLinkComplement(lsS);
 
-	surroundRule.setInnerRule(OutA);
-	surroundRule.setOuterRule(OutB);
+        surroundRule.setInnerRule(OutA);
+        surroundRule.setOuterRule(OutB);
 
-	DA.addRule(&surroundRule);
-	DA.activeDivideTemplate(System);
+        DA.addRule(&surroundRule);
+        DA.activeDivideTemplate(System);
 
-	cellIndex=DA.getCellNum();
+        cellIndex=DA.getCellNum();
       }
   }
 
   void
   BeRefInnerStructure::createAll(Simulation& System,
-				 const attachSystem::FixedComp& FC)
+                                 const attachSystem::FixedComp& FC)
   /*!
     Extrenal build everything
     \param System :: Simulation
-    \param FC :: Attachment point	       
+    \param FC :: Attachment point              
   */
   {
     ELog::RegMethod RegA("BeRefInnerStructure","createAll");

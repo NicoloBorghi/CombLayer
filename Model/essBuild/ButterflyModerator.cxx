@@ -165,8 +165,8 @@ ButterflyModerator::populate(const FuncDataBase& Control)
 
 void
 ButterflyModerator::createUnitVector(const attachSystem::FixedComp& axisFC,
-				     const attachSystem::FixedComp* orgFC,
-				     const long int sideIndex)
+                                     const attachSystem::FixedComp* orgFC,
+                                     const long int sideIndex)
   /*!
     Create the unit vectors. This one uses axis from ther first FC
     but the origin for the second. Futher shifting the origin on the
@@ -263,7 +263,7 @@ ButterflyModerator::getCommonSurf(const size_t) const
 
 int
 ButterflyModerator::getLayerSurf(const size_t layerIndex,
-				 const size_t sideIndex) const
+                                 const size_t sideIndex) const
   /*!
   */
 {
@@ -275,7 +275,7 @@ ButterflyModerator::getLayerSurf(const size_t layerIndex,
 
 std::string
 ButterflyModerator::getLayerString(const size_t layerIndex,
-				   const size_t sideIndex) const
+                                   const size_t sideIndex) const
   /*!
     Only components have reference values
   */
@@ -287,7 +287,7 @@ ButterflyModerator::getLayerString(const size_t layerIndex,
 
 Geometry::Vec3D
 ButterflyModerator::getSurfacePoint(const size_t layerIndex,
-				    const size_t sideIndex) const
+                                    const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param layerIndex :: layer, 0 is inner moderator [0-6]
@@ -349,9 +349,9 @@ ButterflyModerator::createExternal()
   
 void
 ButterflyModerator::createAll(Simulation& System,
-			      const attachSystem::FixedComp& axisFC,
-			      const attachSystem::FixedComp* orgFC,
-			      const long int sideIndex)
+                              const attachSystem::FixedComp& axisFC,
+                              const attachSystem::FixedComp* orgFC,
+                              const long int sideIndex)
   /*!
     Construct the butterfly components
     \param System :: Simulation 

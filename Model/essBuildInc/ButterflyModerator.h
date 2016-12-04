@@ -40,8 +40,8 @@ class ButterflyModerator :
 
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,
-			const attachSystem::FixedComp*,
-			const long int);
+                        const attachSystem::FixedComp*,
+                        const long int);
 
   void createExternal();
   void createSurfaces();
@@ -65,8 +65,8 @@ class ButterflyModerator :
   void setRadiusX(const double R) { outerRadius=R; }
   
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const attachSystem::FixedComp*,
-		 const long int);
+                 const attachSystem::FixedComp*,
+                 const long int);
 
   std::string getSideRule() const;
   std::string getLeftRightWaterSideRule() const;

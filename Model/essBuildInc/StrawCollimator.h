@@ -26,100 +26,100 @@ class Simulation;
 
 namespace essSystem {
 
-	/*!
-		\class StrawCollimator
-		\author Nicolò Borghi
-		\version 1.0
-		\date August 2016
-		\brief Straw collimaotr design for target diagnostic plug
-	*/
+        /*!
+                \class StrawCollimator
+                \author Nicolò Borghi
+                \version 1.0
+                \date August 2016
+                \brief Straw collimaotr design for target diagnostic plug
+        */
 
-	class StrawCollimator  :  public attachSystem::ContainedComp,
-				  public attachSystem::FixedComp,
-				  public attachSystem::CellMap {
+        class StrawCollimator  :  public attachSystem::ContainedComp,
+                                  public attachSystem::FixedComp,
+                                  public attachSystem::CellMap {
 
-		public:
+                public:
 
-						  StrawCollimator(const std::string&);
-						  StrawCollimator(const StrawCollimator&);
-						  StrawCollimator& operator=(const StrawCollimator&);
-			virtual StrawCollimator  *clone() const;
-					 virtual ~StrawCollimator();
+                                                  StrawCollimator(const std::string&);
+                                                  StrawCollimator(const StrawCollimator&);
+                                                  StrawCollimator& operator=(const StrawCollimator&);
+                        virtual StrawCollimator  *clone() const;
+                                         virtual ~StrawCollimator();
 
-					   void   createAll(Simulation&,
-							    attachSystem::FixedComp&,			/*FC*/
-							    const attachSystem::FixedComp&,		/*floorFC*/
-							    const size_t,				/*floorLP*/
-							    const attachSystem::FixedComp&,		/*roofFC*/
-							    const size_t);				/*roofLP*/
+                                           void   createAll(Simulation&,
+                                                            attachSystem::FixedComp&,                   /*FC*/
+                                                            const attachSystem::FixedComp&,             /*floorFC*/
+                                                            const size_t,                               /*floorLP*/
+                                                            const attachSystem::FixedComp&,             /*roofFC*/
+                                                            const size_t);                              /*roofLP*/
 
-					   void   setXYZSteps(double, double, double);
-					   void   setAngles(double, double);
-					   void   setDimensions(double, double, double);
-					   void   setBoundarySurfacesZ(double, double, double);
+                                           void   setXYZSteps(double, double, double);
+                                           void   setAngles(double, double);
+                                           void   setDimensions(double, double, double);
+                                           void   setBoundarySurfacesZ(double, double, double);
 
-		protected:
+                protected:
 
-				      const int   strawIndex;						///< Index of surface offset
-					    int   cellIndex;						///< Cell index
+                                      const int   strawIndex;                                           ///< Index of surface offset
+                                            int   cellIndex;                                            ///< Cell index
 
-			// Variables relative to the DiagnosticPlug, necessary for building the straw collimator
+                        // Variables relative to the DiagnosticPlug, necessary for building the straw collimator
 
-					 double   xStep;						///< X step (obtained from DiagnosticPlug)
-					 double   yStep;						///< Y step (obtained from DiagnosticPlug)
-					 double   zStep;						///< Z step (obtained from DiagnosticPlug)
-					 double   xyAngle;						///< XY Angle (obtained from DiagnosticPlug)
-					 double   zAngle;						///< Z Angle (obtained from DiagnosticPlug)
-					 double   width;						///< Width (obtained from DiagnosticPlug)
-					 double   length;						///< Length (obtained from DiagnosticPlug)
-					 double   height;						///< Height (obtained from DiagnosticPlug)
-					 double   floorSurfaceZ;					///< Z coordinate of the floor surface
-					 double   roofSurfaceZ;						///< Z coordinate of the roof surface
-					 double   targetTopSurfZ;					///< Z coordinate of the target upper surface
+                                         double   xStep;                                                ///< X step (obtained from DiagnosticPlug)
+                                         double   yStep;                                                ///< Y step (obtained from DiagnosticPlug)
+                                         double   zStep;                                                ///< Z step (obtained from DiagnosticPlug)
+                                         double   xyAngle;                                              ///< XY Angle (obtained from DiagnosticPlug)
+                                         double   zAngle;                                               ///< Z Angle (obtained from DiagnosticPlug)
+                                         double   width;                                                ///< Width (obtained from DiagnosticPlug)
+                                         double   length;                                               ///< Length (obtained from DiagnosticPlug)
+                                         double   height;                                               ///< Height (obtained from DiagnosticPlug)
+                                         double   floorSurfaceZ;                                        ///< Z coordinate of the floor surface
+                                         double   roofSurfaceZ;                                         ///< Z coordinate of the roof surface
+                                         double   targetTopSurfZ;                                       ///< Z coordinate of the target upper surface
 
-			// Variables relative to the imaging system
+                        // Variables relative to the imaging system
 
-					 double   heightImagingSystem;					///< Height of the imaging system measured from the DiagnosticPlug floor to the imaging plane
-					 double   zImagingPlane;					///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
-					 double   distanceTargetSurfImagingPlane;			///< Distance between the target upper surface and the imaging plane
+                                         double   heightImagingSystem;                                  ///< Height of the imaging system measured from the DiagnosticPlug floor to the imaging plane
+                                         double   zImagingPlane;                                        ///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
+                                         double   distanceTargetSurfImagingPlane;                       ///< Distance between the target upper surface and the imaging plane
 
-			// Variables relative to the segmentation for activation calculations
+                        // Variables relative to the segmentation for activation calculations
 
-					 double   activationLayerThick1;
-					 double   activationLayerThick2;
-					 double   activationLayerThick3;
+                                         double   activationLayerThick1;
+                                         double   activationLayerThick2;
+                                         double   activationLayerThick3;
 
-			// Variables relative to the straw collimator
+                        // Variables relative to the straw collimator
 
-					 double   strawWidth;						///< Width of the straws in the transversal direction
-					 double   strawLength;						///< Length of the straws in the radial direction
-					 double   rowDistance;						///< Distance between straw rows
-					    int   nStraws;						///< Number of straws that can be fitted inside the diagnostic plug
+                                         double   strawWidth;                                           ///< Width of the straws in the transversal direction
+                                         double   strawLength;                                          ///< Length of the straws in the radial direction
+                                         double   rowDistance;                                          ///< Distance between straw rows
+                                            int   nStraws;                                              ///< Number of straws that can be fitted inside the diagnostic plug
 
-					    int   bulkMat;						///< Material for the collimator structure
+                                            int   bulkMat;                                              ///< Material for the collimator structure
 
-		private:
+                private:
 
-					   void   populate(const FuncDataBase&);
+                                           void   populate(const FuncDataBase&);
 
-					   void   createUnitVector(const attachSystem::FixedComp&);
+                                           void   createUnitVector(const attachSystem::FixedComp&);
 
-					   void   createSurfaces(const attachSystem::FixedComp&,	/*FC*/
-								 const attachSystem::FixedComp&,	/*floorFC*/
-								 const size_t,				/*floorLP*/
-								 const attachSystem::FixedComp&,	/*roofFC*/
-								 const size_t);				/*roofLP*/
+                                           void   createSurfaces(const attachSystem::FixedComp&,        /*FC*/
+                                                                 const attachSystem::FixedComp&,        /*floorFC*/
+                                                                 const size_t,                          /*floorLP*/
+                                                                 const attachSystem::FixedComp&,        /*roofFC*/
+                                                                 const size_t);                         /*roofLP*/
 
-					   void   createObjects(Simulation&,
-								attachSystem::FixedComp&,		/*FC*/
-								const attachSystem::FixedComp&,		/*floorFC*/
-								const size_t,				/*floorLP*/
-								const attachSystem::FixedComp&,		/*roofFC*/
-								const size_t);				/*roofLP*/
+                                           void   createObjects(Simulation&,
+                                                                attachSystem::FixedComp&,               /*FC*/
+                                                                const attachSystem::FixedComp&,         /*floorFC*/
+                                                                const size_t,                           /*floorLP*/
+                                                                const attachSystem::FixedComp&,         /*roofFC*/
+                                                                const size_t);                          /*roofLP*/
 
-					   void   createLinks();
+                                           void   createLinks();
 
-	};
+        };
 
 }
 

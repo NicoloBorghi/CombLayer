@@ -64,7 +64,7 @@ class TaperedDiskPreMod : public attachSystem::ContainedComp,
   
   void populate(const FuncDataBase&,const double,const double);
   void createUnitVector(const attachSystem::FixedComp&,const long int,
-			const bool);
+                        const bool);
 
   void createSurfaces();
   void createObjects(Simulation&);
@@ -88,7 +88,7 @@ class TaperedDiskPreMod : public attachSystem::ContainedComp,
     { return (depth.empty()) ? 0.0 : depth.back()+height.back(); }
 
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const long int,const bool,const double,const double, const bool);
+                 const long int,const bool,const double,const double, const bool);
 };
 
 }

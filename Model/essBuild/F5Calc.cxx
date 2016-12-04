@@ -87,8 +87,8 @@ F5Calc::SetTally(double lx,double ly,double lz)
   
 void
 F5Calc::SetPoints(const Geometry::Vec3D& lB,
-		  const Geometry::Vec3D& lC,
-		  const Geometry::Vec3D& lB2)
+                  const Geometry::Vec3D& lC,
+                  const Geometry::Vec3D& lB2)
    /*!
      Simple seter
    */
@@ -144,7 +144,7 @@ F5Calc::GetZAngle()
   
   const double lAngle=(180.0/M_PI)*
     fabs(atan(F5.Distance(lF5_Projected))/
-	 M.Distance(lF5_Projected));
+         M.Distance(lF5_Projected));
 
   // This is junk: Should be relative to the lF5-projection anlge
   return (lF5_Projected.Z()-F5.Z() >= 0.0) ? -lAngle : lAngle;
@@ -194,8 +194,8 @@ F5Calc::GetHalfSizeZ() const
 
 Geometry::Vec3D
 F5Calc::CalculateNormalVector(const Geometry::Vec3D& O,
-			      const Geometry::Vec3D& P1,
-			      const Geometry::Vec3D& P2) const
+                              const Geometry::Vec3D& P1,
+                              const Geometry::Vec3D& P2) const
    // STATIC
 {
   // bizare way to do cross product normals

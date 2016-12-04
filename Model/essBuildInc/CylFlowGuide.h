@@ -55,7 +55,7 @@ class CylFlowGuide : public attachSystem::ContainedComp,
 
   void createSurfaces();
   void createObjects(Simulation&,attachSystem::FixedComp&,
-		     const size_t);
+                     const size_t);
   void createLinks();
 
  public:
@@ -67,7 +67,7 @@ class CylFlowGuide : public attachSystem::ContainedComp,
   virtual ~CylFlowGuide();
 
   void createAll(Simulation&,attachSystem::FixedComp&,
-		 const long int);
+                 const long int);
 
 };
 

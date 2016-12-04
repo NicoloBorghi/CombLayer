@@ -78,7 +78,7 @@ class BulkModule : public attachSystem::ContainedComp,
 
   void addFlightUnit(Simulation&,const attachSystem::FixedComp&);
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const attachSystem::ContainedComp&);
+                 const attachSystem::ContainedComp&);
 
 };
 

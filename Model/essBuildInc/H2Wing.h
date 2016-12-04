@@ -86,7 +86,7 @@ class H2Wing :
   Geometry::Vec3D midNorm(const size_t) const;
 
   void cornerSet(const double,std::array<Geometry::Vec3D,3>&,
-		 std::array<Geometry::Vec3D,3>&) const;
+                 std::array<Geometry::Vec3D,3>&) const;
   
   std::pair<Geometry::Vec3D,Geometry::Vec3D>
     cornerPair(const size_t,const size_t,const double) const;

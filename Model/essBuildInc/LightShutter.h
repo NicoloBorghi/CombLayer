@@ -54,7 +54,7 @@ class LightShutter : public attachSystem::ContainedComp,
   
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,
-			const long int);
+                        const long int);
   
   void createSurfaces();
   void createLinks();
@@ -69,7 +69,7 @@ class LightShutter : public attachSystem::ContainedComp,
   virtual ~LightShutter();
   
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const long int);
+                 const long int);
 
 };
 

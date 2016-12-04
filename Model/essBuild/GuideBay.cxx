@@ -299,7 +299,7 @@ GuideBay::createLinks()
 
 void
 GuideBay::outerMerge(Simulation& System,
-		     GuideBay& otherBay)
+                     GuideBay& otherBay)
   /*!
     Merge the outer component of the guidebay
     \param System :: simulaiton to use
@@ -351,7 +351,7 @@ GuideBay::outerMerge(Simulation& System,
   System.removeCell(AB->getName());
   System.removeCell(BB->getName());
   System.addCell(MonteCarlo::Qhull(cellIndex++,mat,temp,
-				   ARule.display()));
+                                   ARule.display()));
   // NOW RESET names in cellMap:
   setCell("Outer",cellIndex-1);
   otherBay.setCell("Outer",cellIndex-1);
@@ -382,9 +382,9 @@ GuideBay::createGuideItems(Simulation& System)
       GA->addInsertCell("Inner",getCell("Inner"));
       GA->addInsertCell("Outer",getCell("Outer"));
       if (i)
-	GA->createAll(System,*this,0,GUnit[i-1].get());
+        GA->createAll(System,*this,0,GUnit[i-1].get());
       else
-	GA->createAll(System,*this,0,0);
+        GA->createAll(System,*this,0,0);
 
       GUnit.push_back(GA);
       OR.addObject(GUnit.back());      
@@ -395,7 +395,7 @@ GuideBay::createGuideItems(Simulation& System)
 
 void
 GuideBay::createAll(Simulation& System,
-		    const attachSystem::FixedComp& FC)
+                    const attachSystem::FixedComp& FC)
   /*!
     Generic function to create everything
     \param System :: Simulation item

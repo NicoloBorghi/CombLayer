@@ -90,8 +90,8 @@ namespace essSystem
 {
 
 H2Wing::H2Wing(const std::string& baseKey,
-	       const std::string& extraKey,
-	       const double XYAngle) :
+               const std::string& extraKey,
+               const double XYAngle) :
   attachSystem::ContainedComp(),
   attachSystem::LayerComp(0,0),
   attachSystem::FixedComp(baseKey+extraKey,16),
@@ -190,9 +190,9 @@ H2Wing::populate(const FuncDataBase& Control)
   for(size_t i=0;i<3;i++)
     {
       Pts[i]=Control.EvalVar<Geometry::Vec3D>
-	(keyName+"Corner"+StrFunc::makeString(i+1));
+        (keyName+"Corner"+StrFunc::makeString(i+1));
       radius[i]=Control.EvalVar<double>
-	(keyName+"Radius"+StrFunc::makeString(i+1));
+        (keyName+"Radius"+StrFunc::makeString(i+1));
     }
 
   modTemp=Control.EvalVar<double>(keyName+"ModTemp");
@@ -229,10 +229,10 @@ H2Wing::populate(const FuncDataBase& Control)
   height=totalHeight-TH; // hydrogen height
   if (height<Geometry::zeroTol)
     throw ColErr::NumericalAbort("Unable to calculate a negative height.\n"
-				 "Thickness   == "+
-				 StrFunc::makeString(height)+
-				 "totalheight == "+
-				 StrFunc::makeString(totalHeight));
+                                 "Thickness   == "+
+                                 StrFunc::makeString(height)+
+                                 "totalheight == "+
+                                 StrFunc::makeString(totalHeight));
   
   return;
 }
@@ -349,8 +349,8 @@ H2Wing::realAxis(const Geometry::Vec3D& CPt) const
 
 void
 H2Wing::cornerSet(const double scale,
-		  std::array<Geometry::Vec3D,3>& CPts,
-		  std::array<Geometry::Vec3D,3>& NPts) const
+                  std::array<Geometry::Vec3D,3>& CPts,
+                  std::array<Geometry::Vec3D,3>& NPts) const
 
   /*!
     Calculate the corners and the normals to the surfaces
@@ -374,7 +374,7 @@ H2Wing::cornerSet(const double scale,
       NPts[i]=(a*Z).unit();
       // Check -- direction -- highly inefficient
       if (NPts[i].dotProd(c)>0.0)
-	NPts[i]*=-1.0;
+        NPts[i]*=-1.0;
     }
   return;
 }
@@ -422,37 +422,37 @@ H2Wing::createSurfaces()
       VD += Depth[j];
       cornerSet(PDepth,CPts,NPts);
       for(size_t i=0;i<3;i++)
-	{
-	  const int ii(static_cast<int>(i)+1);
-	  const Geometry::Vec3D MD= midNorm(i);
-	  // Note :: Side norm faces out
-	  ModelSupport::buildPlane(SMap,triOffset+ii,CPts[i],
-				   NPts[i]);
-	  
-	  // corner centre
-	  const Geometry::Vec3D RCent=
-	    Geometry::cornerCircleTouch
-	    (CPts[i],CPts[(i+1)%3],CPts[(i+2)%3],radius[i]+PDepth);
-	  // Mid norm point INWARD!
+        {
+          const int ii(static_cast<int>(i)+1);
+          const Geometry::Vec3D MD= midNorm(i);
+          // Note :: Side norm faces out
+          ModelSupport::buildPlane(SMap,triOffset+ii,CPts[i],
+                                   NPts[i]);
+          
+          // corner centre
+          const Geometry::Vec3D RCent=
+            Geometry::cornerCircleTouch
+            (CPts[i],CPts[(i+1)%3],CPts[(i+2)%3],radius[i]+PDepth);
+          // Mid norm point INWARD!
 
-	  std::pair<Geometry::Vec3D,Geometry::Vec3D> CutPair=
-	    Geometry::cornerCircle
-	    (CPts[i],CPts[(i+1)%3],CPts[(i+2)%3],radius[i]+PDepth);
+          std::pair<Geometry::Vec3D,Geometry::Vec3D> CutPair=
+            Geometry::cornerCircle
+            (CPts[i],CPts[(i+1)%3],CPts[(i+2)%3],radius[i]+PDepth);
 
-	  // Positive inward
-	  ModelSupport::buildPlane(SMap,triOffset+ii+20,
-				   CutPair.first,CutPair.second,
-				   CutPair.first+Z,MD);
+          // Positive inward
+          ModelSupport::buildPlane(SMap,triOffset+ii+20,
+                                   CutPair.first,CutPair.second,
+                                   CutPair.first+Z,MD);
 
-	  
-	  ModelSupport::buildCylinder(SMap,triOffset+ii+6,
-				      RCent,Z,radius[i]+PDepth);
-	}
+          
+          ModelSupport::buildCylinder(SMap,triOffset+ii+6,
+                                      RCent,Z,radius[i]+PDepth);
+        }
       
       ModelSupport::buildPlane(SMap,triOffset+5,Origin-
-			       Z*(VD+height/2.0),Z);
+                               Z*(VD+height/2.0),Z);
       ModelSupport::buildPlane(SMap,triOffset+6,Origin+
-			       Z*(VH+height/2.0),Z);
+                               Z*(VH+height/2.0),Z);
       triOffset+=100;
     }
 
@@ -466,7 +466,7 @@ H2Wing::createSurfaces()
       const Geometry::Vec3D sidePt((CPts[(i+1)%3]+CPts[i])/2.0);
       
       ModelSupport::buildPlane(SMap,ii,midPoint,midPoint+Z,
-			       sidePt,CPts[(i+1) % 3]-sidePt);
+                               sidePt,CPts[(i+1) % 3]-sidePt);
     }
   return;
 }
@@ -503,21 +503,21 @@ H2Wing::createObjects(Simulation& System)
       OutC=ModelSupport::getComposite(SMap,triOffset,"-2 -3 5 -6 (23:-9) ");
 
       if (!i && engActive)
-	{
-	  Out=ModelSupport::getComposite
-	    (SMap,triOffset,"-1 -2 -3 5 -6 (21:-7) (22:-8) (23:-9)");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],Out));
-	  CellMap::setCell("Inner",cellIndex-1);
-	}
+        {
+          Out=ModelSupport::getComposite
+            (SMap,triOffset,"-1 -2 -3 5 -6 (21:-7) (22:-8) (23:-9)");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],Out));
+          CellMap::setCell("Inner",cellIndex-1);
+        }
       else
-	{
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],
-				       OutA+InnerA.display()+CutA));
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],
-					   OutB+InnerB.display()+CutB));
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],
-					   OutC+InnerC.display()+CutC));
-	}
+        {
+          System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],
+                                       OutA+InnerA.display()+CutA));
+          System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],
+                                           OutB+InnerB.display()+CutB));
+          System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],
+                                           OutC+InnerC.display()+CutC));
+        }
       
       InnerA.procString(OutA);
       InnerB.procString(OutB);
@@ -529,18 +529,18 @@ H2Wing::createObjects(Simulation& System)
 
   triOffset-=100;
   OutA=ModelSupport::getComposite(SMap,triOffset,
-				     "-1 -2 -3 5 -6 (21:-7) (22:-8) (23:-9)");
+                                     "-1 -2 -3 5 -6 (21:-7) (22:-8) (23:-9)");
   addOuterSurf(OutA);
 
   sideRule=ModelSupport::getComposite(SMap,triOffset,
-				     "-1 -2 -3 (21:-7) (22:-8) (23:-9)");
+                                     "-1 -2 -3 (21:-7) (22:-8) (23:-9)");
 
   return;
 }
 
 Geometry::Vec3D
 H2Wing::getSurfacePoint(const size_t layerIndex,
-			const size_t sideIndex) const
+                        const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param layerIndex :: layer, 0 is inner moderator [0-6]
@@ -587,7 +587,7 @@ H2Wing::getSurfacePoint(const size_t layerIndex,
 
 int
 H2Wing::getLayerSurf(const size_t layerIndex,
-		     const size_t sideIndex) const
+                     const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param layerIndex :: layer, 0 is inner moderator [0-3]
@@ -626,7 +626,7 @@ H2Wing::getLayerSurf(const size_t layerIndex,
 
 std::string
 H2Wing::getLayerString(const size_t layerIndex,
-		       const size_t sideIndex) const
+                       const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param layerIndex :: layer, 0 is inner moderator [0-6]
@@ -674,7 +674,7 @@ H2Wing::getLayerString(const size_t layerIndex,
 
 void
 H2Wing::createAll(Simulation& System,
-		  const attachSystem::FixedComp& FC)
+                  const attachSystem::FixedComp& FC)
   /*!
     Generic function to create everything
     \param System :: Simulation item

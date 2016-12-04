@@ -196,12 +196,12 @@ BlockAddition::populate(const FuncDataBase& Control)
   for(size_t i=1;i<nLayers;i++)
     {
       WT+=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"WallThick",i));   
+        (StrFunc::makeString(keyName+"WallThick",i));   
       M=ModelSupport::EvalMat<int>
-	(Control,StrFunc::makeString(keyName+"WallMat",i));   
+        (Control,StrFunc::makeString(keyName+"WallMat",i));   
 
       T=Control.EvalDefVar<double>
-	(StrFunc::makeString(keyName+"WallTemp",i),0.0);   
+        (StrFunc::makeString(keyName+"WallTemp",i),0.0);   
             
       wallThick.push_back(WT);
       wallTemp.push_back(T);
@@ -213,8 +213,8 @@ BlockAddition::populate(const FuncDataBase& Control)
 
 void
 BlockAddition::createUnitVector(const Geometry::Vec3D& O,
-				const Geometry::Vec3D& YAxis,
-				const Geometry::Vec3D& ZAxis)
+                                const Geometry::Vec3D& YAxis,
+                                const Geometry::Vec3D& ZAxis)
   /*!
     Create the unit vectors
     \param O :: Origin [calc from edge point]
@@ -253,26 +253,26 @@ BlockAddition::createSurfaces()
   else
     {
       ModelSupport::buildRotatedPlane(SMap,blockIndex+1,
-				      SMap.realPtr<Geometry::Plane>(edgeSurf),
-				      xyAngle,Z,rotCent);
+                                      SMap.realPtr<Geometry::Plane>(edgeSurf),
+                                      xyAngle,Z,rotCent);
     }
 
   int BI(blockIndex);
   for(size_t i=0;i<nLayers;i++)
     {
       ModelSupport::buildPlane(SMap,BI+2,
-			       Origin+Y*(length+wallThick[i]),Y);
+                               Origin+Y*(length+wallThick[i]),Y);
       ModelSupport::buildPlane(SMap,BI+3,
-			       Origin-X*wallThick[i],X);
+                               Origin-X*wallThick[i],X);
       ModelSupport::buildPlane(SMap,BI+4,
-			       Origin+X*(width+wallThick[i]),X);
+                               Origin+X*(width+wallThick[i]),X);
       ModelSupport::buildPlane(SMap,BI+5,
-			       Origin-Z*(height/2.0+wallThick[i]),Z);
+                               Origin-Z*(height/2.0+wallThick[i]),Z);
       ModelSupport::buildPlane(SMap,BI+6,
-			       Origin+Z*(height/2.0+wallThick[i]),Z);
+                               Origin+Z*(height/2.0+wallThick[i]),Z);
       BI+=10;
     }
-		       
+                       
 
   return; 
 }
@@ -301,22 +301,22 @@ BlockAddition::rotateItem(std::string LString)
     {
       int N;
       if (StrFunc::convert(S,N))
-	{
-	  const Geometry::Plane* PN=
-	    dynamic_cast<const Geometry::Plane*>
-	    (SMap.realSurfPtr(abs(N)));
-	  if (PN)
-	    {
-	      BI++;
-	      ModelSupport::buildRotatedPlane(SMap,BI,PN,
-					      xyAngle,Z,rotCent);
-	      cx<<" "<<((N>0) ? BI : -BI);
-	    }
-	  else
-	    cx<<" "<<S;
-	}
+        {
+          const Geometry::Plane* PN=
+            dynamic_cast<const Geometry::Plane*>
+            (SMap.realSurfPtr(abs(N)));
+          if (PN)
+            {
+              BI++;
+              ModelSupport::buildRotatedPlane(SMap,BI,PN,
+                                              xyAngle,Z,rotCent);
+              cx<<" "<<((N>0) ? BI : -BI);
+            }
+          else
+            cx<<" "<<S;
+        }
       else
-	cx<<" "<<S;
+        cx<<" "<<S;
     }
   return cx.str();
 }
@@ -324,9 +324,9 @@ BlockAddition::rotateItem(std::string LString)
 
 void
 BlockAddition::createObjects(Simulation& System,
-			     const attachSystem::LayerComp& PMod,
-			     const size_t layerIndex,
-			     const size_t sideIndex)
+                             const attachSystem::LayerComp& PMod,
+                             const size_t layerIndex,
+                             const size_t sideIndex)
   /*!
     Create the block object
     \param System :: Simulation to add results
@@ -353,16 +353,16 @@ BlockAddition::createObjects(Simulation& System,
 
       int SI(blockIndex);
       for(size_t i=1;i<nLayers;i++)
-	{ 
-	  Out=ModelSupport::getComposite(SMap,SI,blockIndex,
-					 "1M -12 13 -14 15 -16 (2:-3:4:-5:6)");
-	  if(i==1)
-	    Out+=preModInner;
-	  else
-	    Out+=preModOuter;
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat[i],0.0,Out));
-	  SI+=10;
-	}
+        { 
+          Out=ModelSupport::getComposite(SMap,SI,blockIndex,
+                                         "1M -12 13 -14 15 -16 (2:-3:4:-5:6)");
+          if(i==1)
+            Out+=preModInner;
+          else
+            Out+=preModOuter;
+          System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat[i],0.0,Out));
+          SI+=10;
+        }
 
       Out=ModelSupport::getComposite(SMap,SI,blockIndex,"1M -2 3 -4 5 -6 ");
       addOuterSurf(Out);
@@ -388,7 +388,7 @@ BlockAddition::createCut(const size_t layerIndex) const
     {
       const int SI(10*static_cast<int>(layerIndex)+blockIndex);
       Out=ModelSupport::getComposite(SMap,SI,blockIndex,
-				   " (-1M:-3:4:-5:6) ");
+                                   " (-1M:-3:4:-5:6) ");
     }
   return Out;
 }
@@ -431,7 +431,7 @@ BlockAddition::createLinks()
 
 Geometry::Vec3D
 BlockAddition::getSurfacePoint(const size_t layerIndex,
-			      const size_t sideIndex) const
+                              const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param sideIndex  :: Side [0-5]
@@ -466,7 +466,7 @@ BlockAddition::getSurfacePoint(const size_t layerIndex,
 
 int
 BlockAddition::getLayerSurf(const size_t layerIndex,
-			    const size_t sideIndex) const
+                            const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the layerSurface
     \param sideIndex :: Side [0-5]
@@ -494,7 +494,7 @@ BlockAddition::getLayerSurf(const size_t layerIndex,
 
 std::string
 BlockAddition::getLayerString(const size_t layerIndex,
-			      const size_t sideIndex) const
+                              const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the layerSurface
     \param sideIndex :: Side [0-5]
@@ -518,7 +518,7 @@ BlockAddition::getLayerString(const size_t layerIndex,
   if (sideIndex>0)
     {
       const int SurfN=(sideIndex % 2) ? 
-	SMap.realSurf(SN+SI) : -SMap.realSurf(SN+SI);
+        SMap.realSurf(SN+SI) : -SMap.realSurf(SN+SI);
       return StrFunc::makeString(SurfN);
     }
   return preModInner+" "+StrFunc::makeString(-SMap.realSurf(blockIndex+1));
@@ -526,10 +526,10 @@ BlockAddition::getLayerString(const size_t layerIndex,
 
 void
 BlockAddition::createAll(Simulation& System,
-			 const Geometry::Vec3D& O,
-			 const attachSystem::LayerComp& CylPreMod,
-			 const size_t layerIndex,
-			 const size_t sideIndex)
+                         const Geometry::Vec3D& O,
+                         const attachSystem::LayerComp& CylPreMod,
+                         const size_t layerIndex,
+                         const size_t sideIndex)
   /*!
     Extrenal build everything
     \param System :: Simulation

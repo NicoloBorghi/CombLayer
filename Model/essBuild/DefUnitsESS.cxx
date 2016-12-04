@@ -55,7 +55,7 @@ namespace mainSystem
 
 void 
 setDefUnits(FuncDataBase& Control,
-	    inputParam& IParam)
+            inputParam& IParam)
   /*!
     Based on the defaultConf set up the model
     \param Control :: FuncDataBase
@@ -71,36 +71,36 @@ setDefUnits(FuncDataBase& Control,
       const std::string Key=IParam.getValue<std::string>("defaultConfig");
 
       const std::string sndItem=(ICnt>1) ? 
-	IParam.getValue<std::string>("defaultConfig",1) : "";
+        IParam.getValue<std::string>("defaultConfig",1) : "";
       const std::string extraItem=(ICnt>2) ? 
-	IParam.getValue<std::string>("defaultConfig",2) : "";
+        IParam.getValue<std::string>("defaultConfig",2) : "";
       const int filled=(ICnt>3) ? 
-	IParam.getValue<int>("defaultConfig",3) : 0;
+        IParam.getValue<int>("defaultConfig",3) : 0;
       
       if (Key=="Main")
-	setESS(A);
+        setESS(A);
       else if (Key=="Full")
-	setESSFull(A);
+        setESSFull(A);
       else if (Key=="PortsOnly")
-	setESSPortsOnly(A);
+        setESSPortsOnly(A);
       else if (Key=="Single")
-	setESSSingle(A,sndItem,extraItem,filled);
+        setESSSingle(A,sndItem,extraItem,filled);
       else if (Key=="help")
-	{
-	  ELog::EM<<"Options : "<<ELog::endDiag;
-	  ELog::EM<<"  Main : Everything that works"<<ELog::endDiag;
-	  ELog::EM<<"  Full : Beamline on every port"<<ELog::endDiag;
-	  ELog::EM<<"  PortsOnly  : Nothing beyond beamport "<<ELog::endDiag;
-	  ELog::EM<<"  Single  beamLine : Single beamline [for BL devel] "
-		  <<ELog::endDiag;
-	  throw ColErr::ExitAbort("Iparam.defaultConfig");	  
-	}
+        {
+          ELog::EM<<"Options : "<<ELog::endDiag;
+          ELog::EM<<"  Main : Everything that works"<<ELog::endDiag;
+          ELog::EM<<"  Full : Beamline on every port"<<ELog::endDiag;
+          ELog::EM<<"  PortsOnly  : Nothing beyond beamport "<<ELog::endDiag;
+          ELog::EM<<"  Single  beamLine : Single beamline [for BL devel] "
+                  <<ELog::endDiag;
+          throw ColErr::ExitAbort("Iparam.defaultConfig");        
+        }
       else 
-	{
-	  ELog::EM<<"Unknown Default Key ::"<<Key<<ELog::endDiag;
-	  throw ColErr::InContainerError<std::string>
-	    (Key,"Iparam.defaultConfig");
-	}
+        {
+          ELog::EM<<"Unknown Default Key ::"<<Key<<ELog::endDiag;
+          throw ColErr::InContainerError<std::string>
+            (Key,"Iparam.defaultConfig");
+        }
       A.process(Control,IParam);
     }
   return;
@@ -146,7 +146,7 @@ setESSFull(defaultConfig& A)
       A.setMultiOption("beamlines",index,mc->second+" "+mc->first);
       A.setVar(mc->second+"Active",1);
       if (beamFilled.find(mc->first)!=beamFilled.end())
-	A.setVar(mc->second+"Filled",1);
+        A.setVar(mc->second+"Filled",1);
       index++;
     }
   
@@ -173,9 +173,9 @@ setESSPortsOnly(defaultConfig& A)
 
 void
 setESSSingle(defaultConfig& A,
-	     const std::string& beamItem,
-	     const std::string& portItem,
-	     int filled)
+             const std::string& beamItem,
+             const std::string& portItem,
+             int filled)
 
   /*!
     Default configuration for ESS for testing single beamlines
@@ -212,19 +212,19 @@ setESSSingle(defaultConfig& A,
   if (mc!=beamDef.end())
     {
       if (portItem.empty())
-	{
-	  A.setMultiOption("beamlines",0,mc->second+" "+beamItem);
-	  A.setVar(mc->second+"Active",1);
-	  if (filled)
-	    A.setVar(mc->second+"Filled",1);
-	}
+        {
+          A.setMultiOption("beamlines",0,mc->second+" "+beamItem);
+          A.setVar(mc->second+"Active",1);
+          if (filled)
+            A.setVar(mc->second+"Filled",1);
+        }
       else
-	{
-	  A.setMultiOption("beamlines",0,portItem+" "+beamItem);
-	  A.setVar(portItem+"Active",1);
-	  if (filled)
-	    A.setVar(portItem+"Filled",1);
-	}
+        {
+          A.setMultiOption("beamlines",0,portItem+" "+beamItem);
+          A.setVar(portItem+"Active",1);
+          if (filled)
+            A.setVar(portItem+"Filled",1);
+        }
     }
   else
     throw ColErr::InContainerError<std::string>(beamItem,"BeamItem");
@@ -266,7 +266,7 @@ setESS(defaultConfig& A)
       A.setMultiOption("beamlines",index,mc->second+" "+mc->first);
       A.setVar(mc->second+"Active",1);
       if (beamFilled.find(mc->first)!=beamFilled.end())
-	A.setVar(mc->second+"Filled",1);
+        A.setVar(mc->second+"Filled",1);
       index++;
     }
    

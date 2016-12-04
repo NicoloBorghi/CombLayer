@@ -161,7 +161,7 @@ CylFlowGuide::populate(const FuncDataBase& Control)
 
 void
 CylFlowGuide::createUnitVector(const attachSystem::FixedComp& FC,
-				      const size_t sideIndex)
+                                      const size_t sideIndex)
   /*!
     Create the unit vectors
     \param FC :: Centre for object
@@ -200,9 +200,9 @@ CylFlowGuide::createSurfaces()
 
   ModelSupport::buildCylinder(SMap,insIndex+7,Origin,Z,radius-gapWidth);
   ModelSupport::buildPlane(SMap,insIndex+14,
-			   Origin-X*(gapWidth+wallThick/2.0),X);
+                           Origin-X*(gapWidth+wallThick/2.0),X);
   ModelSupport::buildPlane(SMap, insIndex+24,
-			   Origin+X*(gapWidth+wallThick/2.0),X);
+                           Origin+X*(gapWidth+wallThick/2.0),X);
 
   double yStep(-radius);  // going from -ve to +ve
   int SI(insIndex);
@@ -246,7 +246,7 @@ CylFlowGuide::createObjects(Simulation& System,
   // central plate
   Out=ModelSupport::getComposite(SMap,insIndex," 3 -4 ");
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,innerTemp,
-				   Out+vertStr+sideStr));
+                                   Out+vertStr+sideStr));
 
   // side plates
   int SI(insIndex);
@@ -255,64 +255,64 @@ CylFlowGuide::createObjects(Simulation& System,
     {
       // Baffles
       if (i%2)
-	{
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex," 1 -2 -14M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,innerTemp,
-					   Out+vertStr+sideStr));
+        {
+          Out = ModelSupport::getComposite(SMap,SI,insIndex," 1 -2 -14M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,innerTemp,
+                                           Out+vertStr+sideStr));
           
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex," 1 -2 14M -3M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
+          Out = ModelSupport::getComposite(SMap,SI,insIndex," 1 -2 14M -3M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
                                            Out+vertStr));
           
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex," 1 -2 24M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,innerTemp,
-					   Out+vertStr+sideStr));
+          Out = ModelSupport::getComposite(SMap,SI,insIndex," 1 -2 24M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,innerTemp,
+                                           Out+vertStr+sideStr));
 
                     
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex," 1 -2 -24M 4M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
-					   Out+vertStr+sideStr));
+          Out = ModelSupport::getComposite(SMap,SI,insIndex," 1 -2 -24M 4M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
+                                           Out+vertStr+sideStr));
 
-	}
+        }
       else 
-	{
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex, " 1 -2 -3M -7M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,innerMat,Out+vertStr));
-	  
-	  // x<0
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex, " 1 -2 7M -3M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
-					   Out+vertStr+sideStr));
-	  // same but x>0 - divided by surf 3M to gain speed
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex, " 1 -2 7M 3M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
-					   Out+vertStr+sideStr));
-	  
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex, " 1 -2 4M -7M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,innerTemp,
-					   Out+vertStr));
-	  
-	}
+        {
+          Out = ModelSupport::getComposite(SMap,SI,insIndex, " 1 -2 -3M -7M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,innerMat,Out+vertStr));
+          
+          // x<0
+          Out = ModelSupport::getComposite(SMap,SI,insIndex, " 1 -2 7M -3M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
+                                           Out+vertStr+sideStr));
+          // same but x>0 - divided by surf 3M to gain speed
+          Out = ModelSupport::getComposite(SMap,SI,insIndex, " 1 -2 7M 3M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
+                                           Out+vertStr+sideStr));
+          
+          Out = ModelSupport::getComposite(SMap,SI,insIndex, " 1 -2 4M -7M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,innerTemp,
+                                           Out+vertStr));
+          
+        }
       
       // Splitting of innerCell (to gain speed)
       if (i==0)
-	{
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex," -1 -3M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
-					   Out+vertStr+sideStr));
-	  Out = ModelSupport::getComposite(SMap,SI,insIndex," -1 4M ");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,
-					   innerTemp,Out+vertStr+sideStr));
-	}
+        {
+          Out = ModelSupport::getComposite(SMap,SI,insIndex," -1 -3M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,
+                                           Out+vertStr+sideStr));
+          Out = ModelSupport::getComposite(SMap,SI,insIndex," -1 4M ");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,
+                                           innerTemp,Out+vertStr+sideStr));
+        }
       else
-	{
-	  Out = ModelSupport::getSetComposite(SMap,SI-10,insIndex," -11 2 -3M");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,Out+vertStr+sideStr));
-	  
-	  Out = ModelSupport::getSetComposite(SMap,SI-10,insIndex," -11 2 4M");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,Out+vertStr+sideStr));
+        {
+          Out = ModelSupport::getSetComposite(SMap,SI-10,insIndex," -11 2 -3M");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,Out+vertStr+sideStr));
+          
+          Out = ModelSupport::getSetComposite(SMap,SI-10,insIndex," -11 2 4M");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,innerTemp,Out+vertStr+sideStr));
 
-	}
+        }
       SI += 10;
     }
   // Tail end:

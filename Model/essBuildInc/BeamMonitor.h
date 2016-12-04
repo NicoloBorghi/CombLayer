@@ -60,12 +60,12 @@ class BeamMonitor : public attachSystem::ContainedComp,
   void createUnitVector(const attachSystem::FixedComp&,const long int);
   void createSurfaces();
   void createObjects(Simulation&,const attachSystem::ContainedGroup&,
-		     const std::string&);
+                     const std::string&);
   void createLinks();
   
   std::string calcExclude(const size_t,
-			  const attachSystem::ContainedGroup&,
-			  const std::string&) const;
+                          const attachSystem::ContainedGroup&,
+                          const std::string&) const;
 
 
  public:
@@ -77,8 +77,8 @@ class BeamMonitor : public attachSystem::ContainedComp,
    
 
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const long int,const attachSystem::ContainedGroup&,
-		 const std::string&);
+                 const long int,const attachSystem::ContainedGroup&,
+                 const std::string&);
  
 };
 

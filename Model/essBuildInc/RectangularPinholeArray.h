@@ -26,90 +26,90 @@ class Simulation;
 
 namespace essSystem {
 
-	/*!
-		\class RectangularPinholeArray
-		\author Nicolò Borghi
-		\version 1.0
-		\date July 2016
-		\brief Rectangular pinhole array for the ESS diagnostic plug
-	*/
+        /*!
+                \class RectangularPinholeArray
+                \author Nicolò Borghi
+                \version 1.0
+                \date July 2016
+                \brief Rectangular pinhole array for the ESS diagnostic plug
+        */
 
 
-	class RectangularPinholeArray : public PinholeBase {
+        class RectangularPinholeArray : public PinholeBase {
 
-		public:
+                public:
 
-							  RectangularPinholeArray(const std::string&);
-							  RectangularPinholeArray(const RectangularPinholeArray&);
+                                                          RectangularPinholeArray(const std::string&);
+                                                          RectangularPinholeArray(const RectangularPinholeArray&);
 
-				RectangularPinholeArray  &operator=(const RectangularPinholeArray&);
+                                RectangularPinholeArray  &operator=(const RectangularPinholeArray&);
 
-			virtual RectangularPinholeArray  *clone() const;
+                        virtual RectangularPinholeArray  *clone() const;
 
-						virtual  ~RectangularPinholeArray();
+                                                virtual  ~RectangularPinholeArray();
 
-					   virtual void   createAll( Simulation&,
-							  attachSystem::FixedComp&,					/*FC*/
-							  const attachSystem::FixedComp&,				/*floorFC*/
-							  const size_t, 						/*floorLP*/
-							  const attachSystem::FixedComp&,				/*roofFC*/
-							  const size_t);						/*roofLP*/
+                                           virtual void   createAll( Simulation&,
+                                                          attachSystem::FixedComp&,                                     /*FC*/
+                                                          const attachSystem::FixedComp&,                               /*floorFC*/
+                                                          const size_t,                                                 /*floorLP*/
+                                                          const attachSystem::FixedComp&,                               /*roofFC*/
+                                                          const size_t);                                                /*roofLP*/
 
-		private:
+                private:
 
-						 double   radialPinholeWidth;						///< Radial width of the Pinhole
-						 double   transversalPinholeWidth;					///< Transversal width of the Pinhole
-						    int   pinholeNumber;						///< Number of pinhole to insert
+                                                 double   radialPinholeWidth;                                           ///< Radial width of the Pinhole
+                                                 double   transversalPinholeWidth;                                      ///< Transversal width of the Pinhole
+                                                    int   pinholeNumber;                                                ///< Number of pinhole to insert
 
-			  std::vector<Geometry::Plane*>   radialWalls;							///< Radial boundary walls for the pinhole array
-			   std::vector<Geometry::Vec3D>   pinholePositions;						///< Coordinates of the centers of all the pinholes
+                          std::vector<Geometry::Plane*>   radialWalls;                                                  ///< Radial boundary walls for the pinhole array
+                           std::vector<Geometry::Vec3D>   pinholePositions;                                             ///< Coordinates of the centers of all the pinholes
 
-		private:
+                private:
 
-						   void   populate(const FuncDataBase&);
+                                                   void   populate(const FuncDataBase&);
 
-						   void   createUnitVector(const attachSystem::FixedComp&);
+                                                   void   createUnitVector(const attachSystem::FixedComp&);
 
-						   void   createSurfaces(const attachSystem::FixedComp&,		/*FC*/
-									 const attachSystem::FixedComp&,		/*floorFC*/
-									 const size_t,					/*floorLP*/
-									 const attachSystem::FixedComp&,		/*roofFC*/
-									 const size_t);					/*roofLP*/
+                                                   void   createSurfaces(const attachSystem::FixedComp&,                /*FC*/
+                                                                         const attachSystem::FixedComp&,                /*floorFC*/
+                                                                         const size_t,                                  /*floorLP*/
+                                                                         const attachSystem::FixedComp&,                /*roofFC*/
+                                                                         const size_t);                                 /*roofLP*/
 
-						   void   createBoundaryWalls(const attachSystem::FixedComp&);
+                                                   void   createBoundaryWalls(const attachSystem::FixedComp&);
 
-						   void   createRadialSurfaces(const attachSystem::FixedComp&,		/*FC*/
-									       const attachSystem::FixedComp&,		/*floorFC*/
-									       const size_t,				/*floorLP*/
-									       const attachSystem::FixedComp&,		/*roofFC*/
-									       const size_t,				/*roofLP*/
-									       int);					/*Element index*/
+                                                   void   createRadialSurfaces(const attachSystem::FixedComp&,          /*FC*/
+                                                                               const attachSystem::FixedComp&,          /*floorFC*/
+                                                                               const size_t,                            /*floorLP*/
+                                                                               const attachSystem::FixedComp&,          /*roofFC*/
+                                                                               const size_t,                            /*roofLP*/
+                                                                               int);                                    /*Element index*/
 
-						   void   createTransversalSurfaces(const attachSystem::FixedComp&,	/*FC*/
-										    const attachSystem::FixedComp&,	/*floorFC*/
-										    const size_t,			/*floorLP*/
-										    const attachSystem::FixedComp&,	/*roofFC*/
-										    const size_t,			/*roofLP*/
-										    int);				/*Element index*/
+                                                   void   createTransversalSurfaces(const attachSystem::FixedComp&,     /*FC*/
+                                                                                    const attachSystem::FixedComp&,     /*floorFC*/
+                                                                                    const size_t,                       /*floorLP*/
+                                                                                    const attachSystem::FixedComp&,     /*roofFC*/
+                                                                                    const size_t,                       /*roofLP*/
+                                                                                    int);                               /*Element index*/
 
-						   void   createSideSurfaces(const attachSystem::FixedComp&,		/*FC*/
-									     const attachSystem::FixedComp&,		/*floorFC*/
-									     const size_t,				/*floorLP*/
-									     const attachSystem::FixedComp&,		/*roofFC*/
-									     const size_t,				/*roofLP*/
-									     int);					/*Element index*/
+                                                   void   createSideSurfaces(const attachSystem::FixedComp&,            /*FC*/
+                                                                             const attachSystem::FixedComp&,            /*floorFC*/
+                                                                             const size_t,                              /*floorLP*/
+                                                                             const attachSystem::FixedComp&,            /*roofFC*/
+                                                                             const size_t,                              /*roofLP*/
+                                                                             int);                                      /*Element index*/
 
-						   void   createObjects(Simulation&,
-									attachSystem::FixedComp&,			/*FC*/
-									const attachSystem::FixedComp&,			/*floorFC*/
-									const size_t,					/*floorLP*/
-									const attachSystem::FixedComp&,			/*roofFC*/
-									const size_t);//,					/*roofLP*/
-									//int);						/*Element index*/
+                                                   void   createObjects(Simulation&,
+                                                                        attachSystem::FixedComp&,                       /*FC*/
+                                                                        const attachSystem::FixedComp&,                 /*floorFC*/
+                                                                        const size_t,                                   /*floorLP*/
+                                                                        const attachSystem::FixedComp&,                 /*roofFC*/
+                                                                        const size_t);//,                                       /*roofLP*/
+                                                                        //int);                                         /*Element index*/
 
-						   void   createLinks();
+                                                   void   createLinks();
 
-	};
+        };
 
 }
 

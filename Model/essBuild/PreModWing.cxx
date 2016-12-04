@@ -182,7 +182,7 @@ PreModWing::populate(const FuncDataBase& Control)
 
 void
 PreModWing::createUnitVector(const attachSystem::FixedComp& FC, const long int sideIndex,
-			     const bool zRotate)
+                             const bool zRotate)
   /*!
     Create the unit vectors
     \param FC :: Centre for object
@@ -244,8 +244,8 @@ PreModWing::createSurfaces()
 
 void
 PreModWing::createObjects(Simulation& System,
-			  const attachSystem::FixedComp& Pre, const long int preLP, 
-			  const attachSystem::FixedComp& Mod)
+                          const attachSystem::FixedComp& Pre, const long int preLP, 
+                          const attachSystem::FixedComp& Mod)
 
   /*!
     Create the disc component
@@ -299,11 +299,11 @@ PreModWing::createObjects(Simulation& System,
   // Originally I excluded all moderator by +excludeBM string, but actually this particular cell
   // only crosses its left+right water cells, so I use +BM->getLeftRightWaterSideRule()
   System.addCell(MonteCarlo::Qhull(cellIndex++,mat,0.0,
-				   Out+excludeBMLeftRightWater+BMouterCyl));
+                                   Out+excludeBMLeftRightWater+BMouterCyl));
 
   Out=ModelSupport::getComposite(SMap,modIndex," 7 8 -9 ") + PreString;
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,
-				   Out + excludeBMLeftRightWater + BMouterCyl)); // same trick with excludeBMLeftRightWater as in the previous cell
+                                   Out + excludeBMLeftRightWater + BMouterCyl)); // same trick with excludeBMLeftRightWater as in the previous cell
 
   HeadRule wingExclude;
   Out=ModelSupport::getComposite(SMap,modIndex," (-6 -7):(7 -9) ") + PreString;
@@ -333,10 +333,10 @@ PreModWing::createLinks()
 
 void
 PreModWing::createAll(Simulation& System,
-		      const attachSystem::FixedComp& Pre, const long int preLP,
-		      const bool zRotate,
-		      const bool ts,
-		      const attachSystem::FixedComp& Mod)
+                      const attachSystem::FixedComp& Pre, const long int preLP,
+                      const bool zRotate,
+                      const bool ts,
+                      const attachSystem::FixedComp& Mod)
   /*!
     Extrenal build everything
     \param System :: Simulation

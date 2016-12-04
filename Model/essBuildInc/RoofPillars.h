@@ -54,7 +54,7 @@ class RoofPillars : public attachSystem::FixedComp,
     
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,
-			const long int);
+                        const long int);
 
   void createSurfaces();
   void createLinks();

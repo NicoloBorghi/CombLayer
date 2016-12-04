@@ -61,7 +61,7 @@ class PreModWing : public attachSystem::ContainedComp,
 
   void createSurfaces();
   void createObjects(Simulation&, const attachSystem::FixedComp&, const long int,
-		     const attachSystem::FixedComp&);
+                     const attachSystem::FixedComp&);
   void createLinks();
 
  public:
@@ -73,8 +73,8 @@ class PreModWing : public attachSystem::ContainedComp,
   virtual ~PreModWing();
 
   void createAll(Simulation&,const attachSystem::FixedComp&, const long int, const bool,
-		 const bool,
-		 const attachSystem::FixedComp&);
+                 const bool,
+                 const attachSystem::FixedComp&);
 };
 
 }

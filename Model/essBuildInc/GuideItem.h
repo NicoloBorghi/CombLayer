@@ -78,7 +78,7 @@ class GuideItem : public attachSystem::ContainedGroup,
 
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,
-			const size_t);
+                        const size_t);
   void calcBeamLineTrack(const attachSystem::FixedComp&);
 
   void createSurfaces();
@@ -99,7 +99,7 @@ class GuideItem : public attachSystem::ContainedGroup,
 
     
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const size_t,const GuideItem*);
+                 const size_t,const GuideItem*);
 
 };
 

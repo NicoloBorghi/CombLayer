@@ -85,7 +85,7 @@ class MidWaterDivider :
   virtual std::string getLayerString(const size_t,const size_t) const;
   virtual int getLayerSurf(const size_t,const size_t) const;
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const H2Wing&,const H2Wing&);
+                 const H2Wing&,const H2Wing&);
   inline const std::string getSideRule() const { return sideRule; }
 
 };

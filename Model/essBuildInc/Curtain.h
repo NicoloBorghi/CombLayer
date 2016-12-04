@@ -68,17 +68,17 @@ class Curtain : public attachSystem::ContainedGroup,
   
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,
-			const long int,const long int,
-			const attachSystem::FixedComp&,
-			const long int,const bool);
+                        const long int,const long int,
+                        const attachSystem::FixedComp&,
+                        const long int,const bool);
 
   void createSurfaces();
   void createLinks();
   void createObjects(Simulation&,const attachSystem::FixedComp&,
-		     const long int,const long int);
+                     const long int,const long int);
 
   void layerProcess(Simulation&,const attachSystem::FixedComp&,
-		    const long int);
+                    const long int);
 
   
  public:
@@ -90,9 +90,9 @@ class Curtain : public attachSystem::ContainedGroup,
 
   
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const long int,const long int,
-		 const attachSystem::FixedComp&,
-		 const long int,const bool);
+                 const long int,const long int,
+                 const attachSystem::FixedComp&,
+                 const long int,const bool);
 
 };
 

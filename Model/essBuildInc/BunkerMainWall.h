@@ -50,7 +50,7 @@ class BunkerMainWall
 
 
   static size_t hash(const size_t,const size_t,
-		     const size_t);
+                     const size_t);
 
  public:
 
@@ -60,24 +60,24 @@ class BunkerMainWall
   virtual ~BunkerMainWall();
 
   int getMaterial(const size_t,const size_t,const size_t,
-		  const int) const;
+                  const int) const;
   
   const std::string& getMatString(const size_t,const size_t,
-				  const size_t,const size_t) const;
+                                  const size_t,const size_t) const;
   void setMaterial(const size_t,const size_t,
-		   const size_t,const std::string&);
+                   const size_t,const std::string&);
   const std::string& getMatString
     (const size_t,const size_t,const size_t) const;
 
   void setPoints(const size_t,const size_t,
-		 const size_t,const std::vector<Geometry::Vec3D>&);
+                 const size_t,const std::vector<Geometry::Vec3D>&);
   const std::vector<Geometry::Vec3D>&
     getPoints(const size_t,const size_t,const size_t) const;
 
 
   int loadXML(const std::string&);
   void writeXML(const std::string&,const size_t,
-		const size_t,const size_t) const ;
+                const size_t,const size_t) const ;
 };
 
 }  

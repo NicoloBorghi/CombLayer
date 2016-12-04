@@ -44,12 +44,12 @@ class F5Calc
   Geometry::Vec3D M; //Middle of the moderator
     
   Geometry::Vec3D CalculateNormalVector(const Geometry::Vec3D&,
-					const Geometry::Vec3D&,
-					const Geometry::Vec3D&) const;
+                                        const Geometry::Vec3D&,
+                                        const Geometry::Vec3D&) const;
     
   Geometry::Vec3D CalculateProjectionOntoPlane(const Geometry::Vec3D&,
-					       const Geometry::Vec3D&,
-					       const Geometry::Vec3D&) const;
+                                               const Geometry::Vec3D&,
+                                               const Geometry::Vec3D&) const;
   
  public:
 
@@ -60,7 +60,7 @@ class F5Calc
   
   void SetTally(double,double,double); 
   void SetPoints(const Geometry::Vec3D&,const Geometry::Vec3D&,
-		 const Geometry::Vec3D&); 
+                 const Geometry::Vec3D&); 
   void SetLength(double); 
   
   void CalculateMiddleOfModerator();

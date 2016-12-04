@@ -88,8 +88,8 @@ namespace essSystem
 {
 
 H2FlowGuide::H2FlowGuide(const std::string& baseKey,
-			 const std::string& extraKey,
-			 const std::string& finalKey ) :
+                         const std::string& extraKey,
+                         const std::string& finalKey ) :
   attachSystem::FixedComp(baseKey+extraKey+finalKey,6),
   baseName(baseKey),midName(extraKey),endName(finalKey),
   flowIndex(ModelSupport::objectRegister::Instance().cell(keyName)),
@@ -179,7 +179,7 @@ H2FlowGuide::populate(const FuncDataBase& Control)
   armOffset=Control.EvalPair<Geometry::Vec3D>(keyName,baseName+endName,"ArmOffset");
 
   wallMat=ModelSupport::EvalMat<int>(Control,keyName+"WallMat",
-				     baseName+endName+"WallMat");
+                                     baseName+endName+"WallMat");
   wallTemp=Control.EvalPair<double>(keyName,baseName+endName,"WallTemp");
   
   return;
@@ -207,30 +207,30 @@ H2FlowGuide::createSurfaces()
 
   // base
   ModelSupport::buildPlane(SMap,flowIndex+1,
-			   Origin+Y*(baseOffset.Y()-baseThick/2.0),Y);
+                           Origin+Y*(baseOffset.Y()-baseThick/2.0),Y);
   ModelSupport::buildPlane(SMap,flowIndex+2,
-			   Origin+Y*(baseOffset.Y()+baseThick/2.0),Y);
+                           Origin+Y*(baseOffset.Y()+baseThick/2.0),Y);
 
   ModelSupport::buildPlane(SMap,flowIndex+3,
-			   Origin+X*(baseOffset.X()+armThick/2.0+baseArmSep),X);
+                           Origin+X*(baseOffset.X()+armThick/2.0+baseArmSep),X);
   ModelSupport::buildPlane(SMap,flowIndex+4,
-			   Origin+X*(baseOffset.X()+armThick/2.0+baseArmSep+baseLen),X);
+                           Origin+X*(baseOffset.X()+armThick/2.0+baseArmSep+baseLen),X);
 
   ModelSupport::buildPlane(SMap,flowIndex+13,
-			   Origin-X*(baseOffset.X()+armThick/2.0+baseArmSep),X);
+                           Origin-X*(baseOffset.X()+armThick/2.0+baseArmSep),X);
   ModelSupport::buildPlane(SMap,flowIndex+14,
-			   Origin-X*(baseOffset.X()+armThick/2.0+baseArmSep+baseLen),X);
+                           Origin-X*(baseOffset.X()+armThick/2.0+baseArmSep+baseLen),X);
 
   // arm
   ModelSupport::buildPlane(SMap,flowIndex+101,
-			   Origin+Y*(armOffset.Y()-armLen/2.0),Y);
+                           Origin+Y*(armOffset.Y()-armLen/2.0),Y);
   ModelSupport::buildPlane(SMap,flowIndex+102,
-			   Origin+Y*(armOffset.Y()+armLen/2.0),Y);
+                           Origin+Y*(armOffset.Y()+armLen/2.0),Y);
 
   ModelSupport::buildPlane(SMap,flowIndex+103,
-			   Origin+X*(armOffset.X()-armThick/2.0),X);
+                           Origin+X*(armOffset.X()-armThick/2.0),X);
   ModelSupport::buildPlane(SMap,flowIndex+104,
-			   Origin+X*(armOffset.X()+armThick/2.0),X);
+                           Origin+X*(armOffset.X()+armThick/2.0),X);
   
 
   return;
@@ -238,7 +238,7 @@ H2FlowGuide::createSurfaces()
  
 void
 H2FlowGuide::createObjects(Simulation& System,
-			   const attachSystem::FixedComp& HW)
+                           const attachSystem::FixedComp& HW)
   /*!
     Adds the main components
     \param System :: Simulation to create objects in
@@ -287,7 +287,7 @@ H2FlowGuide::createObjects(Simulation& System,
 
 void
 H2FlowGuide::createAll(Simulation& System,
-		       const attachSystem::FixedComp& FC)
+                       const attachSystem::FixedComp& FC)
   /*!
     Generic function to create everything
     \param System :: Simulation item

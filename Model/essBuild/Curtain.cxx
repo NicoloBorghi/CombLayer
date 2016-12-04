@@ -179,24 +179,24 @@ Curtain::populate(const FuncDataBase& Control)
   nBaseLayers=Control.EvalVar<size_t>(keyName+"NBaseLayers");
 
   //  ModelSupport::populateDivide(Control,nLayers,keyName+"WallMat",
-  //			       wallMat,wallMatVec);
+  //                           wallMat,wallMatVec);
   ModelSupport::populateDivideLen(Control,nTopLayers,keyName+"TopLen",
-				  height-topRaise,topFrac);
+                                  height-topRaise,topFrac);
   ModelSupport::populateDivideLen(Control,nMidLayers,keyName+"MidLen",
-				  topRaise,midFrac);
+                                  topRaise,midFrac);
   ModelSupport::populateDivideLen(Control,nBaseLayers,keyName+"BaseLen",
-				  depth,baseFrac);
+                                  depth,baseFrac);
 
   return;
 }
   
 void
 Curtain::createUnitVector(const attachSystem::FixedComp& FC,
-			  const long int topIndex,
-			  const long int sideIndex,
-			  const attachSystem::FixedComp& dirFC,
-			  const long int dirIndex,
-			  const bool reverseZ)
+                          const long int topIndex,
+                          const long int sideIndex,
+                          const attachSystem::FixedComp& dirFC,
+                          const long int dirIndex,
+                          const bool reverseZ)
   /*!
     Create the unit vectors
     \param MainCentre :: Main rotation centre
@@ -246,11 +246,11 @@ Curtain::createSurfaces()
   // Divider
 
   ModelSupport::buildCylinder(SMap,curIndex+7,
-			      Origin,Z,wallRadius-innerStep);
+                              Origin,Z,wallRadius-innerStep);
   ModelSupport::buildCylinder(SMap,curIndex+17,
-			      Origin,Z,wallRadius-innerStep+wallThick);
+                              Origin,Z,wallRadius-innerStep+wallThick);
   ModelSupport::buildCylinder(SMap,curIndex+27,
-			      Origin,Z,wallRadius+wallThick);
+                              Origin,Z,wallRadius+wallThick);
   
   ModelSupport::buildPlane(SMap,curIndex+5,Origin-Z*depth,Z);
   ModelSupport::buildPlane(SMap,curIndex+6,Origin+Z*height,Z);
@@ -265,9 +265,9 @@ Curtain::createSurfaces()
   
 void
 Curtain::createObjects(Simulation& System,
-		       const attachSystem::FixedComp& FC,  
-		       const long int topIndex,
-		       const long int sideIndex)
+                       const attachSystem::FixedComp& FC,  
+                       const long int topIndex,
+                       const long int sideIndex)
   /*!
     Adds the all the components
     \param System :: Simulation to create objects in
@@ -300,7 +300,7 @@ Curtain::createObjects(Simulation& System,
   // Lower section
   Out=ModelSupport::getComposite(SMap,curIndex," -27 3 -4 5 ");
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,
-				   Out+topBase+sideSurf));
+                                   Out+topBase+sideSurf));
   setCell("baseWall",cellIndex-1);
 
   Out=ModelSupport::getComposite(SMap,curIndex,"-27 3 -4 5 ");
@@ -311,8 +311,8 @@ Curtain::createObjects(Simulation& System,
 
 void 
 Curtain::layerProcess(Simulation& System,
-		      const attachSystem::FixedComp& FC,  
-		      const long int topIndex)
+                      const attachSystem::FixedComp& FC,  
+                      const long int topIndex)
   /*!
     Processes the splitting of the surfaces into a multilayer system
     \param System :: Simulation to work on
@@ -330,18 +330,18 @@ Curtain::layerProcess(Simulation& System,
       ModelSupport::surfDivide DA;
             
       for(size_t i=1;i<nTopLayers;i++)
-	{
-	  DA.addFrac(topFrac[i-1]);
-	  DA.addMaterial(wallMat);
-	}
+        {
+          DA.addFrac(topFrac[i-1]);
+          DA.addMaterial(wallMat);
+        }
       DA.addMaterial(wallMat);
       
       DA.setCellN(getCell("topWall"));
       DA.setOutNum(cellIndex,curIndex+1001);
       ModelSupport::mergeTemplate<Geometry::Plane,
-				  Geometry::Plane> surroundRule;
+                                  Geometry::Plane> surroundRule;
       surroundRule.setSurfPair(SMap.realSurf(curIndex+15),
-			       SMap.realSurf(curIndex+6));
+                               SMap.realSurf(curIndex+6));
       
       OutA=ModelSupport::getComposite(SMap,curIndex," 15 ");
       OutB=ModelSupport::getComposite(SMap,curIndex," -6 ");
@@ -363,23 +363,23 @@ Curtain::layerProcess(Simulation& System,
       ModelSupport::surfDivide DA;
             
       for(size_t i=1;i<nTopLayers;i++)
-	{
-	  DA.addFrac(topFrac[i-1]);
-	  DA.addMaterial(wallMat);
-	}
+        {
+          DA.addFrac(topFrac[i-1]);
+          DA.addMaterial(wallMat);
+        }
       DA.addMaterial(wallMat);
       
       DA.setCellN(getCell("baseWall"));
       DA.setOutNum(cellIndex,curIndex+1101);
       ModelSupport::mergeTemplate<Geometry::Plane,
-				  Geometry::Plane> surroundRule;
+                                  Geometry::Plane> surroundRule;
       surroundRule.setSurfPair(SMap.realSurf(curIndex+5),
-			       SMap.realSurf(topSurf));
+                               SMap.realSurf(topSurf));
       
       OutA=ModelSupport::getComposite(SMap,curIndex," 5 ");
       OutB=FC.getSignedLinkString(-topIndex);
-	//      OutB=ModelSupport::getComposite(SMap,curIndex,
-	//			      );
+        //      OutB=ModelSupport::getComposite(SMap,curIndex,
+        //                            );
       
       surroundRule.setInnerRule(OutA);
       surroundRule.setOuterRule(OutB);
@@ -415,11 +415,11 @@ Curtain::createLinks()
   
 void
 Curtain::createAll(Simulation& System,
-		   const attachSystem::FixedComp& FC,
-		   const long int topIndex,
-		   const long int sideIndex,
-		   const attachSystem::FixedComp& dirFC,
-		   const long int dirIndex,const bool reverseZ)
+                   const attachSystem::FixedComp& FC,
+                   const long int topIndex,
+                   const long int sideIndex,
+                   const attachSystem::FixedComp& dirFC,
+                   const long int dirIndex,const bool reverseZ)
   /*!
     Generic function to create everything
     \param System :: Simulation item

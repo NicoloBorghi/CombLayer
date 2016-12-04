@@ -68,12 +68,12 @@ class BlockAddition :  public attachSystem::ContainedComp,
 
   void populate(const FuncDataBase&);
   void createUnitVector(const Geometry::Vec3D&,
-			const Geometry::Vec3D&,
-			const Geometry::Vec3D&);
+                        const Geometry::Vec3D&,
+                        const Geometry::Vec3D&);
 
   void createSurfaces();
   void createObjects(Simulation&,const attachSystem::LayerComp&,
-		     const size_t,const size_t);
+                     const size_t,const size_t);
   void createLinks();
 
   std::string rotateItem(std::string);
@@ -96,8 +96,8 @@ class BlockAddition :  public attachSystem::ContainedComp,
   void setCentRotate(const Geometry::Vec3D& C) { rotCent=C; }
   std::string createCut(const size_t) const;
   void createAll(Simulation&,const Geometry::Vec3D&,
-		 const attachSystem::LayerComp&,
-		 const size_t,const size_t);
+                 const attachSystem::LayerComp&,
+                 const size_t,const size_t);
 
   virtual Geometry::Vec3D getSurfacePoint(const size_t,const size_t) const;
   virtual int getLayerSurf(const size_t,const size_t) const;

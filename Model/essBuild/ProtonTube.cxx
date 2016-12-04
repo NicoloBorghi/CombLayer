@@ -139,11 +139,11 @@ ProtonTube::populate(const FuncDataBase& Control)
   for(size_t i=0;i<nSec;i++)
     {
      R=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"Radius",i+1));   
+        (StrFunc::makeString(keyName+"Radius",i+1));   
      L+=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"Length",i+1));   
+        (StrFunc::makeString(keyName+"Length",i+1));   
      C=Control.EvalVar<double>
-	(StrFunc::makeString(keyName+"Zcut",i+1));   
+        (StrFunc::makeString(keyName+"Zcut",i+1));   
      T=Control.EvalVar<double>
        (StrFunc::makeString(keyName+"WallThick",i+1));     
      Imat=ModelSupport::EvalMat<int>
@@ -164,7 +164,7 @@ ProtonTube::populate(const FuncDataBase& Control)
 
 void
 ProtonTube::createUnitVector(const attachSystem::FixedComp& FC,
-			     const long int sideIndex)
+                             const long int sideIndex)
   /*!
     Create the unit vectors
     \param FC :: Fixed Component
@@ -199,8 +199,8 @@ ProtonTube::createSurfaces()
      ModelSupport::buildPlane(SMap,PT+2,Origin+Y*length[i],Y);  
      if (zCut[i]>0.0)
        {
-	 ModelSupport::buildPlane(SMap,PT+5,Origin-Z*(radius[i]-zCut[i]),Z);
-	 ModelSupport::buildPlane(SMap,PT+6,Origin+Z*(radius[i]-zCut[i]),Z);  
+         ModelSupport::buildPlane(SMap,PT+5,Origin-Z*(radius[i]-zCut[i]),Z);
+         ModelSupport::buildPlane(SMap,PT+6,Origin+Z*(radius[i]-zCut[i]),Z);  
        }
      PT+=100;
     }
@@ -209,8 +209,8 @@ ProtonTube::createSurfaces()
 
 void
 ProtonTube::createObjects(Simulation& System, 
-			  const std::string& TargetSurfBoundary,
-			  const std::string& outerSurfBoundary)
+                          const std::string& TargetSurfBoundary,
+                          const std::string& outerSurfBoundary)
   /*!
     Adds the components
     \param System :: Simulation to create objects in
@@ -227,19 +227,19 @@ ProtonTube::createObjects(Simulation& System,
     {
       const std::string SName=StrFunc::makeString("Sector",i);
       FrontCap=(!i) ? TargetSurfBoundary :
-	ModelSupport::getComposite(SMap,PT-100, " 2 ");
+        ModelSupport::getComposite(SMap,PT-100, " 2 ");
       EndCap=(i+1 == nSec) ? outerSurfBoundary :
-	ModelSupport::getComposite(SMap,PT, " -2 ");
+        ModelSupport::getComposite(SMap,PT, " -2 ");
       
       Out=ModelSupport::getSetComposite(SMap,PT, " -7 5 -6 ");
       System.addCell(MonteCarlo::Qhull(cellIndex++,inMat[i],0.0,
-				       Out+FrontCap+EndCap));
+                                       Out+FrontCap+EndCap));
       if (thick[i]>Geometry::zeroTol)
-	{
-	  Out=ModelSupport::getSetComposite(SMap,PT, " 7 -17 5 -6");
-	  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat[i],0.0,
-					   Out+FrontCap+EndCap));
-	}
+        {
+          Out=ModelSupport::getSetComposite(SMap,PT, " 7 -17 5 -6");
+          System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat[i],0.0,
+                                           Out+FrontCap+EndCap));
+        }
 
       Out=ModelSupport::getSetComposite(SMap,PT, " -17 5 -6 ");
       attachSystem::ContainedGroup::addCC(SName);
@@ -273,10 +273,10 @@ ProtonTube::createLinks()
 
 void
 ProtonTube::createAll(Simulation& System,
-		      const attachSystem::FixedComp& TargetFC,
-		      const long int tIndex,
-		      const attachSystem::FixedComp& BulkFC,
-		      const long int bIndex)
+                      const attachSystem::FixedComp& TargetFC,
+                      const long int tIndex,
+                      const attachSystem::FixedComp& BulkFC,
+                      const long int bIndex)
   /*!
     Global creation of the hutch
     \param System :: Simulation to add vessel to
@@ -297,13 +297,13 @@ ProtonTube::createAll(Simulation& System,
   if (tIndex)
     {
       TSurf=(tIndex>0) ? 
-	TargetFC.getLinkString(static_cast<size_t>(tIndex-1)) : 
-	TargetFC.getBridgeComplement(static_cast<size_t>(-(tIndex+1)));
+        TargetFC.getLinkString(static_cast<size_t>(tIndex-1)) : 
+        TargetFC.getBridgeComplement(static_cast<size_t>(-(tIndex+1)));
       if (tIndex<0)
-	FixedComp::setLinkComponent(0,TargetFC,
-				    static_cast<size_t>(-(tIndex-1)));
+        FixedComp::setLinkComponent(0,TargetFC,
+                                    static_cast<size_t>(-(tIndex-1)));
       else
-	FixedComp::setLinkComponent(0,TargetFC,static_cast<size_t>(tIndex-1));	
+        FixedComp::setLinkComponent(0,TargetFC,static_cast<size_t>(tIndex-1));  
     }
   if (bIndex)
     {
@@ -314,7 +314,7 @@ ProtonTube::createAll(Simulation& System,
       const size_t lIndex(static_cast<size_t>(std::abs(bIndex))-1);
       //>>>>>>> BeRef-variables-splited
       BSurf=(bIndex>0) ?
-	BulkFC.getLinkString(lIndex) : BulkFC.getBridgeComplement(lIndex) ;
+        BulkFC.getLinkString(lIndex) : BulkFC.getBridgeComplement(lIndex) ;
       FixedComp::setLinkComponent(0,BulkFC,lIndex);
     }
   createObjects(System,TSurf,BSurf);

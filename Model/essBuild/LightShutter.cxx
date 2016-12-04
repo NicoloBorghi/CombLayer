@@ -129,7 +129,7 @@ LightShutter::populate(const FuncDataBase& Control)
   
 void
 LightShutter::createUnitVector(const attachSystem::FixedComp& FC,
-			       const long int sideIndex)
+                               const long int sideIndex)
 
   /*!
     Create the unit vectors
@@ -160,13 +160,13 @@ LightShutter::createSurfaces()
   ModelSupport::buildPlane(SMap,lightIndex+6,Origin+Z*(height/2.0),Z);
 
   ModelSupport::buildPlane(SMap,lightIndex+13,
-			   Origin-X*(width/2.0+wallThick),X);
+                           Origin-X*(width/2.0+wallThick),X);
   ModelSupport::buildPlane(SMap,lightIndex+14,
-			   Origin+X*(width/2.0+wallThick),X);
+                           Origin+X*(width/2.0+wallThick),X);
   ModelSupport::buildPlane(SMap,lightIndex+15,
-			   Origin-Z*(height/2.0+wallThick),Z);
+                           Origin-Z*(height/2.0+wallThick),Z);
   ModelSupport::buildPlane(SMap,lightIndex+16,
-			   Origin+Z*(height/2.0+wallThick),Z);
+                           Origin+Z*(height/2.0+wallThick),Z);
   
   return;
 }
@@ -189,7 +189,7 @@ LightShutter::createObjects(Simulation& System)
 
   // Steel wrapper
   Out=ModelSupport::getComposite(SMap,lightIndex,
-				 " 1 -2 13 -14 15 -16 (-3:4:-5:6) ");
+                                 " 1 -2 13 -14 15 -16 (-3:4:-5:6) ");
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
   setCell("main",cellIndex-1);
 
@@ -214,7 +214,7 @@ LightShutter::createLinks()
   FixedComp::setConnect(3,Origin+X*(wallThick+width/2.0),X);
   FixedComp::setConnect(3,Origin-Z*(wallThick+height/2.0),-Z);
   FixedComp::setConnect(3,Origin+Z*(wallThick+height/2.0),Z);
-	   
+           
 
   FixedComp::setLinkSurf(0,-SMap.realSurf(lightIndex+1));
   FixedComp::setLinkSurf(1,SMap.realSurf(lightIndex+2));
@@ -231,8 +231,8 @@ LightShutter::createLinks()
   
 void
 LightShutter::createAll(Simulation& System,
-		   const attachSystem::FixedComp& FC,
-			const long int sideIndex)
+                   const attachSystem::FixedComp& FC,
+                        const long int sideIndex)
   /*!
     Generic function to create everything
     \param System :: Simulation item

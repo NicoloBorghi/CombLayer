@@ -73,7 +73,7 @@ class ShutterBay : public attachSystem::ContainedComp,
   int getMainCell() const { return cellIndex-1; }
 
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const attachSystem::ContainedComp&);
+                 const attachSystem::ContainedComp&);
 
 };
 

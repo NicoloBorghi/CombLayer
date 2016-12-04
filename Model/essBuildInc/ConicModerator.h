@@ -87,7 +87,7 @@ class ConicModerator : public constructSystem::ModBase
   virtual std::string getLayerString(const size_t,const size_t) const;
 
   virtual void createAll(Simulation&,const attachSystem::FixedComp&,
-			 const attachSystem::FixedComp*,const long int);
+                         const attachSystem::FixedComp*,const long int);
 };
 
 }

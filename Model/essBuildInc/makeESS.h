@@ -165,9 +165,9 @@ class makeESS
 
   void buildTopButterfly(Simulation&);
   void buildH2Pipe(Simulation&, std::string, std::string, std::string,
-		   std::shared_ptr<constructSystem::SupplyPipe>,
-		   std::shared_ptr<constructSystem::SupplyPipe>,
-		   std::shared_ptr<constructSystem::SupplyPipe>);
+                   std::shared_ptr<constructSystem::SupplyPipe>,
+                   std::shared_ptr<constructSystem::SupplyPipe>,
+                   std::shared_ptr<constructSystem::SupplyPipe>);
   void buildTopPipes(Simulation&,const std::string&);
   void buildLowPipes(Simulation&,const std::string&);
 
@@ -175,7 +175,7 @@ class makeESS
   void makeBunker(Simulation&,const std::string&);
   
   void makeBeamLine(Simulation&,
-		    const mainSystem::inputParam&);
+                    const mainSystem::inputParam&);
 
 
   void buildF5Collimator(Simulation&, size_t); // when -nF5 is used

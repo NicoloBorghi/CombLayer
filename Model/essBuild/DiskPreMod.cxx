@@ -154,8 +154,8 @@ DiskPreMod::~DiskPreMod()
 
 void
 DiskPreMod::populate(const FuncDataBase& Control,
-		     const double zShift,
-		     const double outRadius)
+                     const double zShift,
+                     const double outRadius)
   /*!
     Populate all the variables
     \param Control :: Variable table to use
@@ -185,19 +185,19 @@ DiskPreMod::populate(const FuncDataBase& Control,
       H+=Control.EvalVar<double>(keyName+"Height"+NStr);
       D+=Control.EvalVar<double>(keyName+"Depth"+NStr);
       if (Control.hasVariable(keyName+"Radius"+NStr))
-	R=Control.EvalVar<double>(keyName+"Radius"+NStr);
+        R=Control.EvalVar<double>(keyName+"Radius"+NStr);
       else
-	R+=Control.EvalVar<double>(keyName+"Thick"+NStr);
+        R+=Control.EvalVar<double>(keyName+"Thick"+NStr);
       W+=Control.EvalDefVar<double>(keyName+"Width"+NStr,0.0);
       M=ModelSupport::EvalMat<int>(Control,keyName+"Mat"+NStr);   
       const std::string TStr=keyName+"Temp"+NStr;
       T=(!M || !Control.hasVariable(TStr)) ?
-	0.0 : Control.EvalVar<double>(TStr); 
+        0.0 : Control.EvalVar<double>(TStr); 
 
       if (R>Geometry::zeroTol)
-	radius.push_back(R);
+        radius.push_back(R);
       else
-	radius.push_back(outerRadius+R);
+        radius.push_back(outerRadius+R);
       height.push_back(H);
       depth.push_back(D);
       width.push_back(W);
@@ -209,7 +209,7 @@ DiskPreMod::populate(const FuncDataBase& Control,
   W=0.0;
   NWidth=0;
   while(NWidth<width.size() &&
-	(width[NWidth]-W)>Geometry::zeroTol)
+        (width[NWidth]-W)>Geometry::zeroTol)
     {
       W+=width[NWidth];
       NWidth++;
@@ -219,7 +219,7 @@ DiskPreMod::populate(const FuncDataBase& Control,
 
 void
 DiskPreMod::createUnitVector(const attachSystem::FixedComp& refCentre,
-			     const long int sideIndex,const bool zRotate)
+                             const long int sideIndex,const bool zRotate)
   /*!
     Create the unit vectors
     \param refCentre :: Centre for object
@@ -263,10 +263,10 @@ DiskPreMod::createSurfaces()
       ModelSupport::buildPlane(SMap,SI+5,Origin-Z*depth[i],Z);  
       ModelSupport::buildPlane(SMap,SI+6,Origin+Z*height[i],Z);
       if (i<NWidth)
-	{
-	  ModelSupport::buildPlane(SMap,SI+3,Origin-X*(width[i]/2.0),X);
-	  ModelSupport::buildPlane(SMap,SI+4,Origin+X*(width[i]/2.0),X);
-	}
+        {
+          ModelSupport::buildPlane(SMap,SI+3,Origin-X*(width[i]/2.0),X);
+          ModelSupport::buildPlane(SMap,SI+4,Origin+X*(width[i]/2.0),X);
+        }
       SI+=10;
     }
   if (radius.empty() || radius.back()<outerRadius-Geometry::zeroTol)
@@ -293,20 +293,20 @@ DiskPreMod::createObjects(Simulation& System)
   for(size_t i=0;i<nLayers;i++)
     {
       if (i<NWidth)
-	{
-	  // previous width:
-	  Width.procString(widthUnit);
-	  Width.makeComplement();
-	  widthUnit=ModelSupport::getComposite(SMap,SI," -3 4 ");
-	}
+        {
+          // previous width:
+          Width.procString(widthUnit);
+          Width.makeComplement();
+          widthUnit=ModelSupport::getComposite(SMap,SI," -3 4 ");
+        }
       Out=ModelSupport::getComposite(SMap,SI," -7 5 -6 ");
 
-	
+        
       System.addCell(MonteCarlo::Qhull(cellIndex++,mat[i],temp[i],
-				       Out+widthUnit+
-				       Inner.display()+Width.display()));
+                                       Out+widthUnit+
+                                       Inner.display()+Width.display()));
       if (!i)
-	CellMap::setCell("Inner", cellIndex-1);
+        CellMap::setCell("Inner", cellIndex-1);
 
       SI+=10;
       Inner.procString(Out);
@@ -379,7 +379,7 @@ DiskPreMod::createLinks()
 
 Geometry::Vec3D
 DiskPreMod::getSurfacePoint(const size_t layerIndex,
-			   const size_t sideIndex) const
+                           const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link point
     \param sideIndex :: Side [0-5]
@@ -400,8 +400,8 @@ DiskPreMod::getSurfacePoint(const size_t layerIndex,
       return Origin+Y*(radius[layerIndex]);
     case 2:
       return (layerIndex<NWidth) ? 
-	Origin-X*(width[layerIndex]/2.0) :
-	Origin-X*radius[layerIndex];
+        Origin-X*(width[layerIndex]/2.0) :
+        Origin-X*radius[layerIndex];
     
     case 3:
       return Origin+X*(radius[layerIndex]);
@@ -416,7 +416,7 @@ DiskPreMod::getSurfacePoint(const size_t layerIndex,
 
 int
 DiskPreMod::getLayerSurf(const size_t layerIndex,
-			const size_t sideIndex) const
+                        const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link surf
     \param sideIndex :: Side [0-3]
@@ -430,7 +430,7 @@ DiskPreMod::getLayerSurf(const size_t layerIndex,
     throw ColErr::IndexError<size_t>(layerIndex,nLayers,"layer");
 
   const int SI(10*static_cast<int>(layerIndex)+modIndex);
-	       
+               
   switch(sideIndex)
     {
     case 0:
@@ -448,7 +448,7 @@ DiskPreMod::getLayerSurf(const size_t layerIndex,
 
 std::string
 DiskPreMod::getLayerString(const size_t layerIndex,
-			 const size_t sideIndex) const
+                         const size_t sideIndex) const
   /*!
     Given a side and a layer calculate the link surf
     \param layerIndex :: layer, 0 is inner moderator [0-4]
@@ -468,19 +468,19 @@ DiskPreMod::getLayerString(const size_t layerIndex,
     {
     case 0:
       cx<<" "<<SMap.realSurf(SI+7)<<" "
-	<< -SMap.realSurf(modIndex+2)<<" ";
+        << -SMap.realSurf(modIndex+2)<<" ";
       return cx.str();
     case 1:
       cx<<" "<<SMap.realSurf(SI+7)<<" "
-	<< SMap.realSurf(modIndex+2)<<" ";
+        << SMap.realSurf(modIndex+2)<<" ";
       return cx.str();
     case 2:
       cx<<" "<<SMap.realSurf(SI+7)<<" "
-	<< -SMap.realSurf(modIndex+1)<<" ";
+        << -SMap.realSurf(modIndex+1)<<" ";
       return cx.str();
     case 3:
       cx<<" "<<SMap.realSurf(SI+7)<<" "
-	<< SMap.realSurf(modIndex+1)<<" ";
+        << SMap.realSurf(modIndex+1)<<" ";
       return cx.str();
     case 4:
       cx<<" "<<-SMap.realSurf(SI+5)<<" ";
@@ -495,15 +495,15 @@ DiskPreMod::getLayerString(const size_t layerIndex,
 
 void
 DiskPreMod::createAll(Simulation& System,
-		      const attachSystem::FixedComp& FC,
-		      const long int sideIndex,
-		      const bool zRotate,
-		      const double VOffset,
-		      const double ORad)
+                      const attachSystem::FixedComp& FC,
+                      const long int sideIndex,
+                      const bool zRotate,
+                      const double VOffset,
+                      const double ORad)
   /*!
     Extrenal build everything
     \param System :: Simulation
-    \param FC :: Attachment point	       
+    \param FC :: Attachment point              
     \param sideIndex :: side of object
     \param zRotate :: Rotate to -ve Z
     \param VOffset :: Vertical offset from target

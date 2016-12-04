@@ -90,7 +90,7 @@ namespace essSystem
 {
 
 makeESSBL::makeESSBL(const std::string& SN,
-		     const std::string& BName) : 
+                     const std::string& BName) : 
   beamlineSystem::beamlineConstructor(),
   shutterName(SN),beamName(BName)
  /*!
@@ -158,7 +158,7 @@ makeESSBL::getBeamNum(const std::string& Name)
   
 void 
 makeESSBL::build(Simulation& System,
-		 const Bunker& bunkerObj)
+                 const Bunker& bunkerObj)
   /*!
     Carry out the full build
     \param SimPtr :: Simulation system
@@ -179,7 +179,7 @@ makeESSBL::build(Simulation& System,
     
   if (!mainGIPtr)
     throw ColErr::InContainerError<std::string>(shutterName,"shutterObject");
-	
+        
   if (beamName=="ODIN")
     {
       // Odin beamline
@@ -239,7 +239,7 @@ makeESSBL::build(Simulation& System,
       
       ///< Guide line [refl]
       std::shared_ptr<beamlineSystem::GuideLine>
-	RefA(new beamlineSystem::GuideLine(beamName));
+        RefA(new beamlineSystem::GuideLine(beamName));
       OR.addObject(RefA);
       RefA->addInsertCell(voidCell);
       RefA->createAll(System,*mainFCPtr,2,*mainFCPtr,2);

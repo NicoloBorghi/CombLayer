@@ -83,7 +83,7 @@ class EdgeWater :
   virtual int getLayerSurf(const size_t,const size_t) const;
 
   void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const std::string&,const std::string&);
+                 const std::string&,const std::string&);
   inline const std::string getSideRule() const { return sideRule; }
 };
 

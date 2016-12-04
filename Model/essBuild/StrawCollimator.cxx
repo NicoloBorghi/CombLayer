@@ -232,11 +232,11 @@ namespace essSystem {
 
                 }
 
-		// Segmentation for activation calculations
+                // Segmentation for activation calculations
 
-		activationLayerThick1 = Control.EvalVar<double>(keyName+"ActivationLayerThick1");
-		activationLayerThick2 = Control.EvalVar<double>(keyName+"ActivationLayerThick2") + activationLayerThick1;
-		activationLayerThick3 = Control.EvalVar<double>(keyName+"ActivationLayerThick3") + activationLayerThick2;
+                activationLayerThick1 = Control.EvalVar<double>(keyName+"ActivationLayerThick1");
+                activationLayerThick2 = Control.EvalVar<double>(keyName+"ActivationLayerThick2") + activationLayerThick1;
+                activationLayerThick3 = Control.EvalVar<double>(keyName+"ActivationLayerThick3") + activationLayerThick2;
 
                 bulkMat = ModelSupport::EvalMat<int>(Control,keyName+"BulkMat");
 
@@ -313,12 +313,12 @@ namespace essSystem {
 
                 }
 
-		// Horizontal planes for segmentation (activation)
-		// Planes are positioned with reference to the Imaging plane defined above
+                // Horizontal planes for segmentation (activation)
+                // Planes are positioned with reference to the Imaging plane defined above
 
-		ModelSupport::buildPlane(SMap,strawIndex+6,Origin+Z*zImagingPlane-Z*activationLayerThick1,Z);
-		ModelSupport::buildPlane(SMap,strawIndex+16,Origin+Z*zImagingPlane-Z*activationLayerThick2,Z);
-		ModelSupport::buildPlane(SMap,strawIndex+26,Origin+Z*zImagingPlane-Z*activationLayerThick3,Z);
+                ModelSupport::buildPlane(SMap,strawIndex+6,Origin+Z*zImagingPlane-Z*activationLayerThick1,Z);
+                ModelSupport::buildPlane(SMap,strawIndex+16,Origin+Z*zImagingPlane-Z*activationLayerThick2,Z);
+                ModelSupport::buildPlane(SMap,strawIndex+26,Origin+Z*zImagingPlane-Z*activationLayerThick3,Z);
 
                 ELog::EM << "=== nStraws = " << nStraws << " ===" << ELog::endDiag;
 
@@ -355,72 +355,72 @@ namespace essSystem {
                 // Central structure
                 // Out = ModelSupport::getComposite(SMap,strawIndex," -5 13 -14") + strFloor + strBackWall + strFrontWall;
                 // System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			// Redefinition of the cental structure for activation calculations
-			Out = ModelSupport::getComposite(SMap,strawIndex," -5 6 13 -14") + strBackWall + strFrontWall;
-                	System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
-			Out = ModelSupport::getComposite(SMap,strawIndex," -6 16 13 -14") + strBackWall + strFrontWall;
-                	System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
-			Out = ModelSupport::getComposite(SMap,strawIndex," -16 26 13 -14") + strBackWall + strFrontWall;
-                	System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
-			Out = ModelSupport::getComposite(SMap,strawIndex," -26 13 -14") + strFloor + strBackWall + strFrontWall;
-                	System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
+                        // Redefinition of the cental structure for activation calculations
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -5 6 13 -14") + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -6 16 13 -14") + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -16 26 13 -14") + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -26 13 -14") + strFloor + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
 
                 // Outer straw surfaces
                 // Out = ModelSupport::getComposite(SMap,strawIndex," -5 -23") + strLeftWall + strFloor + strBackWall + strFrontWall;
                 // System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			// Redefinition of the outer straw surfaces for activation calculations
-			Out = ModelSupport::getComposite(SMap,strawIndex," -5 6 -23") + strLeftWall + strBackWall + strFrontWall;
-			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
-			Out = ModelSupport::getComposite(SMap,strawIndex," -6 16 -23") + strLeftWall + strBackWall + strFrontWall;
-			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
-			Out = ModelSupport::getComposite(SMap,strawIndex," -16 26 -23") + strLeftWall + strBackWall + strFrontWall;
-			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
-			Out = ModelSupport::getComposite(SMap,strawIndex," -26 -23") + strFloor + strLeftWall + strBackWall + strFrontWall;
-			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
+                        // Redefinition of the outer straw surfaces for activation calculations
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -5 6 -23") + strLeftWall + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -6 16 -23") + strLeftWall + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -16 26 -23") + strLeftWall + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -26 -23") + strFloor + strLeftWall + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
 
                 //Out = ModelSupport::getComposite(SMap,strawIndex," -5 24") + strRightWall + strFloor + strBackWall + strFrontWall;
                 //System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			// Redefinition of the outer straw surfaces for activation calculations
-			Out = ModelSupport::getComposite(SMap,strawIndex," -5 6 24") + strRightWall + strBackWall + strFrontWall;
-			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
-			Out = ModelSupport::getComposite(SMap,strawIndex," -6 16 24") + strRightWall + strBackWall + strFrontWall;
-			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
-			Out = ModelSupport::getComposite(SMap,strawIndex," -16 26 24") + strRightWall + strBackWall + strFrontWall;
-			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
-			Out = ModelSupport::getComposite(SMap,strawIndex," -26 24") + strFloor + strRightWall + strBackWall + strFrontWall;
-			System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
-			//===
+                        // Redefinition of the outer straw surfaces for activation calculations
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -5 6 24") + strRightWall + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -6 16 24") + strRightWall + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -16 26 24") + strRightWall + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
+                        Out = ModelSupport::getComposite(SMap,strawIndex," -26 24") + strFloor + strRightWall + strBackWall + strFrontWall;
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                        //===
 
                 //std::string OutLeft = ModelSupport::getComposite(SMap,strawIndex,"-5 23 -13") + strFloor;
                 //std::string OutRight = ModelSupport::getComposite(SMap,strawIndex,"-5 14 -24") + strFloor;
 
-		// Redefinition of OutLeft and OutRight to accommodate the three new surfaces for activation calculations
-		std::vector<std::string> ActivationOutLeft;
-		std::vector<std::string> ActivationOutRight;
-		//=======================================================================================================
-		ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-5 6 23 -13"));
-		ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-5 6 14 -24"));
-		//===
-		ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-6 16 23 -13"));
-		ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-6 16 14 -24"));
-		//===
-		ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-16 26 23 -13"));
-		ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-16 26 14 -24"));
-		//===
-		ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-26 23 -13") + strFloor);
-		ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-26 14 -24") + strFloor);
-		//=======================================================================================================
+                // Redefinition of OutLeft and OutRight to accommodate the three new surfaces for activation calculations
+                std::vector<std::string> ActivationOutLeft;
+                std::vector<std::string> ActivationOutRight;
+                //=======================================================================================================
+                ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-5 6 23 -13"));
+                ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-5 6 14 -24"));
+                //===
+                ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-6 16 23 -13"));
+                ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-6 16 14 -24"));
+                //===
+                ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-16 26 23 -13"));
+                ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-16 26 14 -24"));
+                //===
+                ActivationOutLeft.push_back(ModelSupport::getComposite(SMap,strawIndex,"-26 23 -13") + strFloor);
+                ActivationOutRight.push_back(ModelSupport::getComposite(SMap,strawIndex,"-26 14 -24") + strFloor);
+                //=======================================================================================================
 
                 int tmpMatLeft = 0;
                 int tmpMatRight = bulkMat;
@@ -444,12 +444,12 @@ namespace essSystem {
                         tmpMatLeft = ((i % 2) == 0) ? 0 : bulkMat;
                         tmpMatRight = ((i % 2) == 1) ? 0 : bulkMat;
 
-			for (size_t j = 0; j < ActivationOutLeft.size(); j++) { // Remove this for cycle and adjust ActivationOutLeft accordingly in case of slow geometry
+                        for (size_t j = 0; j < ActivationOutLeft.size(); j++) { // Remove this for cycle and adjust ActivationOutLeft accordingly in case of slow geometry
                         
-                        	System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatLeft, 300.0, ActivationOutLeft.at(j) + Out));
-                        	System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatRight, 300.0, ActivationOutRight.at(j) + Out));
+                                System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatLeft, 300.0, ActivationOutLeft.at(j) + Out));
+                                System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatRight, 300.0, ActivationOutRight.at(j) + Out));
 
-			}
+                        }
 
                 }
 
@@ -467,6 +467,9 @@ namespace essSystem {
                 */
 
                 ELog::RegMethod RegA("StrawCollimator","createLinks");
+
+                //FixedComp::setConnect(0,Origin-Y*length/2.0,Y);
+                //FixedComp::setLinkSurf(0,SMap.realSurf(tIndex+1));
 
                 return;
 

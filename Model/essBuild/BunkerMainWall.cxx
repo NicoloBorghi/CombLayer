@@ -62,8 +62,8 @@ namespace essSystem
 
 size_t 
 BunkerMainWall::hash(const size_t SectIndex,
-		     const size_t VIndex,
-		     const size_t RIndex)
+                     const size_t VIndex,
+                     const size_t RIndex)
   /*!
     Calculate the hash from the input data [NOTE: Some of the 
     data is general so must accept zeros
@@ -154,18 +154,18 @@ BunkerMainWall::loadXML(const std::string& FName)
       StrFunc::sectionRange(RStr,RVec);
 
       for(const size_t SN : SVec)
-	for(const size_t VN : VVec)
-	  for(const size_t RN : RVec)
-	    {
-	      MatName= AR->getNamedItem<std::string>("Material");
-	      MatName=StrFunc::fullBlock(MatName);
-	      const size_t HN=BunkerMainWall::hash(SN,VN,RN);
-	      std::map<size_t,std::string>::iterator mc=MatMap.find(HN);
-	      if (mc!=MatMap.end())
-		mc->second=MatName;
-	      else
-		MatMap.emplace(HN,MatName);
-	    }
+        for(const size_t VN : VVec)
+          for(const size_t RN : RVec)
+            {
+              MatName= AR->getNamedItem<std::string>("Material");
+              MatName=StrFunc::fullBlock(MatName);
+              const size_t HN=BunkerMainWall::hash(SN,VN,RN);
+              std::map<size_t,std::string>::iterator mc=MatMap.find(HN);
+              if (mc!=MatMap.end())
+                mc->second=MatName;
+              else
+                MatMap.emplace(HN,MatName);
+            }
       CO.deleteObj(AR);      
       AR=CO.findObj("WallMat");
     }
@@ -174,9 +174,9 @@ BunkerMainWall::loadXML(const std::string& FName)
 
 void
 BunkerMainWall::setPoints(const size_t SectIndex,
-			  const size_t VIndex,
-			  const size_t RIndex,
-			  const std::vector<Geometry::Vec3D>& Corners)
+                          const size_t VIndex,
+                          const size_t RIndex,
+                          const std::vector<Geometry::Vec3D>& Corners)
   /*!
     Sets a point system
     \param SectIndex :: Sector index
@@ -194,9 +194,9 @@ BunkerMainWall::setPoints(const size_t SectIndex,
   
 void
 BunkerMainWall::setMaterial(const size_t SectIndex,
-			    const size_t VIndex,
-			    const size_t RIndex,
-			    const std::string& MatName)
+                            const size_t VIndex,
+                            const size_t RIndex,
+                            const std::string& MatName)
   /*!
     Sets a given material element
     \param SectIndex :: Sector index
@@ -216,9 +216,9 @@ BunkerMainWall::setMaterial(const size_t SectIndex,
 
 int
 BunkerMainWall::getMaterial(const size_t SectIndex,
-			    const size_t VIndex,
-			    const size_t RIndex,
-			    const int defMat) const
+                            const size_t VIndex,
+                            const size_t RIndex,
+                            const int defMat) const
   /*!
     Calculate the hash from the input data [NOTE: Some of the 
     data is general so must accept zeros
@@ -240,8 +240,8 @@ BunkerMainWall::getMaterial(const size_t SectIndex,
 
 const std::string&
 BunkerMainWall::getMatString(const size_t SectIndex,
-			     const size_t VIndex,
-			     const size_t RIndex) const
+                             const size_t VIndex,
+                             const size_t RIndex) const
 /*!
     Calculate the hash from the input data [NOTE: Some of the 
     data is general so must accept zeros] 
@@ -275,8 +275,8 @@ BunkerMainWall::getMatString(const size_t SectIndex,
 
 const std::vector<Geometry::Vec3D>&
 BunkerMainWall::getPoints(const size_t SectIndex,
-			  const size_t VIndex,
-			  const size_t RIndex) const
+                          const size_t VIndex,
+                          const size_t RIndex) const
   /*!
     Get the set of points on a system
     \param SectIndex :: Sector indext
@@ -297,12 +297,12 @@ BunkerMainWall::getPoints(const size_t SectIndex,
   return mc->second;
 }
 
-			   
+                           
 void
 BunkerMainWall::writeXML(const std::string& FName,
-			 const size_t nSectors,
-			 const size_t nVerts,
-			 const size_t nLayers) const
+                         const size_t nSectors,
+                         const size_t nVerts,
+                         const size_t nLayers) const
   
   /*!
     Carries out the actual writing of an XML file
@@ -329,16 +329,16 @@ BunkerMainWall::writeXML(const std::string& FName,
   for(size_t i=0;i<nSectors;i++)
     for(size_t j=0;j<nVerts;j++)
       for(size_t k=0;k<nLayers;k++)
-	{
-	  const std::string& MStr=getMatString(i+1,j+1,k+1);
-	  if (!MStr.empty())
-	    {
-	      activeXOut.addComp("WallMat",MStr);
-	      activeXOut.addObjAttribute("Sector",i+1);
-	      activeXOut.addObjAttribute("Vertical",j+1);
-	      activeXOut.addObjAttribute("Radial",k+1);
-	    }
-	}
+        {
+          const std::string& MStr=getMatString(i+1,j+1,k+1);
+          if (!MStr.empty())
+            {
+              activeXOut.addComp("WallMat",MStr);
+              activeXOut.addObjAttribute("Sector",i+1);
+              activeXOut.addObjAttribute("Vertical",j+1);
+              activeXOut.addObjAttribute("Radial",k+1);
+            }
+        }
   
   activeXOut.closeGrp();
 
