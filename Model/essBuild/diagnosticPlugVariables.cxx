@@ -115,6 +115,10 @@ namespace setVariable {
                 /* +->*/Control.addVariable("StrawCollimatorActivationLayerThick1",1.0);
                 /* +->*/Control.addVariable("StrawCollimatorActivationLayerThick2",2.0);
                 /* +->*/Control.addVariable("StrawCollimatorActivationLayerThick3",5.0);
+                        /* |  */
+                        /* +->*/Control.addVariable("ScintillatorBlockHeight",7.0);
+                        /* +->*/Control.addVariable("ScintillatorBlockScintillatorHeight",1.0);
+                        /* +->*/Control.addVariable("ScintillatorBlockScintillatorMaterial","BGO");
 
                 return;
 
