@@ -36,6 +36,7 @@ namespace essSystem
 
 class PinholeBase;
 class StrawCollimator;
+class ScintillatorBlock;
 
 class DiagnosticPlug : public attachSystem::ContainedComp,
   public attachSystem::FixedComp,
@@ -82,6 +83,7 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
 
   PinholeBase *Pinhole;   ///< Pinhole object
   StrawCollimator *Straws; ///< Straw collimator
+  ScintillatorBlock *Scintillator; ///< Scintillator block
 
  public:
 
@@ -93,6 +95,7 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
 
   void setPinhole(PinholeBase *);
   void setStraws(StrawCollimator *);
+  void setScintillators(ScintillatorBlock *);
 
   void createAll(Simulation&,
                  const attachSystem::FixedComp&,

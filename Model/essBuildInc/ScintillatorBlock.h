@@ -66,28 +66,18 @@ namespace essSystem {
                                          double   width;                                                ///< Width (obtained from DiagnosticPlug)
                                          double   length;                                               ///< Length (obtained from DiagnosticPlug)
                                          double   height;                                               ///< Height (obtained from DiagnosticPlug)
-                                         double   floorSurfaceZ;                                        ///< Z coordinate of the floor surface
                                          double   roofSurfaceZ;                                         ///< Z coordinate of the roof surface
-                                         double   targetTopSurfZ;                                       ///< Z coordinate of the target upper surface
 
                         // Variables relative to the imaging system
 
-                                         double   heightImagingSystem;                                  ///< Height of the imaging system measured from the DiagnosticPlug floor to the imaging plane
                                          double   zImagingPlane;                                        ///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
-                                         double   distanceTargetSurfImagingPlane;                       ///< Distance between the target upper surface and the imaging plane
-
-                        // Variables relative to the segmentation for activation calculations
-
-                                         double   activationLayerThick1;
-                                         double   activationLayerThick2;
-                                         double   activationLayerThick3;
 
                         // Variables relative to the straw collimator
 
-                                         double   strawWidth;                                           ///< Width of the straws in the transversal direction
-                                         double   strawLength;                                          ///< Length of the straws in the radial direction
+                                         double   scintillatorWidth;                                     ///< Width of the straws in the transversal direction
+                                         double   scintillatorLength;                                   ///< Length of the straws in the radial direction
                                          double   rowDistance;                                          ///< Distance between straw rows
-                                            int   nStraws;                                              ///< Number of straws that can be fitted inside the diagnostic plug
+                                            int   nScintillators;                                       ///< Number of straws that can be fitted inside the diagnostic plug
 
                                             int   bulkMat;                                              ///< Material for the collimator structure
 

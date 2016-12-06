@@ -74,6 +74,7 @@
 #include "PinholeBase.h"
 #include "RectangularPinhole.h"
 #include "StrawCollimator.h"
+#include "ScintillatorBlock.h"
 #include "Plane.h"
 #include "SurInter.h"
 
@@ -262,6 +263,19 @@ DiagnosticPlug::setStraws(StrawCollimator *sc)
 }
 
 void
+DiagnosticPlug::setScintillators(ScintillatorBlock *sb)
+  /*!
+    Load the scintillator block class to build the corresponding detector
+  */
+{
+
+  ELog::RegMethod RegA("DiagnosticPlug","setScintillators");
+
+  Scintillator = sb;
+
+}
+
+void
 DiagnosticPlug::createSurfaces()
   /*!
     Create Surfaces for the Be
@@ -442,6 +456,7 @@ DiagnosticPlug::createAll(Simulation& System,
   } else if (Straws) {
 
      Straws->createAll(System, *this, floorFC, floorLP, roofFC, roofLP);
+     Scintillator->createAll(System, *this, roofFC, roofLP);
 
   }
 
