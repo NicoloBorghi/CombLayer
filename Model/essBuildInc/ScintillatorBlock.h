@@ -53,8 +53,6 @@ namespace essSystem {
                                                               const attachSystem::FixedComp&,             /*roofFC*/
                                                               const size_t);                              /*roofLP*/
 
-                                             void   setXYZSteps(double, double, double);
-                                             void   setAngles(double, double);
                                              void   setDimensions(double, double, double);
                                              void   setBoundarySurfacesZ(double, double, double);
 
@@ -65,11 +63,6 @@ namespace essSystem {
 
                         // Variables relative to the DiagnosticPlug, necessary for building the straw collimator
 
-                                         double   xStep;                                                ///< X step (obtained from DiagnosticPlug)
-                                         double   yStep;                                                ///< Y step (obtained from DiagnosticPlug)
-                                         double   zStep;                                                ///< Z step (obtained from DiagnosticPlug)
-                                         double   xyAngle;                                              ///< XY Angle (obtained from DiagnosticPlug)
-                                         double   zAngle;                                               ///< Z Angle (obtained from DiagnosticPlug)
                                          double   width;                                                ///< Width (obtained from DiagnosticPlug)
                                          double   length;                                               ///< Length (obtained from DiagnosticPlug)
                                          double   height;                                               ///< Height (obtained from DiagnosticPlug)
