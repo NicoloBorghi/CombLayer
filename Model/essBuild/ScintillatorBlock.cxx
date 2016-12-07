@@ -91,8 +91,7 @@ namespace essSystem {
                                                                                 attachSystem::FixedComp(A),
                                                                                 attachSystem::CellMap(A),
                                                                                 scintIndex(A.scintIndex),
-                                                                                cellIndex(A.cellIndex),
-                                                                                zImagingPlane(A.zImagingPlane) {
+                                                                                cellIndex(A.cellIndex) {
 
                 /*!
                         Copy constructor
@@ -109,7 +108,6 @@ namespace essSystem {
                         attachSystem::FixedComp::operator=(A);
                         CellMap::operator=(A);
                         cellIndex=A.cellIndex;
-                        zImagingPlane=A.zImagingPlane;
 
                 }
 
@@ -140,6 +138,14 @@ namespace essSystem {
 
                 ELog::RegMethod RegA("ScintillatorBlock","populate");
 
+                height = Control.EvalVar<double>(keyName+"Height");
+                scintHeight  = Control.EvalVar<double>(keyName+"ScintillatorHeight");
+                scintWidth = Control.EvalVar<double>(keyName+"ScintillatorWidth");
+                scintLength = Control.EvalVar<double>(keyName+"ScintillatorLength");
+                claddingRadius = Control.EvalVar<double>(keyName+"CladdingRadius");
+                claddingSeparation = Control.EvalVar<double>(keyName+"CladdingSeparation");
+                claddingDepth = Control.EvalVar<double>(keyName+"CladdingDepth");
+
                 bulkMat  = ModelSupport::EvalMat<int>(Control,keyName+"Material");
                 scintMat = ModelSupport::EvalMat<int>(Control,keyName+"ScintillatorMaterial");
 
@@ -163,8 +169,6 @@ namespace essSystem {
         }
 
         void ScintillatorBlock::createSurfaces(const attachSystem::FixedComp& FC,
-                                             const attachSystem::FixedComp& floorFC,
-                                             const size_t floorLP,
                                              const attachSystem::FixedComp& roofFC,
                                              const size_t roofLP) {
 
@@ -180,8 +184,6 @@ namespace essSystem {
 
         void ScintillatorBlock::createObjects(Simulation& System,
                                             attachSystem::FixedComp& FC,
-                                            const attachSystem::FixedComp& floorFC,
-                                            const size_t floorLP,
                                             const attachSystem::FixedComp& roofFC,
                                             const size_t roofLP) {
 
@@ -209,8 +211,6 @@ namespace essSystem {
 
         void ScintillatorBlock::createAll(Simulation& System,
                                         attachSystem::FixedComp& FC,
-                                        const attachSystem::FixedComp& floorFC,
-                                        const size_t floorLP,
                                         const attachSystem::FixedComp& roofFC,
                                         const size_t roofLP) {
 
@@ -225,8 +225,8 @@ namespace essSystem {
                 populate(System.getDataBase());
 
                 createUnitVector(FC);
-                createSurfaces(FC,floorFC,floorLP,roofFC,roofLP);
-                createObjects(System,FC,floorFC,floorLP,roofFC,roofLP);
+                createSurfaces(FC,roofFC,roofLP);
+                createObjects(System,FC,roofFC,roofLP);
                 createLinks();
 
                 return;

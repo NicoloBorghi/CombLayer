@@ -456,7 +456,7 @@ DiagnosticPlug::createAll(Simulation& System,
   } else if (Straws) {
 
      Straws->createAll(System, *this, floorFC, floorLP, roofFC, roofLP);
-     Scintillator->createAll(System, *this, floorFC, floorLP, roofFC, roofLP);
+     Scintillator->createAll(System, *this, roofFC, roofLP);
 
   }
 

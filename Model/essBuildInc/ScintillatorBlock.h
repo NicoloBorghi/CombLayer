@@ -48,42 +48,44 @@ namespace essSystem {
 
                                              void   createAll(Simulation&,
                                                               attachSystem::FixedComp&,                   /*FC*/
-                                                              const attachSystem::FixedComp&,             /*floorFC*/
-                                                              const size_t,                               /*floorLP*/
                                                               const attachSystem::FixedComp&,             /*roofFC*/
                                                               const size_t);                              /*roofLP*/
 
                 protected:
 
-                                      const int   scintIndex;                                           ///< Index of surface offset
-                                            int   cellIndex;                                            ///< Cell index
+                                           double   height;                                               ///< Height of the collimator block
+                                           double   scintWidth;                                           ///< Trasversal width of the scintillators
+                                           double   scintLength;                                          ///< Radial length of the scintillators
+                                           double   scintHeight;                                          ///< Height of the scintillators
+                                           double   claddingRadius;                                       ///< Radius of the cladding
+                                           double   claddingSeparation;                                   ///< Separation between the cladding (radial)
+                                           double   claddingDepth;                                        ///< Depth of the center for cladding housing (transversal)
 
-                                         double   scintillatorWidth;                                    ///< Width of the straws in the transversal direction
-                                         double   scintillatorLength;                                   ///< Length of the straws in the radial direction
+                                        const int   scintIndex;                                           ///< Index of surface offset
+                                              int   cellIndex;                                            ///< Cell index
 
-                                            int   bulkMat;                                              ///< Scintillator block material
-                                            int   scintMat;                                             ///< Scintillator material
+                                           double   scintillatorWidth;                                    ///< Width of the straws in the transversal direction
+                                           double   scintillatorLength;                                   ///< Length of the straws in the radial direction
+
+                                              int   bulkMat;                                              ///< Scintillator block material
+                                              int   scintMat;                                             ///< Scintillator material
 
                 private:
 
-                                           void   populate(const FuncDataBase&);
+                                             void   populate(const FuncDataBase&);
 
-                                           void   createUnitVector(const attachSystem::FixedComp&);
+                                             void   createUnitVector(const attachSystem::FixedComp&);
 
-                                           void   createSurfaces(const attachSystem::FixedComp&,        /*FC*/
-                                                                 const attachSystem::FixedComp&,        /*floorFC*/
-                                                                 const size_t,                          /*floorLP*/
-                                                                 const attachSystem::FixedComp&,        /*roofFC*/
-                                                                 const size_t);                         /*roofLP*/
+                                             void   createSurfaces(const attachSystem::FixedComp&,        /*FC*/
+                                                                   const attachSystem::FixedComp&,        /*roofFC*/
+                                                                   const size_t);                         /*roofLP*/
 
-                                           void   createObjects(Simulation&,
-                                                                attachSystem::FixedComp&,               /*FC*/
-                                                                const attachSystem::FixedComp&,         /*floorFC*/
-                                                                const size_t,                           /*floorLP*/
-                                                                const attachSystem::FixedComp&,         /*roofFC*/
-                                                                const size_t);                          /*roofLP*/
+                                             void   createObjects(Simulation&,
+                                                                  attachSystem::FixedComp&,               /*FC*/
+                                                                  const attachSystem::FixedComp&,         /*roofFC*/
+                                                                  const size_t);                          /*roofLP*/
 
-                                           void   createLinks();
+                                             void   createLinks();
 
         };
 

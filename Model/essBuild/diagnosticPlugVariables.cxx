@@ -118,8 +118,15 @@ namespace setVariable {
                         /* |  */
                         /* +->*/Control.addVariable("ScintillatorBlockHeight",7.0);
                         /* +->*/Control.addVariable("ScintillatorBlockMaterial","SS304");
-                        /* +->*/Control.addVariable("ScintillatorBlockScintillatorHeight",1.0);
                         /* +->*/Control.addVariable("ScintillatorBlockScintillatorMaterial","BGO");
+                        /* +->*/Control.addVariable("ScintillatorBlockScintillatorHeight",1.0); //cm
+                        /* +->*/Control.addVariable("ScintillatorBlockScintillatorWidth",0.1); //cm
+                        /* +->*/Control.addVariable("ScintillatorBlockScintillatorLength",0.1); //cm
+                        /* +->*/Control.addVariable("ScintillatorBlockCladdingRadius",0.125); //cm
+                        /* +->*/Control.addVariable("ScintillatorBlockCladdingSeparation",0.09); //cm
+                        /* +->*/Control.addVariable("ScintillatorBlockCladdingDepth",0.3); //cm
+                        /* +->*/Control.addVariable("ScintillatorBlockFiberMaterial","PMMA");
+                        /* +->*/Control.addVariable("ScintillatorBlockEpoxyMaterial","Epoxy");
 
                 return;
 
