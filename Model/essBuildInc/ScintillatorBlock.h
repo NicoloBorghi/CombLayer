@@ -48,6 +48,8 @@ namespace essSystem {
 
                                              void   createAll(Simulation&,
                                                               attachSystem::FixedComp&,                   /*FC*/
+                                                              const attachSystem::FixedComp&,             /*strawsFC*/
+                                                              const size_t,                               /*strawsLP*/
                                                               const attachSystem::FixedComp&,             /*roofFC*/
                                                               const size_t);                              /*roofLP*/
 
@@ -77,11 +79,15 @@ namespace essSystem {
                                              void   createUnitVector(const attachSystem::FixedComp&);
 
                                              void   createSurfaces(const attachSystem::FixedComp&,        /*FC*/
+                                                                  const attachSystem::FixedComp&,         /*strawsFC*/
+                                                                  const size_t,                           /*strawsLP*/
                                                                    const attachSystem::FixedComp&,        /*roofFC*/
                                                                    const size_t);                         /*roofLP*/
 
                                              void   createObjects(Simulation&,
                                                                   attachSystem::FixedComp&,               /*FC*/
+                                                                  const attachSystem::FixedComp&,         /*strawsFC*/
+                                                                  const size_t,                           /*strawsLP*/
                                                                   const attachSystem::FixedComp&,         /*roofFC*/
                                                                   const size_t);                          /*roofLP*/
 

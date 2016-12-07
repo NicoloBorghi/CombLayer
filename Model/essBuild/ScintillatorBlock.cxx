@@ -169,8 +169,10 @@ namespace essSystem {
         }
 
         void ScintillatorBlock::createSurfaces(const attachSystem::FixedComp& FC,
-                                             const attachSystem::FixedComp& roofFC,
-                                             const size_t roofLP) {
+                                               const attachSystem::FixedComp& strawsFC,
+                                               const size_t strawsLP,
+                                               const attachSystem::FixedComp& roofFC,
+                                               const size_t roofLP) {
 
                 /*!
                         Create the collimator surfaces
@@ -183,9 +185,11 @@ namespace essSystem {
         }
 
         void ScintillatorBlock::createObjects(Simulation& System,
-                                            attachSystem::FixedComp& FC,
-                                            const attachSystem::FixedComp& roofFC,
-                                            const size_t roofLP) {
+                                              attachSystem::FixedComp& FC,
+                                              const attachSystem::FixedComp& strawsFC,
+                                              const size_t strawsLP,
+                                              const attachSystem::FixedComp& roofFC,
+                                              const size_t roofLP) {
 
                 /*!
                         Create the objects for the straw collimator
@@ -211,6 +215,8 @@ namespace essSystem {
 
         void ScintillatorBlock::createAll(Simulation& System,
                                         attachSystem::FixedComp& FC,
+                                        const attachSystem::FixedComp& strawsFC,
+                                        const size_t strawsLP,
                                         const attachSystem::FixedComp& roofFC,
                                         const size_t roofLP) {
 
@@ -225,8 +231,8 @@ namespace essSystem {
                 populate(System.getDataBase());
 
                 createUnitVector(FC);
-                createSurfaces(FC,roofFC,roofLP);
-                createObjects(System,FC,roofFC,roofLP);
+                createSurfaces(FC,strawsFC,strawsLP,roofFC,roofLP);
+                createObjects(System,FC,strawsFC,strawsLP,roofFC,roofLP);
                 createLinks();
 
                 return;

@@ -468,8 +468,10 @@ namespace essSystem {
 
                 ELog::RegMethod RegA("StrawCollimator","createLinks");
 
-                //FixedComp::setConnect(0,Origin-Y*length/2.0,Y);
-                //FixedComp::setLinkSurf(0,SMap.realSurf(tIndex+1));
+                //ModelSupport::buildPlane(SMap,strawIndex+5,Origin+Z*zImagingPlane,Z);
+
+                FixedComp::setConnect(0,Origin+Z*zImagingPlane,Z);
+                FixedComp::setLinkSurf(0,SMap.realSurf(strawIndex+5));
 
                 return;
 

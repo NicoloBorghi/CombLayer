@@ -98,6 +98,7 @@
         #include "RectangularPinhole.h"
         #include "RectangularPinholeArray.h"
         #include "StrawCollimator.h"
+        #include "ScintillatorBlock.h"
         #include "ShutterBay.h"
         #include "GuideBay.h"
         #include "TaperedDiskPreMod.h"
@@ -779,6 +780,7 @@
           } else if (pinholeType == "Straws") {
 
                 DPlug->setStraws( new StrawCollimator("StrawCollimator") );
+                DPlug->setScintillators( new ScintillatorBlock("ScintillatorBlock") );
 
           } else {
 
