@@ -53,33 +53,16 @@ namespace essSystem {
                                                               const attachSystem::FixedComp&,             /*roofFC*/
                                                               const size_t);                              /*roofLP*/
 
-                                             void   setDimensions(double, double, double);
-                                             void   setBoundarySurfacesZ(double, double, double);
-
                 protected:
 
                                       const int   scintIndex;                                           ///< Index of surface offset
                                             int   cellIndex;                                            ///< Cell index
 
-                        // Variables relative to the DiagnosticPlug, necessary for building the straw collimator
-
-                                         double   width;                                                ///< Width (obtained from DiagnosticPlug)
-                                         double   length;                                               ///< Length (obtained from DiagnosticPlug)
-                                         double   height;                                               ///< Height (obtained from DiagnosticPlug)
-                                         double   roofSurfaceZ;                                         ///< Z coordinate of the roof surface
-
-                        // Variables relative to the imaging system
-
-                                         double   zImagingPlane;                                        ///< Elevation (z coordinate) of the imaging plane (relative to the target upper surface)
-
-                        // Variables relative to the straw collimator
-
-                                         double   scintillatorWidth;                                     ///< Width of the straws in the transversal direction
+                                         double   scintillatorWidth;                                    ///< Width of the straws in the transversal direction
                                          double   scintillatorLength;                                   ///< Length of the straws in the radial direction
-                                         double   rowDistance;                                          ///< Distance between straw rows
-                                            int   nScintillators;                                       ///< Number of straws that can be fitted inside the diagnostic plug
 
-                                            int   bulkMat;                                              ///< Material for the collimator structure
+                                            int   bulkMat;                                              ///< Scintillator block material
+                                            int   scintMat;                                             ///< Scintillator material
 
                 private:
 
