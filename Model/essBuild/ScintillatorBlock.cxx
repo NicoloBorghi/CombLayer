@@ -143,6 +143,7 @@ namespace essSystem {
                 scintHeight  = Control.EvalVar<double>(keyName+"ScintillatorHeight");
                 scintWidth = Control.EvalVar<double>(keyName+"ScintillatorWidth");
                 scintLength = Control.EvalVar<double>(keyName+"ScintillatorLength");
+                scintSeparation = Control.EvalVar<double>(keyName+"ScintillatorSeparation");
                 claddingRadius = Control.EvalVar<double>(keyName+"CladdingRadius");
                 claddingSeparation = Control.EvalVar<double>(keyName+"CladdingSeparation");
                 claddingDepth = Control.EvalVar<double>(keyName+"CladdingDepth");
@@ -195,6 +196,42 @@ namespace essSystem {
                 // Top of scintillators
                 ModelSupport::buildPlane(SMap,scintIndex+15,Origin+Z*zScintillatorTop,Z);
 
+                // Central straw walls
+                ModelSupport::buildPlane(SMap,scintIndex+13,Origin-X*(rowDistance/2.0),X);
+                ModelSupport::buildPlane(SMap,scintIndex+14,Origin+X*(rowDistance/2.0),X);
+
+                // External straw walls
+                ModelSupport::buildPlane(SMap,scintIndex+23,Origin-X*(rowDistance/2.0+strawWidth),X);
+                ModelSupport::buildPlane(SMap,scintIndex+24,Origin+X*(rowDistance/2.0+strawWidth),X);
+
+                Geometry::Vec3D backWallPos = Origin - Y*(length/2.0);
+                Geometry::Vec3D frontWallPos = Origin + Y*(length/2.0);
+
+                Geometry::Vec3D wallPos;
+                nScint = 0;
+
+                // Transversal straw walls
+                for (;;) {
+
+                        wallPos = backWallPos + Y*((nScint+1)*strawLength);
+
+                        if (wallPos.abs() < frontWallPos.abs()) {
+
+                                ModelSupport::buildPlane(SMap,scintIndex+((nScint+1)*10 + 1),wallPos,Y);
+                                nScint++;
+
+                        } else if (wallPos == frontWallPos) {
+
+                                nScint++;
+                                break;
+
+                        } else {
+
+                                break;
+
+                        }
+
+                }
                 return;
 
         }

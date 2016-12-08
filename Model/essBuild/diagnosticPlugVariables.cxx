@@ -122,6 +122,7 @@ namespace setVariable {
                         /* +->*/Control.addVariable("ScintillatorBlockScintillatorHeight",1.0); //cm
                         /* +->*/Control.addVariable("ScintillatorBlockScintillatorWidth",0.1); //cm
                         /* +->*/Control.addVariable("ScintillatorBlockScintillatorLength",0.1); //cm
+                        /* +->*/Control.addVariable("ScintillatorBlockScintillatorSeparation",0.1); //cm
                         /* +->*/Control.addVariable("ScintillatorBlockCladdingRadius",0.125); //cm
                         /* +->*/Control.addVariable("ScintillatorBlockCladdingSeparation",0.09); //cm
                         /* +->*/Control.addVariable("ScintillatorBlockCladdingDepth",0.3); //cm

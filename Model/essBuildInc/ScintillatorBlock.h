@@ -59,15 +59,14 @@ namespace essSystem {
                                            double   scintWidth;                                           ///< Trasversal width of the scintillators
                                            double   scintLength;                                          ///< Radial length of the scintillators
                                            double   scintHeight;                                          ///< Height of the scintillators
+                                           double   scintSeparation;                                      ///< Distance between the rows of scintillators (must match the Straws Row Distance)
                                            double   claddingRadius;                                       ///< Radius of the cladding
                                            double   claddingSeparation;                                   ///< Separation between the cladding (radial)
                                            double   claddingDepth;                                        ///< Depth of the center for cladding housing (transversal)
 
                                         const int   scintIndex;                                           ///< Index of surface offset
+                                              int   nScint;                                               ///< Number of scintillators to match the straw grid
                                               int   cellIndex;                                            ///< Cell index
-
-                                           double   scintillatorWidth;                                    ///< Width of the straws in the transversal direction
-                                           double   scintillatorLength;                                   ///< Length of the straws in the radial direction
 
                                               int   bulkMat;                                              ///< Scintillator block material
                                               int   scintMat;                                             ///< Scintillator material
