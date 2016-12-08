@@ -71,6 +71,15 @@ namespace essSystem {
 
                                               int   bulkMat;                                              ///< Scintillator block material
                                               int   scintMat;                                             ///< Scintillator material
+                                              int   fiberMat;                                             ///< Material for fibers
+                                              int   epoxyMat;                                             ///< Material for the epoxy holding the fibers
+
+                                           double   zImagingPlane;                                        ///< Z coordinate of the imaging plane (which is the bottom plane for the scintillator box)
+                                           double   zScintillatorTop;                                     ///< Z coordinate of the top plane for scintillators
+                                           double   zBlockTop;                                            ///< Z coordinate of the top plane for the entire scintillator block
+
+                                              int   imagingPlaneSurfaceNumber;                            ///< Imaging plane surface number (top of straw collimator)
+                                              int   roofSurfaceNumber;                                    ///< Diagnostic plug roof surface number
 
                 private:
 
@@ -79,8 +88,8 @@ namespace essSystem {
                                              void   createUnitVector(const attachSystem::FixedComp&);
 
                                              void   createSurfaces(const attachSystem::FixedComp&,        /*FC*/
-                                                                  const attachSystem::FixedComp&,         /*strawsFC*/
-                                                                  const size_t,                           /*strawsLP*/
+                                                                   const attachSystem::FixedComp&,        /*strawsFC*/
+                                                                   const size_t,                          /*strawsLP*/
                                                                    const attachSystem::FixedComp&,        /*roofFC*/
                                                                    const size_t);                         /*roofLP*/
 

@@ -71,6 +71,7 @@
 #include "BaseMap.h"
 #include "CellMap.h"
 #include "ScintillatorBlock.h"
+#include "Plane.h"
 
 namespace essSystem {
 
@@ -146,8 +147,16 @@ namespace essSystem {
                 claddingSeparation = Control.EvalVar<double>(keyName+"CladdingSeparation");
                 claddingDepth = Control.EvalVar<double>(keyName+"CladdingDepth");
 
+                const Geometry::Plane *imagingPlane = SMap.realPtr<Geometry::Plane>(imagingPlaneSurfaceNumber);
+
+                zImagingPlane = imagingPlane->getDistance();
+                zScintillatorTop = zImagingPlane + scintHeight;
+                zBlockTop = zImagingPlane + height;
+
                 bulkMat  = ModelSupport::EvalMat<int>(Control,keyName+"Material");
                 scintMat = ModelSupport::EvalMat<int>(Control,keyName+"ScintillatorMaterial");
+                //fiberMat  = ModelSupport::EvalMat<int>(Control,keyName+"FiberMaterial");
+                //epoxyMat = ModelSupport::EvalMat<int>(Control,keyName+"EpoxyMaterial");
 
                 return;
 
@@ -180,6 +189,12 @@ namespace essSystem {
 
                 ELog::RegMethod RegA("ScintillatorBlock","createSurfaces");
 
+                // Top of scintillator block
+                ModelSupport::buildPlane(SMap,scintIndex+5,Origin+Z*zBlockTop,Z);
+
+                // Top of scintillators
+                ModelSupport::buildPlane(SMap,scintIndex+15,Origin+Z*zScintillatorTop,Z);
+
                 return;
 
         }
@@ -196,6 +211,29 @@ namespace essSystem {
                 */
 
                 ELog::RegMethod RegA("ScintillatorBlock","createObjects");
+
+                std::string strImage = strawsFC.getLinkString(strawsLP);
+                std::string strRoof  = roofFC.getLinkComplement(roofLP);
+                std::string strBackWall = FC.getLinkString(0);
+                std::string strFrontWall = FC.getLinkComplement(1);
+                std::string strLeftWall = FC.getLinkString(2);
+                std::string strRightWall = FC.getLinkComplement(3);
+
+                std::string Out;
+
+                Out = strRoof + ModelSupport::getComposite(SMap,scintIndex," 5") + strBackWall + strFrontWall + strLeftWall + strRightWall;
+                System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+
+                std::cout << "==========SCINTILLATORBLOCK===========" << Out << std::endl;
+
+                Out = ModelSupport::getComposite(SMap,scintIndex," -15") + strRightWall + strLeftWall + strImage + strBackWall + strFrontWall;
+                System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+
+                Out = ModelSupport::getComposite(SMap,scintIndex," -5 15") + strRightWall + strLeftWall + strBackWall + strFrontWall;
+                System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+
+                Out = strImage + strRoof + strFrontWall + strBackWall + strLeftWall + strRightWall;
+                addOuterSurf(Out);
 
                 return;
 
@@ -227,6 +265,9 @@ namespace essSystem {
                 */
 
                 ELog::RegMethod RegA("ScintillatorBlock","createAll");
+
+                imagingPlaneSurfaceNumber = strawsFC.getLinkSurf(strawsLP);
+                roofSurfaceNumber = roofFC.getLinkSurf(roofLP);
 
                 populate(System.getDataBase());
 

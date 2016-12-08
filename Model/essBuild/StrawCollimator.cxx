@@ -349,8 +349,9 @@ namespace essSystem {
                 attachSystem::CellMap* CM = dynamic_cast<attachSystem::CellMap*>(&FC);
                 CM->deleteCellWithData(System, "main");
 
-                std::string Out=ModelSupport::getComposite(SMap,strawIndex," 5") + strRoof + strBackWall + strFrontWall + strLeftWall + strRightWall;
-                System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+                std::string Out;
+                //std::string Out=ModelSupport::getComposite(SMap,strawIndex," 5") + strRoof + strBackWall + strFrontWall + strLeftWall + strRightWall;
+                //System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
 
                 // Central structure
                 // Out = ModelSupport::getComposite(SMap,strawIndex," -5 13 -14") + strFloor + strBackWall + strFrontWall;
@@ -453,7 +454,8 @@ namespace essSystem {
 
                 }
 
-                Out = strFloor + strRoof + FC.getLinkString(0) + FC.getLinkComplement(1) + strLeftWall + strRightWall;
+                //Out = strFloor + strRoof + FC.getLinkString(0) + FC.getLinkComplement(1) + strLeftWall + strRightWall;
+                Out = strFloor + ModelSupport::getComposite(SMap,strawIndex," -5") + strBackWall + strFrontWall + strLeftWall + strRightWall;
                 addOuterSurf(Out);
 
                 return;
