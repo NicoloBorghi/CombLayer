@@ -130,6 +130,19 @@ namespace essSystem {
 
         }
 
+        void ScintillatorBlock::setDimensions(double l, double w) {
+
+                /*!
+                        Set dimensions of the ScintillatorBlock
+                */
+
+                ELog::RegMethod RegA("ScintillatorBlock","setDimensions");
+
+                length = l;
+                width = w;
+
+        }
+
         void ScintillatorBlock::populate(const FuncDataBase& Control) {
 
                 /*!
@@ -197,12 +210,12 @@ namespace essSystem {
                 ModelSupport::buildPlane(SMap,scintIndex+15,Origin+Z*zScintillatorTop,Z);
 
                 // Central straw walls
-                ModelSupport::buildPlane(SMap,scintIndex+13,Origin-X*(rowDistance/2.0),X);
-                ModelSupport::buildPlane(SMap,scintIndex+14,Origin+X*(rowDistance/2.0),X);
+                ModelSupport::buildPlane(SMap,scintIndex+13,Origin-X*(scintSeparation/2.0),X);
+                ModelSupport::buildPlane(SMap,scintIndex+14,Origin+X*(scintSeparation/2.0),X);
 
                 // External straw walls
-                ModelSupport::buildPlane(SMap,scintIndex+23,Origin-X*(rowDistance/2.0+strawWidth),X);
-                ModelSupport::buildPlane(SMap,scintIndex+24,Origin+X*(rowDistance/2.0+strawWidth),X);
+                ModelSupport::buildPlane(SMap,scintIndex+23,Origin-X*(scintSeparation/2.0+scintWidth),X);
+                ModelSupport::buildPlane(SMap,scintIndex+24,Origin+X*(scintSeparation/2.0+scintWidth),X);
 
                 Geometry::Vec3D backWallPos = Origin - Y*(length/2.0);
                 Geometry::Vec3D frontWallPos = Origin + Y*(length/2.0);
@@ -213,7 +226,7 @@ namespace essSystem {
                 // Transversal straw walls
                 for (;;) {
 
-                        wallPos = backWallPos + Y*((nScint+1)*strawLength);
+                        wallPos = backWallPos + Y*((nScint+1)*scintLength);
 
                         if (wallPos.abs() < frontWallPos.abs()) {
 
@@ -233,6 +246,8 @@ namespace essSystem {
 
                 }
                 return;
+
+                ELog::EM << "=== nScint = " << nScint << " ===" << ELog::endDiag;
 
         }
 
@@ -261,10 +276,46 @@ namespace essSystem {
                 Out = strRoof + ModelSupport::getComposite(SMap,scintIndex," 5") + strBackWall + strFrontWall + strLeftWall + strRightWall;
                 System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
 
-                std::cout << "==========SCINTILLATORBLOCK===========" << Out << std::endl;
-
-                Out = ModelSupport::getComposite(SMap,scintIndex," -15") + strRightWall + strLeftWall + strImage + strBackWall + strFrontWall;
+                // Central structure
+                Out = ModelSupport::getComposite(SMap,scintIndex," -15 13 -14") + strImage + strBackWall + strFrontWall;
                 System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+
+                // Outer straw surfaces
+                Out = ModelSupport::getComposite(SMap,scintIndex," -15 -23") + strLeftWall + strImage + strBackWall + strFrontWall;
+                System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+
+                Out = ModelSupport::getComposite(SMap,scintIndex," -15 24") + strRightWall + strImage + strBackWall + strFrontWall;
+                System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+
+                std::string OutLeft = ModelSupport::getComposite(SMap,scintIndex,"-15 23 -13") + strImage;
+                std::string OutRight = ModelSupport::getComposite(SMap,scintIndex,"-15 14 -24") + strImage;
+
+                int tmpMatLeft = scintMat;
+                int tmpMatRight = bulkMat;
+
+                for (int i = 1; i <= nScint; i++) {
+
+                        if (i == 1) {
+
+                                Out = ModelSupport::getComposite(SMap,scintIndex + 10*i," -1") + strBackWall;
+
+                        } else if (i == nScint) {
+
+                                Out = ModelSupport::getComposite(SMap,scintIndex + 10*(i-1)," 1") + strFrontWall;
+
+                        } else {
+
+                                Out = ModelSupport::getComposite(SMap,scintIndex + 10*(i-1)," 1 -11");
+
+                        }
+
+                        tmpMatLeft = ((i % 2) == 0) ? scintMat : bulkMat;
+                        tmpMatRight = ((i % 2) == 1) ? scintMat : bulkMat;
+
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatLeft, 300.0, OutLeft + Out));
+                        System.addCell(MonteCarlo::Qhull(cellIndex++,tmpMatRight, 300.0, OutRight + Out));
+
+                }
 
                 Out = ModelSupport::getComposite(SMap,scintIndex," -5 15") + strRightWall + strLeftWall + strBackWall + strFrontWall;
                 System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));

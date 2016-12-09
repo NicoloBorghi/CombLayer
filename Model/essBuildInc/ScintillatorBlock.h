@@ -53,8 +53,12 @@ namespace essSystem {
                                                               const attachSystem::FixedComp&,             /*roofFC*/
                                                               const size_t);                              /*roofLP*/
 
+                                             void   setDimensions(double, double);                        ///< XY dimensions of the DiagnosticPlug
+
                 protected:
 
+                                           double   length;                                               ///< Length (radial) of the DiagnosticPlug
+                                           double   width;                                                ///< Width (transversal) of the DiagnosticPlug
                                            double   height;                                               ///< Height of the collimator block
                                            double   scintWidth;                                           ///< Trasversal width of the scintillators
                                            double   scintLength;                                          ///< Radial length of the scintillators

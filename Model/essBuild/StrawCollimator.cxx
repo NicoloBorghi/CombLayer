@@ -350,6 +350,8 @@ namespace essSystem {
                 CM->deleteCellWithData(System, "main");
 
                 std::string Out;
+
+                // This cell was previously defined here. Now it has been moved to ScintillatorBlock.cxx
                 //std::string Out=ModelSupport::getComposite(SMap,strawIndex," 5") + strRoof + strBackWall + strFrontWall + strLeftWall + strRightWall;
                 //System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
 

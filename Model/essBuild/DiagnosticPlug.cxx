@@ -212,6 +212,8 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
     Straws->setDimensions(length,width, height);
     Straws->setBoundarySurfacesZ(floorPlane->getDistance(), roofPlane->getDistance(), targetTopSurf->getDistance());
 
+    Scintillator->setDimensions(length,width);
+
   }
 
   activationWallsMaterial = ModelSupport::EvalMat<int>(Control,keyName+"ActivationWallsMaterial");
