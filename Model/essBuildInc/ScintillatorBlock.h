@@ -70,6 +70,8 @@ namespace essSystem {
 
                                         const int   scintIndex;                                           ///< Index of surface offset
                                               int   nScint;                                               ///< Number of scintillators to match the straw grid
+                                              int   nCladLeft;                                            ///< Number of cladding housings on the left side
+                                              int   nCladRight;                                           ///< Number of cladding housings on the right side
                                               int   cellIndex;                                            ///< Cell index
 
                                               int   bulkMat;                                              ///< Scintillator block material

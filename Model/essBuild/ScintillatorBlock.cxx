@@ -217,13 +217,17 @@ namespace essSystem {
                 ModelSupport::buildPlane(SMap,scintIndex+23,Origin-X*(scintSeparation/2.0+scintWidth),X);
                 ModelSupport::buildPlane(SMap,scintIndex+24,Origin+X*(scintSeparation/2.0+scintWidth),X);
 
+                // Cladding recess
+                ModelSupport::buildPlane(SMap,scintIndex+33,Origin-X*claddingDepth,X);
+                ModelSupport::buildPlane(SMap,scintIndex+34,Origin+X*claddingDepth,X);
+
                 Geometry::Vec3D backWallPos = Origin - Y*(length/2.0);
                 Geometry::Vec3D frontWallPos = Origin + Y*(length/2.0);
 
+                // Transversal straw walls
                 Geometry::Vec3D wallPos;
                 nScint = 0;
 
-                // Transversal straw walls
                 for (;;) {
 
                         wallPos = backWallPos + Y*((nScint+1)*scintLength);
@@ -245,9 +249,66 @@ namespace essSystem {
                         }
 
                 }
-                return;
 
                 ELog::EM << "=== nScint = " << nScint << " ===" << ELog::endDiag;
+
+                // Cladding housings left
+                Geometry::Vec3D cladLeftPos;
+                nCladLeft = 0;
+
+                for (;;) {
+
+                        cladLeftPos = backWallPos - X*claddingDepth + Y*(0.05) + Y*claddingRadius + Y*nCladLeft*(2.*claddingRadius + claddingSeparation);
+
+                        if ( (cladLeftPos.abs() + claddingRadius + 0.175 + 0.05 + 0.1) < frontWallPos.abs() ) {
+
+                                ModelSupport::buildCylinder(SMap,scintIndex+(10*nCladLeft + 7),cladLeftPos,Z,claddingRadius);
+                                nCladLeft++;
+
+                        } else if ( (cladLeftPos.abs() + claddingRadius + 0.175 + 0.05 + 0.1) == frontWallPos.abs() ) {
+
+                                nCladLeft++;
+                                break;
+
+                        } else {
+
+                                break;
+
+                        }
+
+                }
+
+                ELog::EM << "=== nCladLeft = " << nCladLeft << " ===" << ELog::endDiag;
+
+                // Cladding housings right
+                Geometry::Vec3D cladRightPos;
+                nCladRight = 0;
+
+                for (;;) {
+
+                        cladRightPos = backWallPos + X*claddingDepth + Y*(0.05 + 0.175 + 0.1) + Y*claddingRadius + Y*nCladRight*(2.*claddingRadius + claddingSeparation);
+
+                        if ( (cladRightPos.abs() + claddingRadius + 0.05) < frontWallPos.abs() ) {
+
+                                ModelSupport::buildCylinder(SMap,scintIndex+(10*nCladRight + 8),cladRightPos,Z,claddingRadius);
+                                nCladRight++;
+
+                        } else if ( (cladLeftPos.abs() + claddingRadius + 0.05) == frontWallPos.abs() ) {
+
+                                nCladRight++;
+                                break;
+
+                        } else {
+
+                                break;
+
+                        }
+
+                }
+
+                ELog::EM << "=== nCladRight = " << nCladRight << " ===" << ELog::endDiag;
+
+                return;
 
         }
 
@@ -317,8 +378,33 @@ namespace essSystem {
 
                 }
 
+                Out = ModelSupport::getComposite(SMap,scintIndex," 33 -34") + strBackWall + strFrontWall;
+
+                HeadRule HR;
+
+                HR.procString(Out);
+
+                for (int t = 0; t < nCladLeft; t++) {
+
+                        Out = ModelSupport::getComposite(SMap,scintIndex + 10*t," -7");
+                        HR.addUnion(Out);
+
+                }
+
+                for (int t = 0; t < nCladRight; t++) {
+
+                        Out = ModelSupport::getComposite(SMap,scintIndex + 10*t," -8");
+                        HR.addUnion(Out);
+
+                }
+
+                Out = ModelSupport::getComposite(SMap,scintIndex," -5 15");
+
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0, 300.0, Out + HR.display()));
+
+                HR.makeComplement();
                 Out = ModelSupport::getComposite(SMap,scintIndex," -5 15") + strRightWall + strLeftWall + strBackWall + strFrontWall;
-                System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out));
+                System.addCell(MonteCarlo::Qhull(cellIndex++,bulkMat, 300.0, Out + HR.display()));
 
                 Out = strImage + strRoof + strFrontWall + strBackWall + strLeftWall + strRightWall;
                 addOuterSurf(Out);
