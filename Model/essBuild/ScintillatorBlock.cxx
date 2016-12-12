@@ -143,6 +143,16 @@ namespace essSystem {
 
         }
 
+        void ScintillatorBlock::setTopShieldingMaterial(int m) {
+
+                /*!
+                        Set material for top shielding block in the DiagnosticPlug
+                */
+
+                topMat = m;
+
+        }
+
         void ScintillatorBlock::populate(const FuncDataBase& Control) {
 
                 /*!
@@ -335,7 +345,7 @@ namespace essSystem {
                 std::string Out;
 
                 Out = strRoof + ModelSupport::getComposite(SMap,scintIndex," 5") + strBackWall + strFrontWall + strLeftWall + strRightWall;
-                System.addCell(MonteCarlo::Qhull(cellIndex++, 0, 0.0, Out));
+                System.addCell(MonteCarlo::Qhull(cellIndex++, topMat, 0.0, Out));
 
                 // Central structure
                 Out = ModelSupport::getComposite(SMap,scintIndex," -15 13 -14") + strImage + strBackWall + strFrontWall;

@@ -166,6 +166,8 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
   width=Control.EvalVar<double>(keyName+"Width");
   length=Control.EvalVar<double>(keyName+"Length");
 
+  topShieldingMaterial = ModelSupport::EvalMat<int>(Control,keyName+"TopShieldingMaterial");
+
   activationLayerThick1=Control.EvalVar<double>(keyName+"ActivationLayerThick1");
   activationLayerThick2=Control.EvalVar<double>(keyName+"ActivationLayerThick2") + activationLayerThick1;
   activationLayerThick3=Control.EvalVar<double>(keyName+"ActivationLayerThick3") + activationLayerThick2;
@@ -213,6 +215,7 @@ DiagnosticPlug::populate(const FuncDataBase& Control)
     Straws->setBoundarySurfacesZ(floorPlane->getDistance(), roofPlane->getDistance(), targetTopSurf->getDistance());
 
     Scintillator->setDimensions(length,width);
+    Scintillator->setTopShieldingMaterial(topShieldingMaterial);
 
   }
 

@@ -54,6 +54,7 @@ namespace essSystem {
                                                               const size_t);                              /*roofLP*/
 
                                              void   setDimensions(double, double);                        ///< XY dimensions of the DiagnosticPlug
+                                             void   setTopShieldingMaterial(int);                         ///< Material for the top shielding block of the DiagnosticPlug
 
                 protected:
 
@@ -78,6 +79,7 @@ namespace essSystem {
                                               int   scintMat;                                             ///< Scintillator material
                                               int   fiberMat;                                             ///< Material for fibers
                                               int   epoxyMat;                                             ///< Material for the epoxy holding the fibers
+                                              int   topMat;                                               ///< Material for the top shielding block of the DiagnosticPlug
 
                                            double   zImagingPlane;                                        ///< Z coordinate of the imaging plane (which is the bottom plane for the scintillator box)
                                            double   zScintillatorTop;                                     ///< Z coordinate of the top plane for scintillators

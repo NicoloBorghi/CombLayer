@@ -64,6 +64,8 @@ class DiagnosticPlug : public attachSystem::ContainedComp,
   std::vector<double> activationZPlanes; ///< Z coordinate of the horizontal segmentation planes
   int activationWallsMaterial;    ///< Material for the wall segments
 
+  int topShieldingMaterial;       ///< Material for the top shielding block of the DiagnosticPlug
+
   int floorSurfaceNumber;          ///< Diagnostic plug floor surface number
   int roofSurfaceNumber;          ///< Diagnostic plug roof surface number
   int targetTopSurfaceNumber;     //< Target top surface number
