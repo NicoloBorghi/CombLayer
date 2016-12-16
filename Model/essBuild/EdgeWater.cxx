@@ -226,71 +226,9 @@ EdgeWater::createSurfaces()
   ModelSupport::buildPlane(SMap,edgeIndex+2,Origin+X*(width/2.0),X);
 
   ModelSupport::buildPlane(SMap,edgeIndex+11,
-<<<<<<< HEAD
-                           Origin-Y*(wallThick+width/2.0),Y);
-  ModelSupport::buildPlane(SMap,edgeIndex+12,
-                           Origin+Y*(wallThick+width/2.0),Y);
-
-  ModelSupport::buildPlane(SMap,edgeIndex+21,
-                           Origin-Y*(wallThick+width/2.0+sideWaterThick),Y);
-  ModelSupport::buildPlane(SMap,edgeIndex+22,
-                           Origin+Y*(wallThick+width/2.0+sideWaterThick),Y);
-
-  ModelSupport::buildPlane(SMap,edgeIndex+31,
-                           Origin-Y*(wallThick+width/2.0+sideWaterThick+wallThick),Y);
-  ModelSupport::buildPlane(SMap,edgeIndex+32,
-                           Origin+Y*(wallThick+width/2.0+sideWaterThick+wallThick),Y);
-
-  // inclined / cut pieces
-  HeadRule HR(divider);
-  //const Geometry::Surface *sDiv = HR.getSurfaces().front(); // !!! why this does not work ???
-  const Geometry::Plane *sDiv = SMap.realPtr<Geometry::Plane>(HR.getSurfaceNumbers().front());
-  const Geometry::Vec3D nDiv = sDiv->getNormal();
-  const int nSign = nDiv.dotProd(X) > 0 ? 1 : -1;
-
-  Geometry::Vec3D pt11 = SurInter::getPoint(sDiv, SMap.realPtr<Geometry::Plane>(edgeIndex+11), pz)-Y*sideWaterCutOffset;
-  Geometry::Vec3D pt12 = SurInter::getPoint(sDiv, SMap.realPtr<Geometry::Plane>(edgeIndex+12), pz)+Y*sideWaterCutOffset;
-
-  Geometry::Plane *p13 = ModelSupport::buildPlaneRotAxis
-    (SMap, edgeIndex+13, pt11, nDiv, Z*nSign, sideWaterCutAngle);
-
-  Geometry::Plane *p14 = ModelSupport::buildPlaneRotAxis
-    (SMap, edgeIndex+14, pt12, nDiv, Z*nSign, -sideWaterCutAngle);
-
-  ModelSupport::buildShiftedPlane(SMap, edgeIndex+23, p13, wallThick);
-  ModelSupport::buildShiftedPlane(SMap, edgeIndex+24, p14, wallThick);
-
-  // WATER INSERT
-  ModelSupport::buildPlane(SMap,edgeIndex+105,
-                           Origin-Z*(insWaterHeight/2.0),Z);
-  ModelSupport::buildPlane(SMap,edgeIndex+106,
-                           Origin+Z*(insWaterHeight/2.0),Z);
-
-  ModelSupport::buildPlane(SMap,edgeIndex+115,
-                           Origin-Z*(insWaterHeight/2.0+wallThick),Z);
-  ModelSupport::buildPlane(SMap,edgeIndex+116,
-                           Origin+Z*(insWaterHeight/2.0+wallThick),Z);
-
-  const double insDirection = sDiv->getNormal()[1];
-  ModelSupport::buildPlane(SMap,edgeIndex+103,
-                           Origin+X*(insWaterLength*insDirection),X*insDirection);
-  ModelSupport::buildPlane(SMap,edgeIndex+113,
-                           Origin+X*((insWaterLength-wallThick)*insDirection),X*insDirection);
-
-  ModelSupport::buildPlane(SMap, edgeIndex+101,
-                           Origin-Y*(insWaterThick/2.0),Y);
-  ModelSupport::buildPlane(SMap, edgeIndex+102,
-                           Origin+Y*(insWaterThick/2.0),Y);
-
-  ModelSupport::buildPlane(SMap, edgeIndex+111,
-                           Origin-Y*(insWaterThick/2.0+wallThick),Y);
-  ModelSupport::buildPlane(SMap, edgeIndex+112,
-                           Origin+Y*(insWaterThick/2.0+wallThick),Y);
-=======
 			   Origin-X*(wallThick+width/2.0),X);
   ModelSupport::buildPlane(SMap,edgeIndex+12,
 			   Origin+X*(wallThick+width/2.0),X);
->>>>>>> CombLayer/ButterflyEngineering
 
 
     
@@ -322,121 +260,6 @@ EdgeWater::createObjects(Simulation& System,
   ELog::RegMethod RegA("EdgeWater","createObjects");
 
   std::string Out;
-<<<<<<< HEAD
-
-  //  Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 -5 ");
-  //  System.addCell(MonteCarlo::Qhull(cellIndex++,0,
-  //                               modTemp,Out+container+divider));
-
-
-  if (insWaterHeight>0)
-    {
-      Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 (-115:116) "); // top/bottom water - no insert here
-      System.addCell(MonteCarlo::Qhull(cellIndex++,sideWaterMat,
-                                       modTemp,Out+container+divider));
-
-      Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 105 -106 -113 "); // water in the vertical middle
-      System.addCell(MonteCarlo::Qhull(cellIndex++,modMat,
-                                       modTemp,Out+container+divider));
-
-      Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 115 -116 -113 (-105:106) "); // water in the vertical middle
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                       modTemp,Out+divider));
-
-      Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 105 -106 113 (-111:112) "); // water around insert (side)
-      System.addCell(MonteCarlo::Qhull(cellIndex++,modMat,
-                                       modTemp,Out+container));
-
-      Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 -105 115 113 (-111:112) ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                       modTemp,Out+container));
-
-      Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 106 -116 113 (-111:112) ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                       modTemp,Out+container));
-
-      Out=ModelSupport::getComposite(SMap,edgeIndex," 115 -116 113 111 -112 (-105:106:-103:-101:102) "); 
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                       modTemp,Out+container));
-
-      Out=ModelSupport::getComposite(SMap,edgeIndex," 105 -106 103 101 -102 "); // water insert
-      System.addCell(MonteCarlo::Qhull(cellIndex++,sideWaterMat,
-                                       modTemp,Out+container));
-    } else // water insert spans over all vertical space
-    {
-      if (insWaterLength>0)
-        {
-          Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 -113 "); // water in the vertical middle
-          System.addCell(MonteCarlo::Qhull(cellIndex++,modMat,
-                                           modTemp,Out+container+divider));
-      
-          Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 113 (-111:112) "); // water around insert (side)
-          System.addCell(MonteCarlo::Qhull(cellIndex++,modMat,
-                                           modTemp,Out+container));
-
-
-          Out=ModelSupport::getComposite(SMap,edgeIndex," 113 111 -112 (-103:-101:102) "); 
-          System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                           modTemp,Out+container));
-
-          Out=ModelSupport::getComposite(SMap,edgeIndex," 103 101 -102 "); // water insert
-          System.addCell(MonteCarlo::Qhull(cellIndex++,sideWaterMat,
-                                           modTemp,Out+container));
-        } else // no water insert is build
-        {
-          Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 ");
-          System.addCell(MonteCarlo::Qhull(cellIndex++,modMat,
-                                           modTemp,Out+container+divider));
-        }
-    }
-
-  
-  // Two walls : otherwise divider container
-  Out=ModelSupport::getComposite(SMap,edgeIndex," 11 -1");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                   modTemp,Out+container+divider));
-  CellMap::setCell("InnerAlSupply",  cellIndex-1);
-  Out=ModelSupport::getComposite(SMap,edgeIndex," 2 -12");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                   modTemp,Out+container+divider));
-  CellMap::setCell("InnerAlReturn",  cellIndex-1);
-
-  // Side water
-  Out=ModelSupport::getComposite(SMap,edgeIndex," 21 -11 23 ");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,sideWaterMat,
-                                   modTemp,Out+container+divider));
-  CellMap::setCell("SideWaterSupply",  cellIndex-1);
-  Out=ModelSupport::getComposite(SMap,edgeIndex," 12 -22 24 ");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,sideWaterMat,
-                                   modTemp,Out+container+divider));
-  CellMap::setCell("SideWaterReturn",  cellIndex-1);
-
-  // Side Al
-  Out=ModelSupport::getComposite(SMap,edgeIndex," 31 -21 23 ");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                   modTemp,Out+container+divider));
-  Out=ModelSupport::getComposite(SMap,edgeIndex," 22 -32 24 ");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                   modTemp,Out+container+divider));
-
-  // inclined Al
-  Out=ModelSupport::getComposite(SMap,edgeIndex," 13 -23 31 -11 ");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                   modTemp,Out+container+divider));
-
-  Out=ModelSupport::getComposite(SMap,edgeIndex," 14 -24 -32 12 ");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,
-                                   modTemp,Out+container+divider));
-
-  // void behind inclined Al
-  Out=ModelSupport::getComposite(SMap,edgeIndex," -13 31 ");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,0,
-                                   0.0,Out+container+divider));
-
-  Out=ModelSupport::getComposite(SMap,edgeIndex," -14 -32 ");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,0,
-                                   0.0,Out+container+divider));
-=======
   
   Out=ModelSupport::getComposite(SMap,edgeIndex," 1 -2 103 -104");
   System.addCell(MonteCarlo::Qhull(cellIndex++,modMat,
@@ -460,7 +283,6 @@ EdgeWater::createObjects(Simulation& System,
   System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,modTemp,
 				   Out+container+divider));
   CellMap::addCell("Wall",  cellIndex-1);
->>>>>>> CombLayer/ButterflyEngineering
   
   Out=ModelSupport::getComposite(SMap,edgeIndex," 11 -12 203 -204") + divider;
   addOuterSurf(Out);
@@ -472,11 +294,7 @@ EdgeWater::createObjects(Simulation& System,
   
 Geometry::Vec3D
 EdgeWater::getSurfacePoint(const size_t,
-<<<<<<< HEAD
-                        const size_t) const
-=======
 			const long int) const
->>>>>>> CombLayer/ButterflyEngineering
   /*!
     Given a side and a layer calculate the link point
     \param layerIndex :: layer, 0 is inner moderator [0-6]
@@ -490,11 +308,7 @@ EdgeWater::getSurfacePoint(const size_t,
 
 int
 EdgeWater::getLayerSurf(const size_t ,
-<<<<<<< HEAD
-                        const size_t ) const
-=======
 			const long int ) const
->>>>>>> CombLayer/ButterflyEngineering
   /*!
     Given a side and a layer calculate the link point
     \param  :: layer, 0 is inner moderator [0-3]
@@ -508,11 +322,7 @@ EdgeWater::getLayerSurf(const size_t ,
 
 std::string
 EdgeWater::getLayerString(const size_t,
-<<<<<<< HEAD
-                          const size_t) const
-=======
 			  const long int) const
->>>>>>> CombLayer/ButterflyEngineering
   /*!
     Given a side and a layer calculate the link point
     \param  :: layer, 0 is inner moderator [0-6]
@@ -529,15 +339,9 @@ EdgeWater::getLayerString(const size_t,
 
 void
 EdgeWater::createAll(Simulation& System,
-<<<<<<< HEAD
-                     const attachSystem::FixedComp& FC,
-                     const std::string& divider,
-                     const std::string& container)
-=======
 		     const attachSystem::FixedComp& FC,
 		     const long int sideIndex,
 		     const std::string& container)
->>>>>>> CombLayer/ButterflyEngineering
   /*!
     Generic function to create everything
     \param System :: Simulation item
