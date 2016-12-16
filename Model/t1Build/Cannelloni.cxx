@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   t1Build/Cannelloni.cxx
  *
- * Copyright (c) 2004-2014 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,7 @@
 #include "BeamWindow.h"
 #include "ProtonVoid.h"
 #include "TargetBase.h"
+#include "gridUnit.h"
 #include "hexUnit.h"
 #include "Cannelloni.h"
 
@@ -85,7 +86,7 @@ namespace ts1System
 
 Cannelloni::Cannelloni(const std::string& Key) :
   constructSystem::TargetBase(Key,3),
-  tarIndex(ModelSupport::objectRegister::Instance().cell(Key,-1,20000)),
+  tarIndex(ModelSupport::objectRegister::Instance().cell(Key,20000)),
   cellIndex(tarIndex+1),frontPlate(0),backPlate(0)
   /*!
     Constructor BUT ALL variable are left unpopulated.
@@ -169,14 +170,13 @@ Cannelloni::~Cannelloni()
 {}
 
 void
-Cannelloni::populate(const Simulation& System)
+Cannelloni::populate(const FuncDataBase& Control)
   /*!
     Populate all the variables
-    \param System :: Simulation to use
+    \param Control :: Database of variables
   */
 {
   ELog::RegMethod RegA("Cannelloni","populate");
-  const FuncDataBase& Control=System.getDataBase();
 
   xStep=Control.EvalVar<double>(keyName+"XStep");
   yStep=Control.EvalVar<double>(keyName+"YStep");
@@ -199,7 +199,6 @@ Cannelloni::populate(const Simulation& System)
   targetTemp=Control.EvalVar<double>(keyName+"TargetTemp");
   waterTemp=Control.EvalVar<double>(keyName+"WaterTemp");
   externTemp=Control.EvalVar<double>(keyName+"ExternTemp");
-
 
   return;
 }
@@ -305,7 +304,6 @@ void
 Cannelloni::createLinks()
   /*!
     Create all the links
-    \todo swap link 0 to be link 2 
   */
 {
   ELog::RegMethod RegA("Cannelloni","createLinks");
@@ -358,7 +356,7 @@ Cannelloni::createLinkSurf()
 	  constructSystem::hexUnit* APtr = ac->second;
 	  if (!APtr->hasLink(i))
 	    {
-	      const int JA=ac->first+constructSystem::hexUnit::hexIndex(i);
+	      const int JA=ac->first+APtr->gridIndex(i);
 	      bc=HVec.find(JA);
 	      if (bc!=HVec.end())   // now construct link surface
 		{
@@ -565,7 +563,7 @@ Cannelloni::createAll(Simulation& System,
 {
   ELog::RegMethod RegA("Cannelloni","createAll");
 
-  populate(System);
+  populate(System.getDataBase());
   createUnitVector(FC);
   createSurfaces();
   createObjects(System);
@@ -577,7 +575,5 @@ Cannelloni::createAll(Simulation& System,
 
   return;
 }
-
-
   
-}  // NAMESPACE TMRsystem
+}  // NAMESPACE ts1System

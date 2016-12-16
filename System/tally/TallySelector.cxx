@@ -3,7 +3,7 @@
  
  * File:   tally/TallySelector.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,13 +46,17 @@
 #include "Matrix.h"
 #include "Vec3D.h"
 #include "support.h"
+#include "stringCombine.h"
 #include "TallyCreate.h"
 #include "Code.h"
 #include "varList.h"
 #include "FuncDataBase.h"
 #include "MainProcess.h"
 #include "inputParam.h"
-#include "TallySelector.h" 
+#include "addInsertObj.h"
+#include "TallySelector.h"
+
+
 #include "basicConstruct.h"
 #include "pointConstruct.h"
 #include "meshConstruct.h"
@@ -80,7 +84,97 @@ tallySelection(Simulation& System,const mainSystem::inputParam& IParam)
 
   return TallyBuilder.tallySelection(System,IParam);
 }
- 
+
+
+void
+tallyAddition(Simulation& System,
+	      const mainSystem::inputParam& IParam)
+  /*
+    Applies a large number of modifications to the tally system
+    \param System :: Simulation to get tallies from 
+    \param IParam :: Parameters
+  */
+{
+  ELog::RegMethod RegA("TallySelector[F]","Addition");
+  const size_t nP=IParam.setCnt("TAdd");
+
+  for(size_t index=0;index<nP;index++)
+    {
+      const std::string eMess
+	("Insufficient item for TAdd["+StrFunc::makeString(index)+"]");
+      const std::string key=
+	IParam.getValueError<std::string>("TAdd",index,0,eMess);
+      
+      if(key=="help")
+	{
+	  ELog::EM<<"TAdd Help "<<ELog::endBasic;
+	  ELog::EM<<
+	    " -- plate object fixedComp linkPt Vec3D(x,y,z) "
+	    "xSize zSize \n";
+	  ELog::EM<<
+	    " -- plate free Vec3D(x,y,z) Vec3D(yAxis) Vec3D(zAxis) "
+	    "xSize zSize \n";
+	  ELog::EM<<ELog::endBasic;
+	  ELog::EM<<ELog::endErr;
+          return;
+	}
+      const std::string PType=
+	IParam.getValueError<std::string>("TAdd",index,1,eMess);
+
+      const std::string PName="insertPlate"+StrFunc::makeString(index);
+      if (key=="Plate" || key=="plate")
+	{
+	  if (PType=="object")
+	    {
+	      const std::string FName=
+		IParam.getValueError<std::string>("TAdd",index,2,eMess);
+	      const std::string LName=
+		IParam.getValueError<std::string>("TAdd",index,3,eMess);
+	      size_t ptI(4);
+	      const Geometry::Vec3D VOffset=IParam.getCntVec3D
+		("TAdd",index,ptI,eMess);
+	      const double XW=
+		IParam.getValueError<double>("TAdd",index,ptI,eMess);
+	      const double ZH=
+		IParam.getValueError<double>("TAdd",index,ptI+1,eMess);
+	      const double YT=
+		IParam.getDefValue<double>(0.1,"TAdd",index,ptI+2);
+	      const std::string mat=
+		IParam.getDefValue<std::string>("Void","TAdd",index,ptI+3);
+
+	      constructSystem::addInsertPlateCell
+		(System,PName,FName,LName,VOffset,XW,YT,ZH,mat);
+              return;
+	    }
+	  else if (PType=="free")
+	    {
+	      size_t ptI(2);
+              const Geometry::Vec3D VPos=IParam.getCntVec3D
+                ("TAdd",index,ptI,eMess);
+              const Geometry::Vec3D YAxis=IParam.getCntVec3D
+                ("TAdd",index,ptI,eMess);
+              const Geometry::Vec3D ZAxis=IParam.getCntVec3D
+                ("TAdd",index,ptI,eMess);
+	      const double XW=
+		IParam.getValueError<double>("TAdd",index,ptI,eMess); 
+	      const double ZH=
+		IParam.getValueError<double>("TAdd",index,ptI+1,eMess);
+	      const double YH=
+		IParam.getDefValue<double>(0.1,"TAdd",index,ptI+2);
+	      const std::string mat=
+		IParam.getDefValue<std::string>("Void","TAdd",index,ptI+3);
+             constructSystem::addInsertPlateCell
+	       (System,PName,VPos,YAxis,ZAxis,XW,YH,ZH,mat);
+	    }
+	  else
+	    throw ColErr::InContainerError<std::string>(PType,"plate type");
+	}
+      else
+	throw ColErr::InContainerError<std::string>
+	  (key,"TAddition key not known");
+    }
+  return;
+}
 
 void
 tallyModification(Simulation& System,
@@ -91,11 +185,11 @@ tallyModification(Simulation& System,
     \param IParam :: Parameters
   */
 {
-  ELog::RegMethod RegA("TallySelector","tallyModification");
+  ELog::RegMethod RegA("TallySelector[F]","tallyModification");
   const size_t nP=IParam.setCnt("TMod");
+
   for(size_t i=0;i<nP;i++)
     {
-
       std::vector<std::string> StrItem;
       // This is enforced a >1
       const size_t nV=IParam.itemCnt("TMod",i);
@@ -105,89 +199,66 @@ tallyModification(Simulation& System,
 	StrItem.push_back
 	  (IParam.getValue<std::string>("TMod",i,j));
 
-      int errFlag(1);
       if(key=="help")
 	{
 	  ELog::EM<<"TMod Help "<<ELog::endBasic;
 	  ELog::EM<<
-	    " -- particle {tallyNumber} [oldtype] [newtype] \n"
+	    " -- particle {tallyNumber} [newtype] \n"
 	    "    Change the particle on a tally to the new type\n"
-	    " -- nowindow [tallyNum]\n"
+	    " -- nowindow {tallyNum}\n"
 	    "    Remove the window on an f5 tally\n"
 	    " -- energy {tallyNumber} [string] \n"
 	    " -- time {tallyNumber} [string] \n"
+            " -- cos {tallyNumber} [string] \n"
 	    " -- divide {tallyNumber} [xPts,yPts] : Split tally into "
 	    " multiple pieces \n"
 	    " -- scaleWindow[X/Y] {tallyNumber scale} : Scale the window"
             " by the factor \n"
 	    " -- movePoint {tallyNumber Vec3D} : Add Vec3D to tally\n"
 	    " -- single {tallyNumber} : Split cell/surface tally into "
-	    " individual sum [rather than total] \n";
-	  ELog::EM<<ELog::endBasic;
+	    " individual sum [rather than total with ( ) "
+            "surrouding cell numbers] \n"
+            " -- format {tallyNumber} [string] : Set the format card \n"
+            " -- setSD {tallyNumber} [string] : Set the sd format card \n";
+
+          ELog::EM<<ELog::endBasic;
 	  ELog::EM<<ELog::endErr;
-	  errFlag=0;
+          return;
 	}
-      else if(key=="particle" && (nV==3 || nV==4))
+
+      int tNumber(0);
+      if (nV<2 || !StrFunc::convert(StrItem[0],tNumber))
+        ELog::EM<<"Failed to convert tally number "<<ELog::endErr;	  
+      
+      if(key=="particle" && nV>=3)
+        {
+          tallySystem::setParticleType(System,tNumber,StrItem[1]);
+        }
+      
+      else if (key=="energy" && nV>=3)
 	{
-	  int tNumber(0);
-	  const size_t flag((nV==4) ? 1 : 0);
-	  if (flag && !StrFunc::convert(StrItem[0],tNumber))
-	    ELog::EM<<"Failed to convert tally number "<<ELog::endErr;	  
-	  ELog::EM<<"Changing particle "<<StrItem[flag]<<" "
-		  <<StrItem[flag+1]<<ELog::endDebug;
-	  tallySystem::changeParticleType(System,tNumber,
-					      StrItem[flag],
-					      StrItem[flag+1]);
-	  errFlag=0;
+          tallySystem::setEnergy(System,tNumber,StrItem[1]);
 	}
-      else if (key=="energy")
+      
+      else if (key=="single" && nV>=2)
 	{
-	  int tNumber(0);
-	  if (nV>=2)
-	    {
-	      const std::string TN=
-		IParam.getValue<std::string>("TMod",i,1);
-	      if (!StrFunc::convert(StrItem[0],tNumber))
-		ELog::EM<<"Failed to understand TNumber :"
-			<<StrItem[0]<<ELog::endErr;
-	      else
-		{
-		  if (tallySystem::setEnergy(System,tNumber,StrItem[1]))
-		    {
-		      ELog::EM<<"Error setting tally energy "<<
-			StrItem[1]<<ELog::endErr;
-		    }
-		  errFlag=0;
-		}
-	    }
-	}
-      else if (key=="single")
-	{
-	  int tNumber(0);
-	  if (nV>=2)
-	    {
-	      errFlag=0;
-	      for(size_t j=1;j<nV && !errFlag;j++)
-		{
-		  if (!StrFunc::convert(StrItem[j-1],tNumber))
-		    ELog::EM<<"Failed to understand TNumber :"	      
-			    <<StrItem[j-1]<<ELog::endErr;
-		  errFlag=(tallySystem::setSingle(System,tNumber)) ? 0 : 1;
-		}
-	    }
-	}
-      else if (key=="movePoint" && nV>=2)
-	{
-	  int tNumber(0);
-	  if (!StrFunc::convert(StrItem[0],tNumber))
-	    ELog::EM<<"Failed to understand TNumber :"	     
-		    <<StrItem[0]<<ELog::endErr;
-	  
+          size_t index(1);
+          while(tallySystem::setSingle(System,tNumber) &&
+                index<nV)
+            {
+              if (!StrFunc::convert(StrItem[index-1],tNumber))
+                ELog::EM<<"Failed to understand TNumber :"	      
+                        <<StrItem[index-1]<<ELog::endErr;
+              index++;
+            }
+        }
+      else if (key=="movePoint" && nV>=3)
+	{	  
 	  Geometry::Vec3D offsetPt;
 	  if (!StrFunc::convert(StrItem[1],offsetPt))
 	    {
 	      size_t ii=0;
-	      if (nV>=4)
+	      if (nV>=5)
 		for(ii=0;ii<3 &&
 		      StrFunc::convert(StrItem[1+ii],offsetPt[ii]);
 		    ii++) ;
@@ -195,109 +266,82 @@ tallyModification(Simulation& System,
 		{
 		  ELog::EM<<"Failed to understand Vector :"   
 			  <<StrItem[1]<<" ";
-		  if (nV>=4)
+		  if (nV>=5)
 		    ELog::EM<<StrItem[2]<<" "
 			    <<StrItem[3]<<" ";
 		  ELog::EM<<ELog::endErr;
 		}
 	    }
-	  errFlag=0;
 	  tallySystem::moveF5Tally(System,tNumber,offsetPt);
 	  ELog::EM<<"Move Point == "<<offsetPt<<ELog::endDiag;
-	  
 	}
+
       else if ((key=="scaleWindow" ||
-		key=="scaleXWindow" ||
-		key=="scaleYWindow")
-	       && nV==3)
+                key=="scaleXWindow" ||
+                key=="scaleYWindow")
+               && nV>=3)
 	{
-	  int tNumber(0);
 	  double scale(1.0);
-	  if (!StrFunc::convert(StrItem[0],tNumber))
-	    ELog::EM<<"Failed to understand TNumber :"	     
-		    <<StrItem[0]<<ELog::endErr;
-	  else if (!StrFunc::convert(StrItem[1],scale))
-	    ELog::EM<<"Failed to understand Scale :"	     
-		    <<StrItem[1]<<ELog::endErr;
-	  else
-	    {
-	      if (key[5]!='Y') 
-		tallySystem::widenF5Tally(System,tNumber,0,scale);
-	      if (key[5]!='X') 
-		tallySystem::widenF5Tally(System,tNumber,1,scale);
-	      errFlag=0;
-	    }
+	  if (!StrFunc::convert(StrItem[1],scale))
+            {
+              ELog::EM<<"Failed to understand Scale :"	     
+                      <<StrItem[1]<<ELog::endErr;
+              return;
+            }
+          if (key[5]!='Y') 
+            tallySystem::widenF5Tally(System,tNumber,0,scale);
+          if (key[5]!='X') 
+            tallySystem::widenF5Tally(System,tNumber,1,scale);
 	}
 
-      else if (key=="time")
+      else if (key=="time" && nV>=3)
 	{
-	  int tNumber(0);
-	  if (nV>=2)
-	    {
-	      const std::string TN=
-		IParam.getValue<std::string>("TMod",i,1);
-	      if (!StrFunc::convert(StrItem[0],tNumber))
-		ELog::EM<<"Failed to understand TNumber :"
-			<<StrItem[0]<<ELog::endErr;
-	      else
-		{
-		  if (tallySystem::setTime(System,tNumber,StrItem[1]))
-		    {
-		      ELog::EM<<"Error setting tally time "<<
-			StrItem[1]<<ELog::endErr;
-		    }
-		  errFlag=0;
-		}
-	    }
+          tallySystem::setTime(System,tNumber,StrItem[1]);
+        }
+      else if ((key=="cos" || key=="angle") && nV>=3)
+	{
+          tallySystem::setAngle(System,tNumber,StrItem[1]);
+        }
+      
+      else if (key=="nowindow" && nV>=2)
+	{
+          tallySystem::removeF5Window(System,tNumber);          
 	}
-      else if (key=="nowindow")
+      
+      else if (key=="divide" && nV>=4)
 	{
-	  int tNumber(0);
-	  if (nV==2)
-	    {
-	      const std::string TN=
-		IParam.getValue<std::string>("TMod",i,1);
-	      if (!StrFunc::convert(TN,tNumber))
-		ELog::EM<<"Failed to understand TNumber :"<<TN<<ELog::endErr;
-	      else
-		tallySystem::removeF5Window(System,tNumber);
-
-	      errFlag=0;
-	    }
-	}
-      else if (key=="divide")
-	{
-	  int tNumber(0);
 	  int xPts,yPts;
-	  if (nV==4)
-	    {
-	      if (!StrFunc::convert(StrItem[0],tNumber) || 
-		  !StrFunc::convert(StrItem[1],xPts) || 
-		  !StrFunc::convert(StrItem[2],yPts) )
-		{
-		  ELog::EM<<"Failed to understand divide input :"
-			  <<StrItem[0]<<":"<<StrItem[1]
-			  <<":"<<StrItem[2]<<ELog::endErr;
-		}
-	      else
-		tallySystem::divideF5Tally(System,tNumber,xPts,yPts);
-	      errFlag=0;
-	    }
-	  else if (nV==3)
-	    {
-	      if (!StrFunc::convert(StrItem[0],xPts) || 
-		  !StrFunc::convert(StrItem[1],yPts) )
-		{
-		  ELog::EM<<"Failed to understand divide input :"
-			  <<StrItem[0]<<":"<<StrItem[1]<<ELog::endErr;
-		}
-	      else
-		tallySystem::divideF5Tally(System,0,xPts,yPts);
-	      errFlag=0;
-	    }
+          if (!StrFunc::convert(StrItem[1],xPts) || 
+              !StrFunc::convert(StrItem[2],yPts) )
+            {
+              ELog::EM<<"Failed to understand divide input :"
+                      <<StrItem[0]<<":"<<StrItem[1]
+                      <<":"<<StrItem[2]<<ELog::endErr;
+                  return;
+            }
+          tallySystem::divideF5Tally(System,tNumber,xPts,yPts);
 	}
-      if (errFlag)
-	ELog::EM<<"Failed to process TMod : "<<key<<ELog::endErr;
+      else if (key=="format" && nV>=3)
+	{
+          tallySystem::setFormat(System,tNumber,StrItem[1]);
+	}
+      else if (key=="merge" && nV>=3)
+	{
+          int bTnumber;
+          if (!StrFunc::convert(StrItem[1],bTnumber))
+            {
+              ELog::EM<<"Failed to convert to a tally number"
+                      <<StrItem[0]<<":"<<StrItem[1]<<ELog::endErr;
+              return;
+            }
+          tallySystem::mergeTally(System,tNumber,bTnumber);
+	}
+      else if (key=="setSD" && nV>=3)
+	{
+          tallySystem::setSDField(System,tNumber,StrItem[1]);
+	}
+      else 
+        ELog::EM<<"Failed to process TMod : "<<key<<ELog::endErr;
     }
   return;
 }
@@ -309,7 +353,7 @@ tallyRenumberWork(Simulation& System,
     An amalgumation of values to determine what sort of tallies to put
     in the system.
     \param System :: Simulation to add tallies
-    \param IP :: InputParam
+    \param IParam :: InputParam
   */
 {
   ELog::RegMethod RegA("TallySelector","tallyRenumberWork");

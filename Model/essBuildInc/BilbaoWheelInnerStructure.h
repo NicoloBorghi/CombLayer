@@ -42,8 +42,6 @@ class BilbaoWheelInnerStructure : public attachSystem::ContainedComp,
   const int insIndex;             ///< Index of surface offset
   int cellIndex;                  ///< Cell index
 
-  double xyAngle;                ///< xy angle (mainly used to place the sector with bricks in the correct place). Can't rotate the wheel by itself since ProtonTube uses its coordinate system (\todo fix it)
-
   double temp;                    ///< Temperature (obtained from Inner cell of BilbaoWheel)
   double brickLen;                ///< Tungsten brick length (in radial direction)
   double brickWidth;              ///< Tungsten brick width
@@ -52,14 +50,14 @@ class BilbaoWheelInnerStructure : public attachSystem::ContainedComp,
   double brickGapWidth;           ///< Distance between bricks in normal to radial direction
   int    brickGapMat;             ///< Material of gap between bricks
 
-  int    nSectors;                ///< Number of sectors in Tungsten
+  size_t nSectors;                ///< Number of sectors in Tungsten
   double secSepThick;             ///< Thickness of sector separator
   int    secSepMat;               ///< Material of sector separator
 
-  int    nBrickSectors;           ///< number of sectors filled with bricks
-  int    nBrickLayers;            ///< number of radial brick layers
+  size_t nBrickSectors;           ///< number of sectors filled with bricks
+  size_t nBrickLayers;            ///< number of radial brick layers
   std::vector<int>  nBricks;      ///< number of bricks in each radial layer
-  int    nSteelLayers;            ///< number of brick layers made of steel (counting from internal cylinder)
+  size_t nSteelLayers;            ///< number of brick layers made of steel (counting from internal cylinder)
   int    brickSteelMat;           ///< Steel brick material
 
   void populate(const FuncDataBase&);
@@ -70,14 +68,12 @@ class BilbaoWheelInnerStructure : public attachSystem::ContainedComp,
   void createLinks();
 
   void createBrickSurfaces(const attachSystem::FixedComp&,
-                           const Geometry::Plane*, const Geometry::Plane*, const int);
+			   const Geometry::Plane*, const Geometry::Plane*, const size_t);
   void createBricks(Simulation&, attachSystem::FixedComp&,
-                    const std::string, const std::string, const int);
+		    const std::string, const std::string, const size_t);
 
   // polar angle of the given sector's centre. Clockwise starting from -Y
-  inline double getSectorAngle(int i) const { return (2*(i+1)-1)*M_PI/nSectors * 180.0/M_PI; }
-
-  double sideIntersect(const std::string&, const Geometry::Plane*);
+  inline double getSectorAngle(size_t i) const { return (2*(i+1)-1)*M_PI/nSectors * 180.0/M_PI; }
 
  public:
 

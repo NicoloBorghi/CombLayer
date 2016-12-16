@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   geomInc/Line.h
  *
- * Copyright (c) 2004-2014 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,9 @@ class Line
   Geometry::Vec3D getOrigin() const { return Origin; }   ///< returns the origin
   Geometry::Vec3D getDirect() const { return Direct; }   ///< returns the direction
   double distance(const Geometry::Vec3D&) const;  ///< distance from line
-  Geometry::Vec3D closestPoint(const Geometry::Vec3D&) const; 
+  Geometry::Vec3D closestPoint(const Geometry::Vec3D&) const;
+  std::pair<Geometry::Vec3D,Geometry::Vec3D>
+    closestPoints(const Line&) const; 
   int isValid(const Geometry::Vec3D&) const;     ///< Is the point on the line
 
   void rotate(const Geometry::Matrix<double>&);

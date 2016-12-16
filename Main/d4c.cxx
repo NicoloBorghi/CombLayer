@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   Main/d4c.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,7 @@
 #include "Object.h"
 #include "Qhull.h"
 #include "MainProcess.h"
+#include "MainInputs.h"
 #include "SimProcess.h"
 #include "Simulation.h" 
 #include "SimPHITS.h"
@@ -167,7 +168,7 @@ main(int argc,char* argv[])
 	    SimPtr->setENDF7();	  
 	  
 	  SimProcess::importanceSim(*SimPtr,IParam);
-	  SimProcess::inputPatternSim(*SimPtr,IParam); // energy cut etc
+	  SimProcess::inputProcessForSim(*SimPtr,IParam); // energy cut etc
 
 	  if (renumCellWork)
 	    tallyRenumberWork(*SimPtr,IParam);

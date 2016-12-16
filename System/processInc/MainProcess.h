@@ -3,7 +3,7 @@
  
  * File:   processInc/MainProcess.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,28 +51,6 @@ namespace mainSystem
   void incRunTimeVariable(FuncDataBase&,
 			  const std::map<std::string,double>&);
 
-
-  void createBilbauInputs(inputParam&);
-  void createBNCTInputs(inputParam&);
-  void createCuInputs(inputParam&);
-  void createD4CInputs(inputParam&);
-  void createDelftInputs(inputParam&);
-  void createEPBInputs(inputParam&);
-  void createESSInputs(inputParam&);
-  void createFilterInputs(inputParam&);
-  void createFullInputs(inputParam&);
-  void createGammaInputs(inputParam&);
-  void createLensInputs(inputParam&);
-  void createMuonInputs(inputParam&);
-  void createPhotonInputs(inputParam&);
-  void createPipeInputs(inputParam&);
-  void createSiliconInputs(inputParam&);
-  void createSinbadInputs(inputParam&);
-  void createSNSInputs(inputParam&);
-  void createTS1Inputs(inputParam&);
-  void createTS3ExptInputs(inputParam&);
-  void createInputs(inputParam&);
-
   void renumberCells(Simulation&,const inputParam&);
 
   void setVariables(Simulation&,const inputParam&,std::vector<std::string>&);
@@ -87,6 +65,7 @@ namespace mainSystem
   void InputModifications(Simulation*,inputParam&,
 			  std::vector<std::string>&);
 
+  void buildFullSimulation(Simulation*,const inputParam&,const std::string&);
   void exitDelete(Simulation*);
 }
 

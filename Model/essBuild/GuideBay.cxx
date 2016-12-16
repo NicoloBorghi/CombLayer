@@ -3,7 +3,7 @@
  
  * File:   essBuild/GuideBay.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,13 +62,13 @@
 #include "HeadRule.h"
 #include "Object.h"
 #include "Qhull.h"
-#include "ReadFunctions.h"
 #include "Simulation.h"
 #include "ModelSupport.h"
 #include "MaterialSupport.h"
 #include "generateSurf.h"
 #include "LinkUnit.h"
 #include "FixedComp.h"
+#include "FixedOffset.h"
 #include "FixedGroup.h"
 #include "SurInter.h"
 #include "ContainedComp.h"
@@ -84,7 +84,7 @@ namespace essSystem
 
 GuideBay::GuideBay(const std::string& Key,const size_t BN)  :
   attachSystem::ContainedGroup("Inner","Outer"),
-  attachSystem::FixedComp(StrFunc::makeString(Key,BN),6),
+  attachSystem::FixedOffset(StrFunc::makeString(Key,BN),6),
   attachSystem::CellMap(),
   baseKey(Key),bayNumber(BN),
   bayIndex(ModelSupport::objectRegister::Instance().cell(keyName)),
@@ -96,11 +96,10 @@ GuideBay::GuideBay(const std::string& Key,const size_t BN)  :
 {}
 
 GuideBay::GuideBay(const GuideBay& A) : 
-  attachSystem::ContainedGroup(A),attachSystem::FixedComp(A),
+  attachSystem::ContainedGroup(A),attachSystem::FixedOffset(A),
   attachSystem::CellMap(A),
   baseKey(A.baseKey),bayNumber(A.bayNumber),bayIndex(A.bayIndex),
-  cellIndex(A.cellIndex),xStep(A.xStep),yStep(A.yStep),
-  zStep(A.zStep),xyAngle(A.xyAngle),zAngle(A.zAngle),
+  cellIndex(A.cellIndex),
   viewAngle(A.viewAngle),innerHeight(A.innerHeight),
   innerDepth(A.innerDepth),height(A.height),depth(A.depth),
   midRadius(A.midRadius),mat(A.mat),nItems(A.nItems),
@@ -122,14 +121,9 @@ GuideBay::operator=(const GuideBay& A)
   if (this!=&A)
     {
       attachSystem::ContainedGroup::operator=(A);
-      attachSystem::FixedComp::operator=(A);
+      attachSystem::FixedOffset::operator=(A);
       attachSystem::CellMap::operator=(A);
       cellIndex=A.cellIndex;
-      xStep=A.xStep;
-      yStep=A.yStep;
-      zStep=A.zStep;
-      xyAngle=A.xyAngle;
-      zAngle=A.zAngle;
       viewAngle=A.viewAngle;
       innerHeight=A.innerHeight;
       innerDepth=A.innerDepth;
@@ -153,21 +147,15 @@ GuideBay::~GuideBay()
 {}
 
 void
-GuideBay::populate(const Simulation& System)
+GuideBay::populate(const FuncDataBase& Control)
  /*!
    Populate all the variables
    \param System :: Simulation to use
  */
 {
   ELog::RegMethod RegA("GuideBay","populate");
-  
-  const FuncDataBase& Control=System.getDataBase();
 
-  xStep=Control.EvalPair<double>(keyName,baseKey,"XStep");
-  yStep=Control.EvalPair<double>(keyName,baseKey,"YStep");
-  zStep=Control.EvalPair<double>(keyName,baseKey,"ZStep");
-  xyAngle=Control.EvalPair<double>(keyName,baseKey,"XYangle");
-  zAngle=Control.EvalPair<double>(keyName,baseKey,"Zangle");
+  FixedOffset::populate(baseKey,Control);
   
   height=Control.EvalPair<double>(keyName,baseKey,"Height");
   depth=Control.EvalPair<double>(keyName,baseKey,"Depth");
@@ -184,17 +172,18 @@ GuideBay::populate(const Simulation& System)
   
   
 void
-GuideBay::createUnitVector(const attachSystem::FixedComp& FC)
+GuideBay::createUnitVector(const attachSystem::FixedComp& FC,
+                           const long int sideIndex)
   /*!
     Create the unit vectors
     \param FC :: Linked object
+    \param sideIndex :: linkPoint index
   */
 {
   ELog::RegMethod RegA("GuideBay","createUnitVector");
 
-  FixedComp::createUnitVector(FC);
-  applyShift(xStep,yStep,zStep);
-  applyAngleRotate(xyAngle,zAngle);
+  FixedComp::createUnitVector(FC,sideIndex);
+  applyOffset();
 
   return;
 }
@@ -301,9 +290,10 @@ void
 GuideBay::outerMerge(Simulation& System,
                      GuideBay& otherBay)
   /*!
-    Merge the outer component of the guidebay
+    Merge the outer component of the guidebay to the neighbouring 
+    bay.
     \param System :: simulaiton to use
-    \param otherBay :: Other guidebase
+    \param otherBay :: Other guidebase (neighbour)
   */
 {
   ELog::RegMethod RegA("GuideBay","outerMerge");
@@ -360,31 +350,38 @@ GuideBay::outerMerge(Simulation& System,
   
   
 void
-GuideBay::createGuideItems(Simulation& System)
+GuideBay::createGuideItems(Simulation& System,
+                           const attachSystem::FixedComp& ModFC,
+                           const long int lFocusIndex,
+                           const long int rFocusIndex)
   /*!
     Create the guide items
     \param System :: Simulation to link
+    \param ModFC :: Moderator point
+    \param lfocusIndex :: left point on moderator for focus
+    \param rfocusIndex :: left point on moderator for focus
   */
 {
   ELog::RegMethod RegA("GuideBay","createGuideItems");
 
   ModelSupport::objectRegister& OR=
     ModelSupport::objectRegister::Instance();
-
+  
   const std::string BL=StrFunc::makeString("G",bayNumber)+"BLine";
 
   const int dPlane=SMap.realSurf(bayIndex+1);
   for(size_t i=0;i<nItems;i++)
     {
+      const long int FI((i>=nItems/2) ? rFocusIndex : lFocusIndex);
       std::shared_ptr<GuideItem> GA(new GuideItem(BL,i+1));
       GA->setCylBoundary(dPlane,innerCyl,outerCyl);
 
       GA->addInsertCell("Inner",getCell("Inner"));
       GA->addInsertCell("Outer",getCell("Outer"));
       if (i)
-        GA->createAll(System,*this,0,GUnit[i-1].get());
+	GA->createAll(System,ModFC,FI,GUnit[i-1].get());
       else
-        GA->createAll(System,*this,0,0);
+	GA->createAll(System,ModFC,FI,0);
 
       GUnit.push_back(GA);
       OR.addObject(GUnit.back());      
@@ -395,17 +392,19 @@ GuideBay::createGuideItems(Simulation& System)
 
 void
 GuideBay::createAll(Simulation& System,
-                    const attachSystem::FixedComp& FC)
+		    const attachSystem::FixedComp& FC,
+                    const long int sideIndex)
   /*!
     Generic function to create everything
     \param System :: Simulation item
     \param FC ::  Central origin
+    \param sideIndex ::  side link point
   */
 {
   ELog::RegMethod RegA("GuideBay","createAll");
 
-  populate(System);
-  createUnitVector(FC);
+  populate(System.getDataBase());
+  createUnitVector(FC,sideIndex);
   createSurfaces();
   createObjects(System);
   createLinks();

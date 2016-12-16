@@ -3,7 +3,7 @@
  
  * File:   funcBaseInc/varList.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ class varList
   FItem* findVar(const int);
 
   void copyVar(const std::string&,const std::string&);
+  void copyVarSet(const std::string&,const std::string&);
   
   int selectValue(const int,Geometry::Vec3D&,double&) const;
 
@@ -76,6 +77,7 @@ class varList
   void addVar(const std::string&,const T&);
   template<typename T>
   void setVar(const std::string&,const T&);
+  void removeVar(const std::string&);
 
   /// Accessors to begin
   varStore::const_iterator begin() const { return varName.begin(); }
@@ -85,6 +87,8 @@ class varList
   template<typename T>
   FItem* createFType(const int,const T&);
 
+  void resetActive();
+  
   std::vector<std::string> getKeys() const;
   void writeActive(std::ostream&) const;
   void writeAll(std::ostream&) const;

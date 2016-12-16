@@ -3,7 +3,7 @@
  
  * File:   essBuildInc/GuideBay.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@ namespace essSystem
   \version 1.0
   \author S. Ansell
   \date November 2013
-  \brief Groupd of guide objects sharing a common sector
+  \brief Group of guide objects sharing a common sector
 */
 
 
 class GuideBay : public attachSystem::ContainedGroup,
-  public attachSystem::FixedComp,public attachSystem::CellMap
+  public attachSystem::FixedOffset,public attachSystem::CellMap
 {
  private:
   
@@ -47,12 +47,6 @@ class GuideBay : public attachSystem::ContainedGroup,
   const int bayIndex;           ///< Index of surface offset
   int cellIndex;                ///< Cell index
   
-  double xStep;                 ///< Offset on X to Target
-  double yStep;                 ///< Offset on Y to Target [+ve forward]
-  double zStep;                 ///< Offset on Z top Target
-  double xyAngle;               ///< Angle of master XY rotation
-  double zAngle;                ///< Angle of master Z rotation
-
   double viewAngle;     ///< Angle of guide
   double innerHeight;   ///< height
   double innerDepth;    ///< Depth 
@@ -62,14 +56,15 @@ class GuideBay : public attachSystem::ContainedGroup,
   int mat;              ///< Material
   size_t nItems;        ///< Number of guide items
   
-  int innerCyl;        ///< Inner Cylinder
-  int outerCyl;        ///< Outer Cylinder 
+  int innerCyl;        ///< Inner cylinder surface
+  int outerCyl;        ///< Outer cylinder surface
 
   /// Guide units
   std::vector<std::shared_ptr<GuideItem> > GUnit;
 
-  void populate(const Simulation&);
-  void createUnitVector(const attachSystem::FixedComp&);
+  void populate(const FuncDataBase&);
+  void createUnitVector(const attachSystem::FixedComp&,
+			const long int);
 
   void createSurfaces();
   void createLinks();
@@ -88,8 +83,10 @@ class GuideBay : public attachSystem::ContainedGroup,
       { innerCyl=abs(A); outerCyl=abs(B); } 
 
   void outerMerge(Simulation&,GuideBay&);
-  void createGuideItems(Simulation&);
-  void createAll(Simulation&,const attachSystem::FixedComp&);
+  void createGuideItems(Simulation&,const attachSystem::FixedComp&,
+			const long int,const long int);
+  void createAll(Simulation&,const attachSystem::FixedComp&,
+		 const long int);
 
 };
 

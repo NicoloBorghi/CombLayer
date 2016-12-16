@@ -3,7 +3,7 @@
  
  * File:   essBuildInc/BeRef.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,8 @@ class BeRef : public attachSystem::ContainedComp,
 
   int engActive;                  ///< Engineering active flag
   /// Inner components inside Reflector (eng detail)
-  std::shared_ptr<BeRefInnerStructure> InnerComp;   
+  std::shared_ptr<BeRefInnerStructure> InnerCompTop;
+  std::shared_ptr<BeRefInnerStructure> InnerCompLow;
 
   double xStep;                   ///< X step
   double yStep;                   ///< Y step
@@ -56,7 +57,8 @@ class BeRef : public attachSystem::ContainedComp,
   double zAngle;                  ///< Z Angle
 
   double radius;                  ///< Radius
-  double height;                  ///< Height
+  double height;                  ///< Height of the top part
+  double depth;                   ///< Height of the bottom part
   double wallThick;               ///< Wall thickness
   double wallThickLow;            ///< Wall thickness of the side near the target wheel. Separated from wallThick in order to optimise wrapping with CapMod
 
@@ -65,8 +67,10 @@ class BeRef : public attachSystem::ContainedComp,
 
   double targSepThick;            ///< Steel seperator at target level
 
-  int refMat;                     ///< reflector material
-  int wallMat;                    ///< wall Material
+  int topRefMat;                  ///< reflector material (upper Be tier)
+  int lowRefMat;                  ///< reflector material (lower Be tier)
+  int topWallMat;                 ///< wall Material (upper tier) 
+  int lowWallMat;                 ///< wall Material (lower tier)
   int targSepMat;                 ///< Separator Mat
 
   // Functions:

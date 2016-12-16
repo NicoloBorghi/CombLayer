@@ -3,7 +3,7 @@
  
  * File:   photonInc/CylContainer.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,18 +38,13 @@ namespace photonSystem
 class CylContainer :
     public attachSystem::ContainedComp,
     public attachSystem::LayerComp,
-    public attachSystem::FixedComp
+    public attachSystem::FixedOffset
 {
  private:
 
   const int cylIndex;
   int cellIndex;
 
-  double xStep;                   ///< X step
-  double yStep;                   ///< Y step
-  double zStep;                   ///< Z step
-  double xyAngle;                 ///< xy rotation angle
-  double zAngle;                  ///< z rotation angle
 
   std::vector<double> radius;         ///< cylinder radii
   std::vector<double> height;         ///< Full heights
@@ -77,10 +72,10 @@ class CylContainer :
   /// Accessor to the main H2 body
   virtual int getMainBody() const { return cylIndex+1; }
 
-  virtual Geometry::Vec3D getSurfacePoint(const size_t,const size_t) const;
-  virtual int getLayerSurf(const size_t,const size_t) const;
-  virtual int getCommonSurf(const size_t) const;
-  virtual std::string getLayerString(const size_t,const size_t) const;
+  virtual Geometry::Vec3D getSurfacePoint(const size_t,const long int) const;
+  virtual int getLayerSurf(const size_t,const long int) const;
+  virtual int getCommonSurf(const long int) const;
+  virtual std::string getLayerString(const size_t,const long int) const;
 
   void createAll(Simulation&,const attachSystem::FixedComp&);
   

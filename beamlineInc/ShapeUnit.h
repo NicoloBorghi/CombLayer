@@ -3,7 +3,7 @@
  
  * File:   beamlineInc/ShapeUnit.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,10 @@ namespace Geometry
   class Convex2D;
 }
 
+namespace attachSystem
+{
+  class FixedComp;
+}
 
 namespace beamlineSystem
 {
@@ -71,6 +75,7 @@ class ShapeUnit
   const Geometry::Vec3D& getBegin() const { return begPt; }
   /// Accessor
   const Geometry::Vec3D& getEnd() const { return endPt; }
+  ///\cond ABSTRACT
   virtual Geometry::Vec3D getBegAxis() const =0; 
   virtual Geometry::Vec3D getEndAxis() const =0;
 
@@ -79,8 +84,12 @@ class ShapeUnit
   virtual std::string getExclude(const ModelSupport::surfRegister&,
 				 const size_t) const =0;
 
+  virtual void addSideLinks(const ModelSupport::surfRegister&,
+			    attachSystem::FixedComp&) const =0;
+  
   virtual void createSurfaces(ModelSupport::surfRegister&,
 		      const std::vector<double>&) =0;
+  ///\endcond ABSTRACT
 };
 
 

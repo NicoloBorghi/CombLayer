@@ -3,7 +3,7 @@
  
  * File:   essBuild/H2FlowGuide.cxx 
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,7 +97,8 @@ H2FlowGuide::H2FlowGuide(const std::string& baseKey,
   /*!
     Constructor BUT ALL variable are left unpopulated.
     \param baseKey :: Butterfly main key
-    \param extraKey :: Specialized name
+    \param extraKey :: H2Wing part name
+    \param finalKey :: Specialized flow name
   */
 {}
 
@@ -304,4 +305,4 @@ H2FlowGuide::createAll(Simulation& System,
   return;
 }
   
-}  // NAMESPACE moderatorSystem
+}  // NAMESPACE essSystem

@@ -3,7 +3,7 @@
  
  * File:   process/LineTrack.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,7 +159,6 @@ LineTrack::calculate(const Simulation& ASim)
   // Find Initial cell [no default]
   MonteCarlo::Object* OPtr=ASim.findCell(InitPt+
 					 (EndPt-InitPt).unit()*1e-5,0);
-
   if (!OPtr)
     ELog::EM<<"Initial point not in model:"<<InitPt<<ELog::endErr;
   int SN=OPtr->isOnSide(InitPt);
@@ -193,12 +192,11 @@ LineTrack::calculate(const Simulation& ASim)
 void
 LineTrack::calculateError(const Simulation& ASim)
   /*!
-    Calculate the track
+    Calculate the track [assuming everything has gone wrong]
     \param ASim :: Simulation to use						
   */
 {
   ELog::RegMethod RegA("LineTrack","calculate");
-  ELog::debugMethod DegA;
   ELog::EM<<"START OF ERROR CODE"<<ELog::endDiag;
   ELog::EM<<"-------------------"<<ELog::endDiag;
   
@@ -261,14 +259,15 @@ LineTrack::calculateError(const Simulation& ASim)
 		  for(size_t i=0;i<SV.size();i++)
 		    if (SV[i]->onSurface(nOut.Pos))
 		      ELog::EM<<"Surf == "<<*SV[i]<<ELog::endDiag;
-
 		}
 	      if (prevOPtr)
 		ELog::EM<<"PrevObject = "<<*prevOPtr<<ELog::endDiag;
+              
 	      ELog::EM<<"Point = "<<MR.calcRotate(nOut.Pos)<<ELog::endDiag;
 	      ELog::EM<<"DIR = "<<nOut.uVec<<ELog::endDiag;
 	      ELog::EM<<"Init = "<<MR.calcRotate(InitPt)<<ELog::endDiag;
 	      ELog::EM<<"Final = "<<MR.calcRotate(EndPt)<<ELog::endDiag;
+              
 	      ELog::EM<<ELog::endErr;
 	    }
 

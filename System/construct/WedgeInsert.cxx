@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
- * File:   t1Upgrade/WedgeInsert.cxx
+ * File:   construct/WedgeInsert.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@ WedgeInsert::WedgeInsert(const std::string& Key,const size_t Index) :
   /*!
     Constructor
     \param Key :: Name of construction key
+    \param Index :: Index number for component
   */
 {}
 
@@ -273,8 +274,9 @@ WedgeInsert::createObjects(Simulation& System,
     Create the wedge using the surfaces from layer 1/2 of 
     LC
     \param System :: Simulation to add results
-    \param  LC :: LayerComp
-    \param  sideIndex :: Intersecting side
+    \param  FC :: LayerComp (passed as a FC)
+    \param layerIndex :: layer leve to connect Wedge too
+    \param sideIndex :: Intersecting side
   */
 {
   ELog::RegMethod RegA("WedgeInsert","createObjects");
@@ -282,14 +284,12 @@ WedgeInsert::createObjects(Simulation& System,
   const ModelSupport::objectRegister& OR=
     ModelSupport::objectRegister::Instance();
   const attachSystem::LayerComp* LCPtr=
-    OR.getObject<attachSystem::LayerComp>(FC.getKeyName());
-  if (!LCPtr)
-    throw ColErr::InContainerError<std::string>("LayerComp no found",
-						FC.getKeyName());
+    OR.getObjectThrow<attachSystem::LayerComp>(FC.getKeyName(),"LayerComp");
 
   std::string Out;
   const std::string CShape=
-    MonteCarlo::getComplementShape(LCPtr->getLayerString(layerIndex,sideIndex));
+    MonteCarlo::getComplementShape
+    (LCPtr->getLayerString(layerIndex,static_cast<long int>(sideIndex+1)));
 
   if (wall>Geometry::zeroTol)
     {

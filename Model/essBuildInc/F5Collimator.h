@@ -1,3 +1,24 @@
+/********************************************************************* 
+  CombLayer : MCNP(X) Input builder
+ 
+ * File:   essBuildInc/F5Collimator.h
+ *
+ * Copyright (c) 2015-2016 Konstantin Batkov
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+ *
+ ****************************************************************************/
 #ifndef essSystem_F5Collimator_h
 #define essSystem_F5Collimator_h
 
@@ -23,9 +44,10 @@ namespace essSystem
         double wall;                    ///< Wall thickness
         double viewWidth;               ///< View width in horizontal direction (distance between points B and C)
 
-        int LinkPoint;              ///< Link point number (currently number-6 defines the quadrant as in butterfly.svgz). Not used if <0. Calculated if setTheta is used.
-        double radius;              ///< Radius for cylindrical coordinates. Defined via 'F5Radius' in essVariables
-        double theta;               ///< Theta as defined on page 183 of TDR. If theta is set vis setTheta, [xyz]Step are calculated.
+	int LinkPoint;              ///< Link point number (currently number-6 defines the quadrant as in butterfly.svgz). Not used if <0. Calculated if setTheta is used.
+	double radius;              ///< Radius for cylindrical coordinates. Defined via 'F5Radius' in essVariables
+	double theta;               ///< Theta as defined on page 183 of TDR. If theta is set vis setTheta, [xyz]Step are calculated.
+	std::string lpAlgorithm;        ///< Algorithm used to orient collimator
 
         std::vector<Geometry::Vec3D> vecFP; ///< vector of focal points
         std::string range; ///< Wavelengh range {cold, thermal} - to define which focal points to use

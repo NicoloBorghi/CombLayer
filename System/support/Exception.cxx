@@ -3,7 +3,7 @@
  
  * File:   support/Exception.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -322,6 +322,56 @@ EmptyValue<T>::setOutLine()
 {
   std::stringstream cx;
   cx<<getErr()<<" EmptyValue for type "<<typeid(T).name();
+  OutLine=cx.str();
+  return;
+}
+
+//-------------------------
+// EmptyContainer
+//-------------------------
+
+EmptyContainer::EmptyContainer(const std::string& Place) :
+  ExBase(Place)
+  /*!
+    Constructor
+    \param Place :: Function description
+  */
+{
+  setOutLine();
+}
+
+EmptyContainer::EmptyContainer(const EmptyContainer& A) :
+  ExBase(A)
+  /*!
+    Copy constructor
+    \param A :: EmptyContainer
+  */
+{}
+
+EmptyContainer&
+EmptyContainer::operator=(const EmptyContainer& A) 
+  /*!
+    Assignment operator
+    \param A :: Object to copy
+    \return *this
+  */
+{
+  if (this!=&A)
+    {
+      ExBase::operator=(A);
+    }
+  return *this;
+}
+
+void
+EmptyContainer::setOutLine()
+  /*!
+    Writes out the range and limits
+    to OutLine
+  */
+{
+  std::stringstream cx;
+  cx<<getErr()<<" EmptyContainer ";
   OutLine=cx.str();
   return;
 }
@@ -1214,7 +1264,9 @@ ExitAbort::what() const throw()
      \return char* to the string values
    */
 {
-  std::string Item=OutLine+
+  static std::string Item;
+
+  Item=OutLine+
     "\nExit Stack:\n"+CodeLocation;
   return Item.c_str();
 }
@@ -1268,12 +1320,14 @@ template class ColErr::IndexError<unsigned int>;
 template class ColErr::IndexError<long int>;
 template class ColErr::IndexError<size_t>;
 template class ColErr::SizeError<size_t>;
+template class ColErr::SizeError<double>;
 template class ColErr::InContainerError<Geometry::Vec3D>;
 template class ColErr::InContainerError<std::string>;
 template class ColErr::InContainerError<int>;
 template class ColErr::InContainerError<long int>;
 template class ColErr::InContainerError<unsigned long int>;
 template class ColErr::InContainerError<char>;
+template class ColErr::InContainerError<double>;
 template class ColErr::MisMatch<double>;
 template class ColErr::MisMatch<int>;
 template class ColErr::MisMatch<unsigned int>;

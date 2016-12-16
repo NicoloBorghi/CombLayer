@@ -3,7 +3,7 @@
  
  * File:   input/inputParam.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -302,7 +302,7 @@ size_t
 inputParam::setCnt(const std::string& K) const
   /*!
     Count number of groups
-    \param K :: Key to seach
+    \param K :: Key to search
     \return Grp count 
    */
 {
@@ -475,6 +475,26 @@ inputParam::getValue(const std::string& K,
 }
   
 
+  
+template<typename T>
+T
+inputParam::getValueError(const std::string& K,
+			  const size_t setIndex,
+			  const size_t itemIndex,
+			  const std::string& errMessage) const
+  /*!
+    Get a value based on key
+    \param K :: Key to seach
+    \param setIndex :: set Value
+    \param itemIndex :: Index value
+    \param errMessage :: error message if failure
+    \return Value
+   */
+{
+  ELog::RegMethod RegA("inputParam","getValueError(setIndex,index)");
+  RegA.setTrack(errMessage);  
+  return getValue<T>(K,setIndex,itemIndex);
+}
 
 Geometry::Vec3D
 inputParam::getCntVec3D(const std::string& K,
@@ -515,6 +535,26 @@ inputParam::getCntVec3D(const std::string& K,
   return IPtr->getCntVec3D(setIndex,itemIndex);
 }
 
+const std::vector<std::string>&
+inputParam::getObjectItems(const std::string& K,
+                           const size_t setIndex) const
+  /*!
+    Accessor to the raw string
+    \param K :: Key to seach
+    \param setIndex :: set Value
+    \return Set of raw-strings
+  */
+{
+  ELog::RegMethod Rega("inputParam","getObjectItems");
+
+  const IItem* IPtr=getIndex(K);
+  if (!IPtr)
+    throw ColErr::EmptyValue<void>(K+":IPtr");
+  
+  return IPtr->getObjectItems(setIndex);
+}
+
+  
 template<typename T>
 T
 inputParam::outputItem(const std::string& K,
@@ -656,7 +696,6 @@ inputParam::compValue(const std::string& K,const T& Value) const
   if (!IPtr)
     throw ColErr::EmptyValue<void>("Key failed: "+K);
   const size_t N=IPtr->getNItems();
-
   const std::string NCValue(StrFunc::makeString(Value));
 
   for(size_t i=0;i<N;i++)
@@ -721,7 +760,7 @@ inputParam::setValue(const std::string& K,
     Set a value based on key
     \param K :: Key to add/search
     \param A :: Object to set
-    \param I :: Index value
+    \param itemIndex :: Index value
   */
 {
   setValue<T>(K,A,0,itemIndex);
@@ -831,7 +870,6 @@ inputParam::regMulti(const std::string& K,const std::string& LK,
     \param maxSets :: Max number of sets
     \param reqData :: Required data per set
     \param maxData :: Max number of dat per set
-    \param nReq :: number of data actually required [-ve to mean all]
   */
 {
   ELog::RegMethod RegA("inputParam","regMulti");
@@ -855,8 +893,8 @@ inputParam::regDefItemList(const std::string& K,const std::string& LK,
     Registers a particular type
     \param K :: Keyname
     \param LK :: Long keyname
-    \param NData :: Number of data points
-    \param AItem :: Items with defaults [size <= NData]
+    \param reqNData :: Number of data points
+    \param AItems :: Defautl item list
   */
 {
   ELog::RegMethod RegA("inputParam","regDefItemList<T>");
@@ -1181,6 +1219,16 @@ template unsigned int inputParam::getValue(const std::string&,const size_t,const
 template long int inputParam::getValue(const std::string&,const size_t,const size_t) const;
 template std::string inputParam::getValue(const std::string&,const size_t,const size_t) const;
 template Geometry::Vec3D inputParam::getValue(const std::string&,const size_t,const size_t) const;
+
+
+  
+template double inputParam::getValueError(const std::string&,const size_t,const size_t,const std::string&) const;
+template int inputParam::getValueError(const std::string&,const size_t,const size_t,const std::string&) const;
+template size_t inputParam::getValueError(const std::string&,const size_t,const size_t,const std::string&) const;
+template unsigned int inputParam::getValueError(const std::string&,const size_t,const size_t,const std::string&) const;
+template long int inputParam::getValueError(const std::string&,const size_t,const size_t,const std::string&) const;
+template std::string inputParam::getValueError(const std::string&,const size_t,const size_t,const std::string&) const;
+template Geometry::Vec3D inputParam::getValueError(const std::string&,const size_t,const size_t,const std::string&) const;
 
 
 template double inputParam::getDefValue

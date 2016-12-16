@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   essBuildInc/SegWheel.h
-*
- * Copyright (c) 2004-2013 by Stuart Ansell
+ *
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@ class SegWheel : public WheelBase
 {
  private:
   
-  int lh2Index;
-  int mainShaftCell;
+  int lh2Index;                   ///< Main indx
+  int mainShaftCell;              ///< Shaft cell
 
   double xStep;                   ///< X step
   double yStep;                   ///< y step
@@ -49,16 +49,16 @@ class SegWheel : public WheelBase
   double zAngle;                  ///< zAngle step
   
   double targetHeight;           ///< Total height of target
-  double targetSectorOffsetX;    ///< shift of segment
-  double targetSectorOffsetY;
-  double targetSectorOffsetZ;
-  double targetSectorAngleXY;
-  double targetSectorAngleZ;  
-  double targetSectorApertureXY;  
-  double targetSectorApertureZ;
-  double targetSectorNumber;
+  double targetSectorOffsetX;    ///< shift of segment (X)
+  double targetSectorOffsetY;    ///< shift of segment (Y)
+  double targetSectorOffsetZ;    ///< shift of segment (Z)
+  double targetSectorAngleXY;    ///< shift of angle (XY)
+  double targetSectorAngleZ;     ///< shift of angle (Z)
+  double targetSectorApertureXY; ///< rotation of apperature )
+  double targetSectorApertureZ;  ///< rotation of segment
+  size_t targetSectorNumber;     ///< sector number
 
-  double coolantThickOut;           ///< Outer Thickness of coolant
+  double coolantThickOut;          ///< Outer Thickness of coolant
   double coolantThickIn;           ///< Inner Thickness of coolant 
 
   double caseThickZ;              ///< Case Thickness
@@ -105,7 +105,8 @@ class SegWheel : public WheelBase
   // Functions:
 
   void populate(const FuncDataBase&);
-  void createUnitVector(const attachSystem::FixedComp&);
+  void createUnitVector(const attachSystem::FixedComp&,
+			const long int);
 
   void createSurfaces();
   void createObjects(Simulation&);
@@ -121,11 +122,14 @@ class SegWheel : public WheelBase
   virtual SegWheel* clone() const;
   virtual ~SegWheel();
 
-    /// total wheel void size
+  /// total wheel void size
   virtual double wheelHeight() const
-  { return targetHeight/2.0 ;} 
+  { return targetHeight/2.0 ;}
+  /// access ot main shaft
   int getCell() const { return mainShaftCell; }
-  void createAll(Simulation&,const attachSystem::FixedComp&);
+  
+  void createAll(Simulation&,const attachSystem::FixedComp&,
+		 const long int);
   
 };
 

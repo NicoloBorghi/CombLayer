@@ -3,7 +3,7 @@
  
  * File:   funcBase/FuncDataBase.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -870,6 +870,18 @@ FuncDataBase::addVariable(const std::string& Name,const char* V)
   return;
 }
 
+void
+FuncDataBase::removeVariable(const std::string& Name)
+  /*!
+    Remove this function 
+     - can cause problems re-evaluating other variables if dependeny
+    \param Name :: Name of the variable
+  */
+{
+  VList.removeVar(Name);
+  return;
+}
+
 template<typename T>
 void
 FuncDataBase::addParse(const std::string& Name,const std::string& VParse)
@@ -877,7 +889,7 @@ FuncDataBase::addParse(const std::string& Name,const std::string& VParse)
     Adds this function if the Code system has been 
     executed
     \param Name :: Name of the variable
-    \param V :: Variable to add
+    \param VParse :: expression to parse
   */
 {
   Parse(VParse);
@@ -892,10 +904,25 @@ FuncDataBase::copyVar(const std::string& Name,const std::string& otherVar)
     Adds this function if the Code system has been 
     executed
     \param Name :: Name of the variable
-    \param otherVar :: Othe variables
+    \param otherVar :: Other variable
   */
 {
   VList.copyVar(Name,otherVar);
+  return;
+}
+
+void
+FuncDataBase::copyVarSet(const std::string& oldHead,
+                         const std::string& newHead)
+/*!
+    Adds this function if the Code system has been 
+    executed
+    \param oldHead :: Head name for variables to find
+    \param newHead :: new head for variables
+  */
+{
+  
+  VList.copyVarSet(oldHead,newHead);
   return;
 }
 
@@ -1061,6 +1088,17 @@ FuncDataBase::writeXML(const std::string& FName) const
   return;
 }
 
+void
+FuncDataBase::resetActive()
+  /*!
+    Reset the active flag on all variables
+   */
+{
+  ELog::RegMethod RegA("FuncDataBase","resetActive");
+  VList.resetActive();
+  
+  return;
+}
 
 size_t
 FuncDataBase::convPartVec(const std::string& A,
@@ -1129,6 +1167,8 @@ template std::string FuncDataBase::EvalVar(const std::string&) const;
 template double FuncDataBase::EvalDefVar(const std::string&,
 					 const double&) const;
 template int FuncDataBase::EvalDefVar(const std::string&,const int&) const;
+template long int
+FuncDataBase::EvalDefVar(const std::string&,const long int&) const;
 
 template size_t 
 FuncDataBase::EvalDefVar(const std::string&,const size_t&) const;

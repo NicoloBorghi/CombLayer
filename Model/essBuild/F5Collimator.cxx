@@ -70,7 +70,8 @@ namespace essSystem
     colIndex(A.colIndex), cellIndex(A.cellIndex),
     delta(A.delta),height(A.height),length(A.length),width(A.width),
     wall(A.wall),viewWidth(A.viewWidth),LinkPoint(A.LinkPoint),
-    radius(A.radius),theta(A.theta),vecFP(A.vecFP),range(A.range)
+    radius(A.radius),theta(A.theta),vecFP(A.vecFP),range(A.range),
+    lpAlgorithm(A.lpAlgorithm)
   {
   }
 
@@ -79,21 +80,22 @@ namespace essSystem
   {
     if (this!=&A)
       {
-        attachSystem::ContainedComp::operator=(A);
-        attachSystem::FixedComp::operator=(A);
-        tallySystem::F5Calc::operator=(A);
-        cellIndex=A.cellIndex;
-        delta=A.delta;
-        height=A.height;
-        length=A.length;
-        width=A.width;
-        wall=A.wall;
-        viewWidth=A.viewWidth;
-        LinkPoint=A.LinkPoint;
-        radius=A.radius;
-        theta=A.theta;
-        vecFP=A.vecFP;
-        range=A.range;
+	attachSystem::ContainedComp::operator=(A);
+	attachSystem::FixedComp::operator=(A);
+	tallySystem::F5Calc::operator=(A);
+	cellIndex=A.cellIndex;
+	delta=A.delta;
+	height=A.height;
+	length=A.length;
+	width=A.width;
+	wall=A.wall;
+	viewWidth=A.viewWidth;
+	LinkPoint=A.LinkPoint;
+	radius=A.radius;
+	theta=A.theta;
+	vecFP=A.vecFP;
+	range=A.range;
+	lpAlgorithm=A.lpAlgorithm;
       }
     return *this;
   }
@@ -163,7 +165,7 @@ namespace essSystem
     \param Control :: Variable table to use
   */
   {
-    ELog::RegMethod RegA("F5Collimator","populate");
+    ELog::RegMethod RegA("F5Collimator","populateWithTheta");
 
     if (theta<0) 
       {
@@ -172,18 +174,19 @@ namespace essSystem
         return;
       }
 
-    radius=Control.EvalDefVar<double>("F5Radius", -1);  // used with theta. If set, this value is the same for all collimators. Must be positive to be used with theta.
-    if (radius<0)
-      {
-        ELog::EM << "Radius must be positive if used with theta" << ELog::endErr;
-        return;
-      }
+    // check the range value:
+    if ((range.find("cold")==std::string::npos) && (range.find("thermal")==std::string::npos))
+      throw ColErr::InvalidLine(range,"range can be either \"cold\" or \"thermal\"");
 
+    radius=Control.EvalDefPair<double>(keyName, "F5Default", "Radius", -1);  // Must be positive to be used with theta.
+    if (radius<=0)
+	throw ColErr::RangeError<double>(radius, 0, INFINITY, "Radius must be positive if used with theta");
 
-    length=Control.EvalVar<double>(keyName+"Length"); // along x
+    length=Control.EvalPair<double>(keyName, "F5Default", "Length"); // along x
     wall=Control.EvalDefVar<double>(keyName+"WallThick", 0.5);
-    viewWidth=Control.EvalVar<double>(keyName+"ViewWidth");
+    viewWidth=Control.EvalPair<double>(keyName, "F5Default", "ViewWidth");
     delta = Control.EvalDefVar<double>(keyName+"Delta", 0.0);
+    lpAlgorithm = Control.EvalPair<std::string>(keyName, "F5Default", "Algorithm"); // "FocalPoint" "InnerFocalPoint" "MidWaterEdge" "MidWaterSide" "manual"
 
     // xyz coordinates of F5 tally
     Control.setVariable<double>(keyName+"X", radius*sin(theta*M_PI/180.0));
@@ -197,80 +200,67 @@ namespace essSystem
     Control.setVariable<double>(keyName+"Z", (zmin+zmax)/2.0);
     zStep=Control.EvalVar<double>(keyName+"Z");
 
-
     Geometry::Vec3D gC,gB,gB2;
-    bool LinkPointCentered = false; // defines if the link point is located in the center of the viewing area
-    int thermalAlgorithm = 1; // 0=old; 1=new
-    if (thermalAlgorithm>1)
-      ELog::EM << "thermalAlgorithm must be either 0 (old) or 1 (new)" << ELog::endErr;
 
-    if (range=="cold")
+    int lp=0;
+    // link point (defined by theta)
+    if (lpAlgorithm == "FocalPoint")
       {
-        // link point (defined by theta)
-        if (theta<90)
-          Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 6 : 7); // these maths depend on the XYangle of the moderator
-        else if (theta<180)
-          Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 9 : 8);
-        else if (theta<270)
-          Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 8 : 9);
-        else // if theta>270
-          Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 7 : 6);
-        LinkPointCentered = false;
-      }
-    else if (range=="thermal")
+	if (theta<90)
+	  lp =  zStep>0 ? 6 : 4; // OK these maths depend on the XYangle of the moderator
+	else if (theta<180)
+	  lp =  zStep>0 ? 7 : 5;
+	else if (theta<270)
+	  lp =  zStep>0 ? 5 : 7; // OK
+	else // if theta>270
+	  lp =  zStep>0 ? 4 : 6; // OK
+      } else if (lpAlgorithm == "InnerFocalPoint")
       {
-        //      ELog::EM << "lp0: " << vecFP[0] << ELog::endDiag;
-        //      throw ColErr::AbsObjMethod("'thermal' range in F5Collimator not yet implemented");
+	if (theta<90)
+	  lp =  zStep>0 ? 10 : 8; // OK these maths depend on the XYangle of the moderator
+	else if (theta<180)
+	  lp =  zStep>0 ? 11 : 9;
+	else if (theta<270)
+	  lp =  zStep>0 ? 9 : 11;
+	else // if theta>270
+	  lp =  zStep>0 ? 8 : 10;
+      } else if (lpAlgorithm == "MidWaterEdge")
+      {
+	if (theta<90)
+	  lp =  zStep>0 ? 14 : 12; // OK these maths depend on the XYangle of the moderator
+	else if (theta<180)
+	  lp =  zStep>0 ? 15 : 13;
+	else if (theta<270)
+	  lp =  zStep>0 ? 13 : 15;
+	else // if theta>270
+	  lp =  zStep>0 ? 12 : 14;
+      } else if (lpAlgorithm == "MidWaterSide")
+      {
+	if (theta<90)
+	  lp =  zStep>0 ? 18 : 16; // OK these maths depend on the XYangle of the moderator
+	else if (theta<180)
+	  lp =  zStep>0 ? 19 : 17;
+	else if (theta<270)
+	  lp =  zStep>0 ? 17 : 19;
+	else // if theta>270
+	  lp =  zStep>0 ? 16 : 18;
+      } else if (lpAlgorithm == "manual")
+      {
+	// "special" link points - needed to define the BOC sign
+	if (theta<90)
+	  lp =  zStep>0 ? -3 : -1;
+	else if (theta<180)
+	  lp =  zStep>0 ? -4 : -2;
+	else if (theta<270)
+	  lp =  zStep>0 ? -2 : -4;
+	else // if theta>270
+	  lp =  zStep>0 ? -1 : -3;
+      } else
+      throw ColErr::InvalidLine(lpAlgorithm,"Link point algorithm not in 'FocalPoint', 'InnerFocalPoint', 'MidWaterEdge', 'MidWaterSide' or 'manual'");
+    
+    Control.setVariable<int>(keyName+"LinkPoint", lp);
+    LinkPoint = Control.EvalVar<int>(keyName+"LinkPoint");
 
-        // calculate angle between the wing side plane and the x-axis
-        // it is the same as angle b/w vtmp and the y-axis
-        // we will use this angle to determine the link point number
-        Geometry::Vec3D vtmp(vecFP[6]-vecFP[2]);
-        const double alpha = acos(vtmp.dotProd(Y)/vtmp.abs())*180/M_PI;
-        if (theta<=90-alpha)
-          {
-            if (thermalAlgorithm==0)
-              Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 2 : 3);  // these maths depend on the XYangle of the moderator
-            else
-              Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 5 : 4);  // these maths depend on the XYangle of the moderator
-          }
-        else if (abs(theta-90)<alpha)
-          {
-            Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 1 : 0);
-            LinkPointCentered = true;
-          }
-        else if ((theta>=90+alpha) && (theta<180))
-          {
-            if (thermalAlgorithm==0)
-              Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 5 : 4);
-            else
-              Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 2 : 3);
-          }
-        else if ((theta>=180) && (theta<=270-alpha))
-          {
-            if (thermalAlgorithm==0)
-              Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 4 : 5);
-            else
-              Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 7 : 2);
-          }
-        else if (abs(theta-270)<alpha)
-          {
-            Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 0 : 1);
-            LinkPointCentered = true;
-          }
-        else if (theta>=270+alpha)
-          {
-            if (thermalAlgorithm==0)
-              Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 7 : 2);
-            else
-              Control.setVariable<int>(keyName+"LinkPoint", zStep>0 ? 4 : 5);
-          }
-      }
-    else
-      {
-        ELog::EM << "Range must be either 'cold' or 'thermal'" << ELog::endErr;
-      }
-    LinkPoint = Control.EvalDefVar<int>(keyName+"LinkPoint", -1);
 
     // Calculate the coordinate of L (the second point)
     /*
@@ -285,19 +275,34 @@ namespace essSystem
 
     */
 
-    Geometry::Vec3D B(vecFP[LinkPoint].X(), vecFP[LinkPoint].Y(), zmax);
+    Geometry::Vec3D B;
+    if (LinkPoint < 0)
+      {
+	Geometry::Vec3D tmpB = Control.EvalVar<Geometry::Vec3D>(keyName+"FocalPoint");
+	B = Geometry::Vec3D(tmpB.X(), tmpB.Y(), zmax);
+      } else
+      {
+	B = Geometry::Vec3D(vecFP[static_cast<unsigned int>(LinkPoint)].X(),
+			    vecFP[static_cast<unsigned int>(LinkPoint)].Y(), zmax);
+      }
+    
     Geometry::Vec3D OB(B[0]-xStep, B[1]-yStep, B[2]-zStep);
 
     // Calculate angle BOC by the law of cosines:
-    double BOC = acos((2*pow(OB.abs(), 2) - pow(viewWidth, 2))/(2*pow(OB.abs(), 2)));
-    // these maths depend on the XYangle of the moderator:
+    double BOC = std::acos((2*std::pow(OB.abs(), 2) - std::pow(viewWidth, 2))/(2*std::pow(OB.abs(), 2)));
+    // define direction of C with respect to B:
+    //  (these maths depend on the XYangle of the moderator)
     if (zStep>0) {// top moderator
-      if ((LinkPoint==5) || (LinkPoint==6) || (LinkPoint==7) || (LinkPoint==8))
-        BOC *= -1;
+      if ((LinkPoint==-2) || (LinkPoint==-3) || (LinkPoint==5) || (LinkPoint==6) || (LinkPoint==9) || (LinkPoint==10) || (LinkPoint==13) || (LinkPoint==14) || (LinkPoint==17) || (LinkPoint==18))
+	BOC *= -1;
     } else { // low moderator
-      if ((LinkPoint==7) || (LinkPoint==9) || (LinkPoint==2) || (LinkPoint==4))
-        BOC *= -1;
+      if ((LinkPoint==-1) || (LinkPoint==-4) || (LinkPoint==4) || (LinkPoint==7) || (LinkPoint==8) || (LinkPoint==11) || (LinkPoint==12) || (LinkPoint==15) || (LinkPoint==16) || (LinkPoint==19))
+	BOC *= -1;
     }
+
+    // thermal collimators view complementary area:
+    if (range=="thermal")
+      BOC *= -1;
 
     Geometry::Vec3D OC(OB);
     Geometry::Quaternion::calcQRotDeg(BOC*180/M_PI,Z).rotate(OC);
@@ -307,12 +312,6 @@ namespace essSystem
       ELog::EM << "Problem with tally " << keyName << ": distance between B and C is " << BC.abs() << " --- not equal to F5ViewWidth = " << viewWidth << ELog::endErr;
 
     Geometry::Vec3D C(B+BC);
-
-    if (LinkPointCentered)
-      {
-        B = B-BC/2.0;
-        C = C-BC/2.0;
-      }
 
     Control.setVariable<double>(keyName+"XB", B.X());
     Control.setVariable<double>(keyName+"YB", B.Y());
@@ -388,6 +387,8 @@ namespace essSystem
 
   void F5Collimator::setTheta(double t)
   {
+    ELog::RegMethod RegA("F5Collimator","setTheta");
+    
     if ((t<0) || (t>360))
       throw ColErr::RangeError<double>(theta, 0, 360, "Theta must be set in range 0-360 deg");
     theta=t;
@@ -399,6 +400,8 @@ namespace essSystem
     \param CC :: ContainedComp object to add to this
   */
   {
+    ELog::RegMethod RegA("F5Collimator","addToInsertChain");
+    
     for(int i=colIndex+1;i<cellIndex;i++)
       CC.addInsertCell(i);
     

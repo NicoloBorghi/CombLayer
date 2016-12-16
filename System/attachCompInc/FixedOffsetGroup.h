@@ -3,7 +3,7 @@
  
  * File:   attachCompInc/FixedOffset.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,34 @@ class FuncDataBase;
 
 namespace attachSystem
 {
+
+/*!
+  \struct offset 
+  \version 1.0
+  \author S. Ansell
+  \date October 2015
+  \brief Holding system to control offsets
+*/
+  
+struct offset
+{
+  double preXYAngle;  ///< pre-xy Angle
+  double preZAngle;   ///< pre-z Angle
+  double xStep;       ///< x step
+  double yStep;       ///< y step
+  double zStep;       ///< z step
+  double xyAngle;     ///< xy Angle
+  double zAngle;      ///< z Angle
+
+  void copy(double&,double&,double&,double&,
+	    double&,double&,double&) const;
+};
+  
 /*!
   \class FixedOffset
   \version 1.0
   \author S. Ansell
-  \date  2015
+  \date  July 2015
   \brief FixedComp derivative which handles x-z step and xy/z angle rotation
 */
 
@@ -38,11 +61,19 @@ class FixedOffsetGroup  : public FixedGroup
 {
  protected:
 
+  double preXYAngle;  ///< pre-shift xy Angle
+  double preZAngle;   ///< pre-shift z Angle
   double xStep;       ///< x step
   double yStep;       ///< y step
   double zStep;       ///< z step
   double xyAngle;     ///< xy Angle
-  double zAngle;      ///< z Angle
+  double zAngle;      ///< z Angle  
+
+  /// Mapping of group and local offset
+  std::map<std::string,offset> GOffset;
+  
+  static void populateOffset(const FuncDataBase&,const std::string&,
+			     offset&);
   
  public:
 

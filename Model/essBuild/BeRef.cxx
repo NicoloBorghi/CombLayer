@@ -3,7 +3,7 @@
  
  * File:   essBuild/BeRef.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,27 +79,34 @@ BeRef::BeRef(const std::string& Key) :
   attachSystem::CellMap(),
   refIndex(ModelSupport::objectRegister::Instance().cell(Key)),
   cellIndex(refIndex+1),
-  InnerComp(new BeRefInnerStructure(Key + "InnerStructure"))
+  InnerCompTop(new BeRefInnerStructure(Key + "TopInnerStructure")),
+  InnerCompLow(new BeRefInnerStructure(Key + "LowInnerStructure"))
   /*!
     Constructor
     \param Key :: Name of construction key
   */
 {
   ModelSupport::objectRegister& OR = ModelSupport::objectRegister::Instance();
-  OR.addObject(InnerComp);
+  OR.addObject(InnerCompTop);
+  OR.addObject(InnerCompLow);
 }
 
 BeRef::BeRef(const BeRef& A) : 
   attachSystem::ContainedComp(A),attachSystem::FixedComp(A),
   attachSystem::CellMap(A),
-  engActive(A.engActive),InnerComp(A.InnerComp->clone()),
-  refIndex(A.refIndex),cellIndex(A.cellIndex),xStep(A.xStep),
-  yStep(A.yStep),zStep(A.zStep),xyAngle(A.xyAngle),
-  zAngle(A.zAngle),radius(A.radius),height(A.height),
+  refIndex(A.refIndex),cellIndex(A.cellIndex),
+  engActive(A.engActive),
+  InnerCompTop(A.InnerCompTop->clone()),
+  InnerCompLow(A.InnerCompLow->clone()),
+  xStep(A.xStep),yStep(A.yStep),zStep(A.zStep),xyAngle(A.xyAngle),
+  zAngle(A.zAngle),radius(A.radius),
+  height(A.height),depth(A.depth),
   wallThick(A.wallThick),wallThickLow(A.wallThickLow),
   lowVoidThick(A.lowVoidThick),
   topVoidThick(A.topVoidThick),targSepThick(A.targSepThick),
-  refMat(A.refMat),wallMat(A.wallMat),
+  topRefMat(A.topRefMat),lowRefMat(A.lowRefMat),
+  topWallMat(A.topWallMat),
+  lowWallMat(A.lowWallMat),
   targSepMat(A.targSepMat)
   /*!
     Copy constructor
@@ -122,7 +129,8 @@ BeRef::operator=(const BeRef& A)
       CellMap::operator=(A);
       cellIndex=A.cellIndex;
       engActive=A.engActive;
-      *InnerComp = *A.InnerComp;
+      *InnerCompTop = *A.InnerCompTop;
+      *InnerCompLow = *A.InnerCompLow;
       xStep=A.xStep;
       yStep=A.yStep;
       zStep=A.zStep;
@@ -130,13 +138,16 @@ BeRef::operator=(const BeRef& A)
       zAngle=A.zAngle;
       radius=A.radius;
       height=A.height;
+      depth=A.depth;
       wallThick=A.wallThick;
       wallThickLow=A.wallThickLow;
       lowVoidThick=A.lowVoidThick;
       topVoidThick=A.topVoidThick;
       targSepThick=A.targSepThick;
-      refMat=A.refMat;
-      wallMat=A.wallMat;
+      topRefMat=A.topRefMat;
+      lowRefMat=A.lowRefMat;
+      topWallMat=A.topWallMat;
+      lowWallMat=A.lowWallMat;
       targSepMat=A.targSepMat;
 
     }
@@ -173,13 +184,16 @@ BeRef::populate(const FuncDataBase& Control,
   xyAngle=Control.EvalVar<double>(keyName+"XYangle");
   zAngle=Control.EvalVar<double>(keyName+"Zangle");
   
-  radius=Control.EvalVar<double>(keyName+"Radius");   
-  height=Control.EvalVar<double>(keyName+"Height");   
+  radius=Control.EvalVar<double>(keyName+"Radius");
+  height=Control.EvalVar<double>(keyName+"Height");
+  depth=Control.EvalVar<double>(keyName+"Depth");
   wallThick=Control.EvalVar<double>(keyName+"WallThick");
   wallThickLow=Control.EvalVar<double>(keyName+"WallThickLow");
 
-  refMat=ModelSupport::EvalMat<int>(Control,keyName+"RefMat");   
-  wallMat=ModelSupport::EvalMat<int>(Control,keyName+"WallMat");   
+  topRefMat=ModelSupport::EvalMat<int>(Control,keyName+"TopRefMat");   
+  lowRefMat=ModelSupport::EvalMat<int>(Control,keyName+"LowRefMat");   
+  topWallMat=ModelSupport::EvalMat<int>(Control,keyName+"TopWallMat");   
+  lowWallMat=ModelSupport::EvalMat<int>(Control,keyName+"LowWallMat");   
   
   targSepMat=ModelSupport::EvalMat<int>
     (Control,StrFunc::makeString(keyName+"TargSepMat"));
@@ -207,7 +221,8 @@ BeRef::globalPopulate(const FuncDataBase& Control)
   ELog::RegMethod RegA("BeRef","globalPopulate");
 
   radius=Control.EvalVar<double>(keyName+"Radius");   
-  height=Control.EvalVar<double>(keyName+"Height");   
+  height=Control.EvalVar<double>(keyName+"Height");
+  depth=Control.EvalVar<double>(keyName+"Depth");
   wallThick=Control.EvalVar<double>(keyName+"WallThick");   
   wallThickLow=Control.EvalVar<double>(keyName+"WallThickLow");   
 
@@ -246,12 +261,12 @@ BeRef::createSurfaces()
   ModelSupport::buildCylinder(SMap,refIndex+7,Origin,Z,radius);  
   ModelSupport::buildCylinder(SMap,refIndex+17,Origin,Z,radius+wallThick);  
 
-  ModelSupport::buildPlane(SMap,refIndex+5,Origin-Z*(height/2.0),Z);  
-  ModelSupport::buildPlane(SMap,refIndex+6,Origin+Z*(height/2.0),Z);  
+  ModelSupport::buildPlane(SMap,refIndex+5,Origin-Z*(depth),Z);  
+  ModelSupport::buildPlane(SMap,refIndex+6,Origin+Z*(height),Z);  
   ModelSupport::buildPlane(SMap,refIndex+15,
-                           Origin-Z*(height/2.0+wallThick),Z);  
+			   Origin-Z*(depth+wallThick),Z);  
   ModelSupport::buildPlane(SMap,refIndex+16,
-                           Origin+Z*(height/2.0+wallThick),Z);  
+			   Origin+Z*(height+wallThick),Z);  
 
   //define planes where the Be is substituted by Fe
 
@@ -288,7 +303,7 @@ BeRef::createObjects(Simulation& System)
   std::string Out;
   // low segment
   Out=ModelSupport::getComposite(SMap,refIndex," -7 5 -105 ");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,refMat,0.0,Out));
+  System.addCell(MonteCarlo::Qhull(cellIndex++,lowRefMat,0.0,Out));
   setCell("lowBe",cellIndex-1);
   
   // low void
@@ -306,29 +321,29 @@ BeRef::createObjects(Simulation& System)
   setCell("topVoid",cellIndex-1);
   // top segment
   Out=ModelSupport::getComposite(SMap,refIndex," -7 -6 106");
-  System.addCell(MonteCarlo::Qhull(cellIndex++,refMat,0.0,Out));
+  System.addCell(MonteCarlo::Qhull(cellIndex++,topRefMat,0.0,Out));
   setCell("topBe",cellIndex-1);
   
   if (wallThick>Geometry::zeroTol)
     {
 
       Out=ModelSupport::getComposite(SMap,refIndex," -17 15 -105 (7:-5)");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
+      System.addCell(MonteCarlo::Qhull(cellIndex++,lowWallMat,0.0,Out));
       setCell("lowWall",cellIndex-1);
       
       if (wallThickLow>Geometry::zeroTol) {
       // divide layer
       Out=ModelSupport::getComposite(SMap,refIndex," -17 105 -115 ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
+      System.addCell(MonteCarlo::Qhull(cellIndex++,lowWallMat,0.0,Out));
       setCell("lowWallDivider",cellIndex-1);
       
       // divide layer
       Out=ModelSupport::getComposite(SMap,refIndex," -17 -106 116 ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
+      System.addCell(MonteCarlo::Qhull(cellIndex++,topWallMat,0.0,Out));
       }
 
       Out=ModelSupport::getComposite(SMap,refIndex," -17 -16 106 (7:6)");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
+      System.addCell(MonteCarlo::Qhull(cellIndex++,topWallMat,0.0,Out));
 
       Out=ModelSupport::getComposite(SMap,refIndex," -17 15 -16 ");
     }
@@ -363,16 +378,16 @@ BeRef::createLinks()
   FixedComp::setLinkSurf(3,SMap.realSurf(refIndex+17));
   FixedComp::addLinkSurf(3,SMap.realSurf(refIndex+2));
   
-  FixedComp::setConnect(4,Origin-Z*(height/2.0+wallThick),-Z);
+  FixedComp::setConnect(4,Origin-Z*(depth+wallThick),-Z);
   FixedComp::setLinkSurf(4,-SMap.realSurf(refIndex+15));
 
-  FixedComp::setConnect(5,Origin+Z*(height/2.0+wallThick),Z);
+  FixedComp::setConnect(5,Origin+Z*(height+wallThick),Z);
   FixedComp::setLinkSurf(5,SMap.realSurf(refIndex+16));
 
-  FixedComp::setConnect(6,Origin-Z*(height/2.0),-Z);
+  FixedComp::setConnect(6,Origin-Z*(depth),-Z);
   FixedComp::setLinkSurf(6,-SMap.realSurf(refIndex+5));
 
-  FixedComp::setConnect(7,Origin+Z*(height/2.0),Z);
+  FixedComp::setConnect(7,Origin+Z*(height),Z);
   FixedComp::setLinkSurf(7,SMap.realSurf(refIndex+6));
 
   FixedComp::setConnect(8,Origin+Y*(radius),-Y);
@@ -413,7 +428,8 @@ BeRef::createAll(Simulation& System,
   insertObjects(System);       
 
   if (engActive) {
-    InnerComp->createAll(System, *this);
+    InnerCompTop->createAll(System, *this, "topBe", 10, 7);
+    InnerCompLow->createAll(System, *this, "lowBe",  9, 6);
   }
 
   return;

@@ -3,7 +3,7 @@
  
  * File:   support/support.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -511,6 +511,38 @@ fullBlock(const std::string& A)
   return A.substr(posA,posB-posA);
 }
 
+int
+sectionBracket(std::string& A,std::string& out)
+  /*!
+    Given a string of type (.(.).)
+    extract the full bracket section and remove from the string
+    \param A :: string to intpu
+    \param out :: string for output
+    \return 1 if bracket closes correctly
+   */
+{
+  std::string NStr(A);
+  std::string::size_type pos(0);
+  pos=NStr.find_first_of("(",pos);
+  if(pos!=std::string::npos)
+    {
+      int bCnt(1);
+      std::string::size_type posIndex(pos+1);
+      for(;bCnt && posIndex<NStr.size();posIndex++)
+        {
+          if (NStr[posIndex]=='(') bCnt++;
+          if (NStr[posIndex]==')') bCnt--;
+        }
+      if (!bCnt)
+        {
+          out=NStr.substr(pos+1,posIndex-(pos+2));
+          A.erase(pos,posIndex-pos);
+        }
+      return 1;
+    }
+  return 0;
+}
+  
 template<typename T>
 int
 sectPartNum(std::string& A,T& out)
@@ -718,6 +750,61 @@ sectionMCNPX(std::string& A,T& out)
       out=retval;
       return 1;
     }
+  return 0;
+}
+
+template<>
+int
+sectionCINDER(std::string& A,double& out)
+/*!
+  Takes a character string and evaluates 
+  the first [T] object. The string is then filled with
+  spaces upto the end of the [T] object.
+  This version deals with MCNPX numbers. Those
+  are numbers that are crushed together like
+  - 5.4938-004
+  \param out :: place for output
+  \param A :: string for input and output. 
+  \return 1 on success 0 on failure
+*/
+{
+  if (A.empty()) return 0;
+  std::istringstream cx;
+  double retval;
+  cx.str(A);
+  cx.clear();
+  cx>>retval;
+  if (!cx.fail())
+    {
+      //      const int xpt=static_cast<int>(cx.tellg());
+      const long int xpt=cx.tellg();
+      const int xc=cx.get();
+      if (cx.fail())
+	{
+	  A.erase(0,static_cast<size_t>(xpt));
+	  out=retval;
+	  return 1;
+	}
+      else if (isspace(xc) || xc==',')
+	{
+	  A.erase(0,static_cast<size_t>(xpt+1));
+	  out=retval;
+	  return 1;
+	}
+      else if (xc=='-' && xpt>3)
+	{
+	  const std::string held=A;
+	  double revA,revB;
+	  if (sectPartNum(A,revA) && sectPartNum(A,revB))
+	    {
+	      out=0.0;
+	      return 1;
+	    }
+	  A=held;
+	}
+    }
+
+  
   return 0;
 }
 
@@ -1137,8 +1224,8 @@ writeLine(std::ostream& OX,const T& V,
     Write the line in the WWG format of 13.6g
     \param OX :: Output stream
     \param V :: Value
-    \param itemCnt :: Item value
-    \param lineCut :: Value to cut line
+    \param itemCnt :: Place in line
+    \param lineCut :: Number of unit to put in line before CR
    */
 {
   static boost::format DblFMT("%13.4f");
@@ -1169,8 +1256,8 @@ writeLine(std::ostream& OX,const Geometry::Vec3D& Vec,
     Write the line in the WWG format of 13.6g
     \param OX :: Output stream
     \param V :: Value
-    \param itemCnt :: Item value
-    \param lineCut :: Value to cut line
+    \param itemCnt :: Place in line
+    \param lineCut :: Number of unit to put in line before CR
    */
 {
   for(size_t i=0;i<3;i++)

@@ -3,7 +3,7 @@
  
  * File:   monteInc/Object.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,6 @@ class Object
   /// Set of surfaces that are logically opposite in the rule.
   std::set<const Geometry::Surface*> logicOppSurf;
  
-  int procPair(std::string&,std::map<int,Rule*>&,int&) const;
   int checkSurfaceValid(const Geometry::Vec3D&,const Geometry::Vec3D&) const;
   int checkExteriorValid(const Geometry::Vec3D&,const Geometry::Vec3D&) const;
   /// Calc in/out 
@@ -132,7 +131,6 @@ class Object
   void setObjSurfValid()  { objSurfValid=1; }          ///< set as valid
   int addSurfString(const std::string&);   
   int removeSurface(const int);        
-  int compositeSurf(const int,Rule*);
   int substituteSurf(const int,const int,Geometry::Surface*);  
   void makeComplement();
 
@@ -152,6 +150,7 @@ class Object
   const std::set<int>& getSurfSet() const { return SurSet; }
 
   std::vector<int> getSurfaceIndex() const;
+  /// Access the surface list [of pointers]
   const std::vector<const Geometry::Surface*>& getSurList() const
     { return SurList; }
   
@@ -172,9 +171,6 @@ class Object
 		     const Geometry::Vec3D&) const;
 
   int trackCell(const MonteCarlo::neutron&,double&,
-		const int,const Geometry::Surface*&,
-		const int) const;
-  int trackCellX(const MonteCarlo::neutron&,double&,
 		const int,const Geometry::Surface*&,
 		const int) const;
   int trackIntoCell(const MonteCarlo::neutron&,double&,

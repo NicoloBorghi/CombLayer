@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   include/NRange.h
-*
- * Copyright (c) 2004-2013 by Stuart Ansell
+ *
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ class NRange
   void addComp(const double);
   template<typename T>
   void setVector(const std::vector<T>&);
-  int writeVector(std::vector<double>&) const;
+  size_t writeVector(std::vector<double>&) const;
   void write(std::ostream&) const;             ///< Write out the range 
 
 };

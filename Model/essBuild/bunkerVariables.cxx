@@ -3,7 +3,7 @@
  
  * File:   essBuild/bunkerVariables.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell/Konstantin Batkov
+ * Copyright (c) 2004-2016 by Stuart Ansell/Konstantin Batkov
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,162 @@
 namespace setVariable
 {
 
+void
+setBunkerVar(FuncDataBase&,const std::string&,const std::string&);
+
+
+
+void
+setBunkerVar(FuncDataBase& Control,const std::string& AKey,
+	     const std::string& BKey)
+/*!
+    Create all the bunker variables
+    \param Control :: DataBase
+    \param AKey :: Key for A/C bunker
+    \param BKey :: Key for B/D bunker
+*/
+{
+  ELog::RegMethod RegA("bunkerVariables[F]","setBunkerVar");
+
+
+  Control.addVariable(AKey+"BunkerLeftPhase",-65.0);
+  Control.addVariable(AKey+"BunkerRightPhase",0.0);
+  Control.addVariable(AKey+"BunkerLeftAngle",0.0);
+  Control.addVariable(AKey+"BunkerRightAngle",0.0);
+  Control.addVariable(AKey+"BunkerNSectors",10);
+  Control.addVariable(AKey+"BunkerNVert",1);
+  Control.addVariable(AKey+"BunkerNLayers",1);
+  Control.addVariable(AKey+"BunkerNSegment",5);
+  Control.addVariable(AKey+"BunkerRoofActive",0);
+  Control.addVariable(AKey+"BunkerWallRadius",2450.0);
+  Control.addVariable(BKey+"BunkerWallRadius",1150.0);
+  
+  for(const std::string& KItem : {AKey,BKey})
+    {
+      Control.addVariable(KItem+"BunkerWallActive",0);
+
+      Control.addVariable(KItem+"BunkerWallNVert",20);
+      Control.addVariable(KItem+"BunkerWallNMedial",2);
+      Control.addVariable(KItem+"BunkerWallNRadial",12);
+
+      Control.addVariable(KItem+"BunkerRoofNVert",20);
+      Control.addVariable(KItem+"BunkerRoofNMedial",1);
+      Control.addVariable(KItem+"BunkerRoofNRadial",12);
+      Control.addVariable(KItem+"BunkerRoofNBasicVert",5);
+      
+      
+      Control.addVariable(KItem+"BunkerNSide",5);
+      Control.addVariable(KItem+"BunkerNSideVert",5);
+      Control.addVariable(KItem+"BunkerNSideThick",5);
+      
+
+      Control.addVariable(KItem+"BunkerFloorDepth",120.0);
+      Control.addVariable(KItem+"BunkerRoofHeight",190.0);
+      
+      Control.addVariable(KItem+"BunkerWallThick",350.0);
+      Control.addVariable(KItem+"BunkerSideThick",80.0);
+      Control.addVariable(KItem+"BunkerRoofThick",195.0);
+      Control.addVariable(KItem+"BunkerFloorThick",100.0);
+      
+      Control.addVariable(KItem+"BunkerVoidMat","Void");
+      Control.addVariable(KItem+"BunkerWallMat","Steel71");
+      Control.addVariable(KItem+"BunkerRoofMat","Aluminium");
+
+
+      // WALL LAYERED
+      Control.addVariable(KItem+"BunkerWallNBasic",10);      
+
+      Control.addVariable(KItem+"BunkerNBasicVert",5);
+      Control.addVariable(KItem+"BunkerRoofVert1",20.0);
+      Control.addVariable(KItem+"BunkerRoofVert2",40.0);
+      Control.addVariable(KItem+"BunkerRoofVert3",70.0);
+      Control.addVariable(KItem+"BunkerRoofVert4",30.0);
+  
+      
+      Control.addVariable(KItem+"BunkerRoofMat0","CarstonConc");
+      Control.addVariable(KItem+"BunkerRoofMat1","CastIron");
+      Control.addVariable(KItem+"BunkerRoofMat2","CarstonConc");
+      Control.addVariable(KItem+"BunkerRoofMat3","CastIron");
+      Control.addVariable(KItem+"BunkerRoofMat4","CarstonConc");
+
+      Control.addVariable(KItem+"BunkerWallMat0","Lead");
+      Control.addVariable(KItem+"BunkerWallMat1","CarstonConc");
+      Control.addVariable(KItem+"BunkerWallMat2","CastIron");
+      Control.addVariable(KItem+"BunkerWallMat3","CarstonConc");
+      Control.addVariable(KItem+"BunkerWallMat4","CastIron");
+      Control.addVariable(KItem+"BunkerWallMat5","CarstonConc");
+      Control.addVariable(KItem+"BunkerWallMat6","CastIron");
+      Control.addVariable(KItem+"BunkerWallMat7","CarstonConc");
+      Control.addVariable(KItem+"BunkerWallMat8","CastIron");
+      Control.addVariable(KItem+"BunkerWallMat9","CarstonConc");
+      
+      Control.addVariable(KItem+"BunkerWallLen1",10.0);
+      Control.addVariable(KItem+"BunkerWallLen2",15.5);
+      Control.addVariable(KItem+"BunkerWallLen3",15.5);
+      Control.addVariable(KItem+"BunkerWallLen4",15.5);
+      Control.addVariable(KItem+"BunkerWallLen5",15.5);
+      Control.addVariable(KItem+"BunkerWallLen6",93.0);
+      Control.addVariable(KItem+"BunkerWallLen7",93.0);
+      Control.addVariable(KItem+"BunkerWallLen8",46.5);
+      Control.addVariable(KItem+"BunkerWallLen9",31.0);
+      Control.addVariable(KItem+"BunkerWallLen10",15.5);
+    }
+  
+  Control.addVariable(AKey+"BunkerLoadFile","ABunkerDef.xml");
+  Control.addVariable(AKey+"BunkerOutFile","ABunker.xml");
+
+  // PILLARS:
+  
+  Control.addVariable(AKey+"BunkerPillarsRadius",6.0);
+  Control.addVariable(AKey+"BunkerPillarsMat","Stainless304");
+  Control.addVariable(AKey+"BunkerPillarsNRadius",5);
+  Control.addVariable(AKey+"BunkerPillarsNSector",11); // default
+  
+  Control.addVariable(AKey+"BunkerPillarsR0",600.0);
+  Control.addVariable(AKey+"BunkerPillarsR1",900.0);
+  Control.addVariable(AKey+"BunkerPillarsR2",1200.0);
+  Control.addVariable(AKey+"BunkerPillarsR3",1500.0);
+  Control.addVariable(AKey+"BunkerPillarsR4",1800.0);
+  Control.addVariable(AKey+"BunkerPillarsR5",2100.0);
+  
+  Control.addVariable(AKey+"BunkerPillarsRS_0",-3.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_1",-9.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_2",-15.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_3",-21.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_4",-27.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_5",-34.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_6",-39.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_7",-46.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_8",-52.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_9",-57.0);
+  Control.addVariable(AKey+"BunkerPillarsRS_10",-63.0);
+
+  Control.addVariable(AKey+"BunkerPillarsR_0S_1Active",0);
+  Control.addVariable(AKey+"BunkerPillarsR_0S_2Active",0);
+  Control.addVariable(AKey+"BunkerPillarsR_0S_9Active",0);
+  Control.addVariable(AKey+"BunkerPillarsR_1S_2Active",0);
+
+
+  //
+  // RIGHT BUNKER : B PART
+  //
+  Control.addVariable(BKey+"BunkerLeftPhase",0.0);
+  Control.addVariable(BKey+"BunkerRightPhase",65.0);
+  Control.addVariable(BKey+"BunkerLeftAngle",0.0);
+  Control.addVariable(BKey+"BunkerRightAngle",0.0);
+  Control.addVariable(BKey+"BunkerNSectors",9);
+  Control.addVariable(BKey+"BunkerNVert",1);
+  Control.addVariable(BKey+"BunkerNLayers",1);
+
+  
+  Control.addVariable(BKey+"BunkerActiveSegment",0);
+  Control.addVariable(BKey+"BunkerActiveRoof",0);
+
+  Control.addVariable(BKey+"BunkerLoadFile","BBunkerDef.xml");
+  Control.addVariable(BKey+"BunkerOutFile","BBunker.xml");
+  
+  return;
+}
 
 void
 EssBunkerVariables(FuncDataBase& Control)
@@ -63,124 +219,40 @@ EssBunkerVariables(FuncDataBase& Control)
   */
 {
   ELog::RegMethod RegA("essVariables[F]","EssBunkerVariables");
+  setBunkerVar(Control,"A","B");
+  setBunkerVar(Control,"C","D");
 
-  Control.addVariable("ABunkerLeftPhase",-65.0);
-  Control.addVariable("ABunkerRightPhase",0.0);
-  Control.addVariable("ABunkerLeftAngle",0.0);
-  Control.addVariable("ABunkerRightAngle",0.0);
-  Control.addVariable("ABunkerNSectors",10);
-  Control.addVariable("ABunkerNVert",1);
-  Control.addVariable("ABunkerNLayers",1);
-  Control.addVariable("ABunkerNSegment",5);
-  Control.addVariable("ABunkerActiveSegment",0);
-  Control.addVariable("ABunkerActiveRoof",0);
-
-  Control.addVariable("ABunkerNRoofVert",20);
-  Control.addVariable("ABunkerNRoofSide",1);
-  Control.addVariable("ABunkerNRoofRadial",12);
-
-  Control.addVariable("ABunkerNSide",5);
-  Control.addVariable("ABunkerNSideVert",5);
-  Control.addVariable("ABunkerNSideThick",5);
+  // BUNKER QUAKE:
+  Control.addVariable("ABunkerQuakeXGap",13.0);
+  Control.addVariable("ABunkerQuakeZGap",100.0);
   
-  Control.addVariable("ABunkerWallRadius",1150.0);
-  Control.addVariable("ABunkerFloorDepth",120.0);
-  Control.addVariable("ABunkerRoofHeight",190.0);
+  Control.addVariable("ABunkerQuakeNPoint",1);
+  Control.addVariable("ABunkerQuakePtA0",Geometry::Vec3D(750,0,0));
+  Control.addVariable("ABunkerQuakePtB0",Geometry::Vec3D(980,0,0));
 
-  Control.addVariable("ABunkerWallThick",320.0);
-  Control.addVariable("ABunkerSideThick",80.0);
-  Control.addVariable("ABunkerRoofThick",195.0);
-  Control.addVariable("ABunkerFloorThick",100.0);
-
-  Control.addVariable("ABunkerVoidMat","Void");
-  Control.addVariable("ABunkerWallMat","Steel71");
-  Control.addVariable("ABunkerRoofMat","Aluminium");
-
-  Control.addVariable("ABunkerRoofVert1",10.0);
-
-
-  Control.addVariable("ABunkerRoofMat0","CarstonConc");
-  Control.addVariable("ABunkerRoofMat3","CastIron");
-  Control.addVariable("ABunkerRoofMat6","CarstonConc");
-  Control.addVariable("ABunkerRoofMat14","CastIron");
-  Control.addVariable("ABunkerRoofMat16","CarstonConc");
-
-  Control.addVariable("ABunkerWallMat0","CarstenConc");
-  Control.addVariable("ABunkerWallMat1","CastIron");
-  Control.addVariable("ABunkerWallMat2","CastenConc");
-  Control.addVariable("ABunkerWallMat3","CastIron");
-  Control.addVariable("ABunkerWallMat4","CarstenConc");
   
-  Control.addVariable("ABunkerWallLen1",0.5);
-  Control.addVariable("ABunkerWallLen2",10.0);
- 
-  Control.addVariable("ABunkerLoadFile","ABunkerDef.xml");
-  Control.addVariable("ABunkerOutFile","ABunker.xml");
-
-  // PILLARS:
-  
-  Control.addVariable("ABunkerPillarsRadius",8.0);
-  Control.addVariable("ABunkerPillarsMat","Stainless304");
-  Control.addVariable("ABunkerPillarsNRadius",1);
-  Control.addVariable("ABunkerPillarsNSector",5);
-  Control.addVariable("ABunkerPillarsR_0S_0",0.0);
-  Control.addVariable("ABunkerPillarsR_0S_1",10.0);
-  Control.addVariable("ABunkerPillarsR_0S_2",20.0);
-  Control.addVariable("ABunkerPillarsR_0S_3",30.0);
-  
-  //
-  // RIGHT BUNKER : B PART
-  //
-  Control.addVariable("BBunkerLeftPhase",0.0);
-  Control.addVariable("BBunkerRightPhase",65.0);
-  Control.addVariable("BBunkerLeftAngle",0.0);
-  Control.addVariable("BBunkerRightAngle",0.0);
-  Control.addVariable("BBunkerNSectors",9);
-  Control.addVariable("BBunkerNVert",1);
-  Control.addVariable("BBunkerNLayers",1);
-
-  Control.addVariable("BBunkerNRoofVert",5);
-  Control.addVariable("BBunkerNRoofSide",1);
-  Control.addVariable("BBunkerNRoofRadial",4);
-
-  Control.addVariable("BBunkerNSide",5);
-  Control.addVariable("BBunkerNSideVert",5);
-  Control.addVariable("BBunkerNSideThick",5);
-  
-  Control.addVariable("BBunkerWallLen1",0.5);
-  Control.addVariable("BBunkerWallLen2",10.0);
-  
-  Control.addVariable("BBunkerWallRadius",2450.0);
-  Control.addVariable("BBunkerFloorDepth",120.0);
-  Control.addVariable("BBunkerRoofHeight",190.0);
-
-  Control.addVariable("BBunkerWallThick",320.0);
-  Control.addVariable("BBunkerSideThick",80.0);
-  Control.addVariable("BBunkerRoofThick",200.0);
-  Control.addVariable("BBunkerFloorThick",100.0);
-
-  Control.addVariable("BBunkerVoidMat","Void");
-  Control.addVariable("BBunkerWallMat","Steel71");
-  Control.addVariable("BBunkerRoofMat","CarstonConc");
-
-  Control.addVariable("BBunkerLoadFile","BBunkerDef.xml");
-  Control.addVariable("BBunkerOutFile","BBunker.xml");
-
   
   Control.addVariable("CurtainLeftPhase",-65.0);
   Control.addVariable("CurtainRightPhase",65.0);
-  Control.addVariable("CurtainWallThick",20.0);
-  Control.addVariable("CurtainInnerStep",25.0);
+  Control.addVariable("CurtainWallThick",80.0);
+  Control.addVariable("CurtainInnerStep",0.0);
   Control.addVariable("CurtainTopRaise",60.0);
   Control.addVariable("CurtainHeight",250.0);
-  Control.addVariable("CurtainDepth",100.0);
+  Control.addVariable("CurtainDepth",129.0);     // fixed by Ben.
   Control.addVariable("CurtainWallMat","Concrete");
   Control.addVariable("CurtainNTopLayers",7);
   Control.addVariable("CurtainNMidLayers",2);
   Control.addVariable("CurtainNBaseLayers",7);
 
 
+  Control.addVariable("BunkerFeedOffset",Geometry::Vec3D(0,0,0));
+  Control.addVariable("BunkerFeedHeight",6.0);
+  Control.addVariable("BunkerFeedWidth",6.0);
+  Control.addVariable("BunkerFeedTrack0",Geometry::Vec3D(0,0,0));
+  Control.addVariable("BunkerFeedTrack1",Geometry::Vec3D(0,0,-10));
+  Control.addVariable("BunkerFeedTrack2",Geometry::Vec3D(0,100,-10));
+
   return;
 }
-
+  
 }  // NAMESPACE setVariable

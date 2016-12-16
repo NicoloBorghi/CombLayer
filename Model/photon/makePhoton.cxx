@@ -3,7 +3,7 @@
  
  * File:   photon/makePhoton.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@
 #include "ContainedComp.h"
 #include "ContainedGroup.h"
 #include "LayerComp.h"
+#include "BoundOuter.h"
 #include "World.h"
 #include "AttachSupport.h"
 #include "CylContainer.h"
@@ -71,6 +72,7 @@
 #include "TubeMod.h"
 #include "B4CCollimator.h"
 #include "EQDetector.h"
+
 #include "makePhoton.h"
 
 #include "Debug.h"
@@ -155,7 +157,7 @@ makePhoton::build(Simulation* SimPtr,
   
   OuterObj->addInsertCell(voidCell);
   OuterObj->createAll(*SimPtr,World::masterOrigin());
-
+  return;
   CatcherObj->addInsertCell(voidCell);
   CatcherObj->createAll(*SimPtr,*OuterObj,-1);
   /*

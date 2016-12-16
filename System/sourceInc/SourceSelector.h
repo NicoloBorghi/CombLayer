@@ -3,7 +3,7 @@
  
  * File:   sourceInc/SourceSelector.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ namespace SDef
 {
   long int getLinkIndex(const std::string&);
   void sourceSelection(Simulation&,const mainSystem::inputParam&);
+  void activationSelection(Simulation&,const mainSystem::inputParam&);
+  void activeWeight(Simulation&,const mainSystem::inputParam&);
 }
 
 #endif

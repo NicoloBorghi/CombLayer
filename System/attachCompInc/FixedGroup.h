@@ -3,7 +3,7 @@
  
  * File:   attachCompInc/FixedGroup.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ class FixedGroup : public FixedComp
   /// Fixed Storage
   typedef std::shared_ptr<attachSystem::FixedComp> CompTYPE;
   /// Map storage
-  typedef std::map<std::string,CompTYPE > FTYPE;
+  typedef std::map<std::string,CompTYPE> FTYPE;
   /// Named Container
   FTYPE FMap;
 
@@ -67,7 +67,8 @@ class FixedGroup : public FixedComp
   virtual FixedComp& getKey(const std::string&);
   virtual const FixedComp& getKey(const std::string&) const;
 
-
+  
+  void setAxisControl(const long int,const Geometry::Vec3D&);
 
 };
 

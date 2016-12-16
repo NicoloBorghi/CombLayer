@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <iterator>
 #include <memory>
+#include <array>
 
 #include "Exception.h"
 #include "FileReport.h"
@@ -67,21 +68,32 @@
 #include "BaseMap.h"
 #include "CellMap.h"
 #include "SurfMap.h"
+#include "FixedOffset.h"
 #include "FixedGroup.h"
 #include "ShapeUnit.h"
 #include "Bunker.h"
 #include "GuideLine.h"
 #include "GuideItem.h"
 #include "essVariables.h"
+#include "AttachSupport.h"
 
 #include "ODIN.h"
-#include "ESTIA.h"
-#include "LOKI.h"
-#include "NMX.h"
+#include "BEER.h"
+#include "BIFROST.h"
+#include "CSPEC.h"
 #include "DREAM.h"
+#include "ESTIA.h"
+#include "FREIA.h"
+#include "LOKI.h"
+#include "MAGIC.h"
+#include "MIRACLES.h"
+#include "NMX.h"
+#include "VESPA.h"
+#include "VOR.h"
+
 #include "shortDREAM.h"
 #include "shortODIN.h"
-#include "VOR.h"
+#include "simpleITEM.h"
 
 #include "beamlineConstructor.h"
 #include "makeESSBL.h"
@@ -155,7 +167,6 @@ makeESSBL::getBeamNum(const std::string& Name)
   return Out;
 }
   
-  
 void 
 makeESSBL::build(Simulation& System,
                  const Bunker& bunkerObj)
@@ -176,51 +187,88 @@ makeESSBL::build(Simulation& System,
     OR.getObject<attachSystem::FixedComp>(shutterName);
   const GuideItem* mainGIPtr=
     dynamic_cast<const GuideItem*>(mainFCPtr);
-    
   if (!mainGIPtr)
-    throw ColErr::InContainerError<std::string>(shutterName,"shutterObject");
-        
-  if (beamName=="ODIN")
+    throw ColErr::InContainerError<std::string>(shutterName,"GuideItem");
+	
+  if (beamName=="BEER")
     {
-      // Odin beamline
-      ODIN OdinBL("odin");
-      OdinBL.build(System,*mainGIPtr,bunkerObj,voidCell);
-    }
-  else if (beamName=="SHORTODIN")
+      BEER beerBL("beer");
+      beerBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+      
+    }  
+  else if (beamName=="BIFROST")
     {
-      // Odin beamline
-      ODIN OdinBL("shortOdin");
-      OdinBL.build(System,*mainGIPtr,bunkerObj,voidCell);
-    }
-  else if (beamName=="ESTIA")
+      BIFROST bifrostBL("bifrost");
+      bifrostBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }  
+  else if (beamName=="CSPEC")
     {
-      ESTIA estiaBL;
-      estiaBL.build(System,*mainGIPtr,bunkerObj,voidCell);
-    }
-  else if (beamName=="LOKI")
-    {
-      // LOKI beamline
-      LOKI LokiBL("loki");
-      LokiBL.build(System,*mainGIPtr,bunkerObj,voidCell);
-    }
-  else if (beamName=="NMX")
-    {
-      // NMX beamline
-      ELog::EM<<"Building "<<beamName<<ELog::endDiag;
-      NMX nmxBL("nmx");
-      nmxBL.build(System,*mainGIPtr,bunkerObj,voidCell);
-    }
-  else if (beamName=="VOR")
-    {
-      ELog::EM<<"Building "<<beamName<<ELog::endDiag;
-      VOR vorBL("vor");
-      vorBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+      // DREAM beamline
+      CSPEC cspecBL("cspec");
+      cspecBL.build(System,*mainGIPtr,bunkerObj,voidCell);
     }
   else if (beamName=="DREAM")
     {
       // DREAM beamline
       DREAM dreamBL("dream");
       dreamBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }
+  else if (beamName=="ESTIA")
+    {
+      ESTIA estiaBL;
+      estiaBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }
+  else if (beamName=="FREIA")
+    {
+      FREIA freiaBL("freia");
+      freiaBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }  
+  else if (beamName=="LOKI")
+    {
+      // LOKI beamline
+      LOKI lokiBL("loki");
+      lokiBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }
+  else if (beamName=="MAGIC")
+    {
+      MAGIC magicBL("magic");
+      magicBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }  
+
+  else if (beamName=="MIRACLES")
+    {
+      // NMX beamline
+      MIRACLES miraclesBL("miracles");
+      miraclesBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }
+  else if (beamName=="NMX")
+    {
+      // NMX beamline
+      NMX nmxBL("nmx");
+      nmxBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }
+  else if (beamName=="ODIN")
+    {
+      // Odin beamline
+      ODIN OdinBL("odin");
+      OdinBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }
+  else if (beamName=="VESPA")
+    {
+      // DREAM beamline
+      VESPA vespaBL("vespa");
+      vespaBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }
+  else if (beamName=="VOR")
+    {
+      VOR vorBL("vor");
+      vorBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }
+  else if (beamName=="SHORTODIN")
+    {
+      // Odin beamline
+      ODIN OdinBL("shortOdin");
+      OdinBL.build(System,*mainGIPtr,bunkerObj,voidCell);
     }
   else if (beamName=="SHORTDREAM")
     {
@@ -233,6 +281,12 @@ makeESSBL::build(Simulation& System,
       // short sector dream
       DREAM dreamBL("shortDream2");
       dreamBL.build(System,*mainGIPtr,bunkerObj,voidCell);
+    }
+  else if (beamName=="SIMPLE")
+    {
+      // LOKI beamline
+      simpleITEM simpleBL("simple");
+      simpleBL.build(System,*mainGIPtr,bunkerObj,voidCell);      
     }
   else if (beamName=="JSANS" || beamName=="JRef")
     {

@@ -96,7 +96,10 @@ namespace essSystem
     attachSystem::FixedComp(A),
     insIndex(A.insIndex),
     cellIndex(A.cellIndex),
-    nLayers(A.nLayers)
+    nLayers(A.nLayers),
+    baseFrac(A.baseFrac),
+    mat(A.mat),
+    active(A.active)
     /*!
       Copy constructor
       \param A :: BeRefInnerStructure to copy
@@ -113,10 +116,13 @@ namespace essSystem
   {
     if (this!=&A)
       {
-        attachSystem::ContainedComp::operator=(A);
-        attachSystem::FixedComp::operator=(A);
-        cellIndex=A.cellIndex;
-        nLayers=A.nLayers;
+	attachSystem::ContainedComp::operator=(A);
+	attachSystem::FixedComp::operator=(A);
+	cellIndex=A.cellIndex;
+	nLayers=A.nLayers;
+	baseFrac=A.baseFrac;
+	mat=A.mat;
+	active=A.active;
       }
     return *this;
   }
@@ -148,8 +154,14 @@ namespace essSystem
     ELog::RegMethod RegA("BeRefInnerStructure","populate");
 
     nLayers=Control.EvalVar<size_t>(keyName+"NLayers");
+<<<<<<< HEAD
     ModelSupport::populateDivideLen(Control,nLayers,keyName+"BaseLen", 1.0, baseFrac); // \todo check if 1.0 is correct here
+=======
+    ModelSupport::populateDivideLen(Control,nLayers,keyName+"BaseLen", 1.0, baseFrac);
+>>>>>>> CombLayer/ButterflyEngineering
     ModelSupport::populateDivide(Control,nLayers,keyName+"Mat", 0, mat);
+
+    active=Control.EvalDefVar<int>(keyName+"Active", 1);
 
     return;
   }
@@ -169,18 +181,9 @@ namespace essSystem
 
 
   void
-  BeRefInnerStructure::createSurfaces(const attachSystem::FixedComp& Reflector)
-  /*!
-    Create planes for the inner structure iside BeRef
-  */
-  {
-    ELog::RegMethod RegA("BeRefInnerStructure","createSurfaces");
-
-    return; 
-  }
-
-  void
-  BeRefInnerStructure::createObjects(Simulation& System, const attachSystem::FixedComp& Reflector)
+  BeRefInnerStructure::createObjects(Simulation& System, const attachSystem::FixedComp& Reflector,
+				     const std::string& BeCell,
+				     const size_t& topLP, const size_t& lowLP)
   /*!
     Create the objects
     \param System :: Simulation to add results
@@ -189,8 +192,8 @@ namespace essSystem
   {
     ELog::RegMethod RegA("BeRefInnerStructure","createObjects");
 
-    layerProcess(System, Reflector, "topBe", 10, 7);
-    layerProcess(System, Reflector, "lowBe", 9, 6);
+    if (active)
+      layerProcess(System, Reflector, BeCell, topLP, lowLP);
 
     return;
   }
@@ -208,7 +211,7 @@ namespace essSystem
   }
 
   void
-  BeRefInnerStructure::layerProcess(Simulation& System, const attachSystem::FixedComp& Reflector, const std::string& cellName, const int& lpS, const int& lsS)
+  BeRefInnerStructure::layerProcess(Simulation& System, const attachSystem::FixedComp& Reflector, const std::string& cellName, const size_t& lpS, const size_t& lsS)
   /*!
     Processes the splitting of the surfaces into a multilayer system
     \param System :: Simulation to work on
@@ -269,7 +272,14 @@ namespace essSystem
 
   void
   BeRefInnerStructure::createAll(Simulation& System,
+<<<<<<< HEAD
                                  const attachSystem::FixedComp& FC)
+=======
+				 const attachSystem::FixedComp& FC,
+				 const std::string& BeCell,
+				 const size_t& topLP,
+				 const size_t& lowLP)
+>>>>>>> CombLayer/ButterflyEngineering
   /*!
     Extrenal build everything
     \param System :: Simulation
@@ -281,8 +291,7 @@ namespace essSystem
     populate(System.getDataBase());
     createUnitVector(FC);
 
-    createSurfaces(FC);
-    createObjects(System, FC);
+    createObjects(System, FC, BeCell, topLP, lowLP);
     createLinks();
 
     insertObjects(System);       

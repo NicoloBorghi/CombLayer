@@ -3,7 +3,7 @@
  
  * File:   beamlineInc/BenderUnit.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,9 @@ class BenderUnit : public ShapeUnit
   Geometry::Vec3D RAxis;      ///< Rotation axis
   Geometry::Vec3D RPlane;     ///< Rotation Centre direction
 
+  Geometry::Quaternion Qxy;   ///< Main XY bend-orientation rotation
+  Geometry::Quaternion Qz;    ///< Main Z bend-orientation rotation
+  
   double Radius;              ///< Primary rotation ratius
   double aHeight;             ///< Height across rotation plane [start]
   double bHeight;             ///< Across rotation plane [end]
@@ -85,7 +88,10 @@ class BenderUnit : public ShapeUnit
 				const size_t) const;
   virtual std::string getExclude(const ModelSupport::surfRegister&,
 				 const size_t) const;
+  virtual void addSideLinks(const ModelSupport::surfRegister&,
+			    attachSystem::FixedComp&) const;
 
+  
   virtual void createSurfaces(ModelSupport::surfRegister&,
 		      const std::vector<double>&);
 };

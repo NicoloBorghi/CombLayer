@@ -3,7 +3,7 @@
  
  * File:   constructInc/BasicFlightLine.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,12 @@ class BasicFlightLine : public attachSystem::ContainedGroup,
   public attachSystem::FixedComp,
   public attachSystem::CellMap
 {
- private:
+ protected:
   
   const int flightIndex;        ///< Index of surface offset
+
+ private:
+  
   int cellIndex;                ///< Cell index
   
   double xStep;                 ///< Offset on X 
@@ -49,8 +52,6 @@ class BasicFlightLine : public attachSystem::ContainedGroup,
   double xyAngle;               ///< XY plance rotation
   double zAngle;                ///< Z axis rotation
 
-  double masterXY;              ///< Master rotation of general axis(XY)
-  double masterZ;               ///< Master rotation of general axis(Z)
   double anglesXY[2];           ///< Rotation in the XY plane 
   double anglesZ[2];            ///< Rotation in the Z plane
   
@@ -63,6 +64,7 @@ class BasicFlightLine : public attachSystem::ContainedGroup,
   std::vector<double> lThick;   ///< Linear Thickness 
   std::vector<int> lMat;        ///< Layer Material
 
+  int tapFlag;                  ///< Taper type flag
   std::string attachRule;       ///< Attached rule
   
   void populate(const FuncDataBase&);

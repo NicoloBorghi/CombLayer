@@ -63,6 +63,7 @@
 #include "FixedOffset.h"
 #include "BeamSource.h"
 #include "GammaSource.h"
+#include "PointSource.h"
 #include "SurfNormSource.h"
 #include "LensSource.h"
 #include "SourceCreate.h"
@@ -170,34 +171,55 @@ createESSSource(const FuncDataBase& Control,Source& sourceCard)
   sourceCard.setComp("y",yStart);
 
   const double xRange=Control.EvalDefVar<double>("sdefWidth",8.0);
-  const double step(0.5);  
+  const double zRange=Control.EvalDefVar<double>("sdefHeight",3.0);
+  const std::string pdf=Control.EvalDefVar<std::string>("sdefPDF", "gaus");
+
   std::vector<double> XPts;
   std::vector<double> XProb;
-  double XValue= -xRange-step;
-  do
-    {
-      XValue+=step;
-      XPts.push_back(XValue);
-      XProb.push_back(1.0-(XValue*XValue)/(xRange*xRange));
-    } while (XValue<xRange);
-
-  const double zRange=Control.EvalDefVar<double>("sdefHeight",3.0);
   std::vector<double> ZPts;
   std::vector<double> ZProb;
-  double ZValue= -zRange-step;
-  do
+  char siOption;
+  if (pdf=="gaus")
     {
-      ZValue+=step;
-      ZPts.push_back(ZValue);
-      ZProb.push_back(1.0-(ZValue*ZValue)/(zRange*zRange));
-    } while (ZValue<zRange);
-  
+      siOption = 'A';
+      const double step(0.5);  
+      double XValue= -xRange-step;
+      do
+	{
+	  XValue+=step;
+	  XPts.push_back(XValue);
+	  XProb.push_back(1.0-(XValue*XValue)/(xRange*xRange));
+	} while (XValue<xRange);
+
+      double ZValue= -zRange-step;
+      do
+	{
+	  ZValue+=step;
+	  ZPts.push_back(ZValue);
+	  ZProb.push_back(1.0-(ZValue*ZValue)/(zRange*zRange));
+	} while (ZValue<zRange);
+    } else if (pdf=="uniform")
+    {
+      siOption = 'h';
+      XPts.push_back(-xRange);
+      XPts.push_back(xRange);
+      XProb.push_back(0);
+      XProb.push_back(1);
+      ZPts.push_back(-zRange);
+      ZPts.push_back(zRange);
+      ZProb.push_back(0);
+      ZProb.push_back(1);
+    } else
+    {
+      throw ColErr::InvalidLine(pdf,"sdefPDF can be either \"gaus\" or \"uniform\"");
+    }
   
   SrcData D1(1);  
   SrcData D2(2);
-  
-  SrcInfo SI1('A');
-  SrcInfo SI2('A');
+
+  SrcInfo SI1(siOption);
+  SrcInfo SI2(siOption);
+
   SI1.setData(XPts);
   SI2.setData(ZPts);
 
@@ -367,6 +389,67 @@ createTS1Source(const FuncDataBase& Control,Source& sourceCard)
 }
 
 void
+createPointSource(const FuncDataBase& Control,
+		  const std::string& keyName,
+		  const attachSystem::FixedComp& FC,
+		  const long int linkIndex,
+                  const Geometry::Vec3D& D,
+		  Source& Card)
+  /*!
+    Create the point source -- currently a copy of the photo
+    nuclear experiment source
+    \param Control :: Variables data base
+    \param keyName :: keyname for source
+    \param FC :: Link point
+    \param linkIndex :: Link point [signed] 
+    \param D :: Step [default]
+    \param Card :: Source system
+  */
+{
+  ELog::RegMethod RegA("SourceCreate","createPointSource(FC,link)");
+  PointSource GX(keyName);
+  GX.setDefaultStep(D);
+  GX.createAll(Control,FC,linkIndex,Card);
+  return;
+}
+  
+void
+createPointSource(const FuncDataBase& Control,
+		  const std::string& keyName,
+                  const std::string& DVec,
+                  Source& Card)
+  /*!
+    Create the photon source for gamma-nuclea spectrum
+    nuclear experiment source
+    \param Control :: Variables data base
+    \param keyName :: keyname for Gamma source
+    \param D ::Step [default]
+    \param Card :: Source system
+   */
+{
+  ELog::RegMethod RegA("SourceCreate","createPointSource");
+
+
+  PointSource GX(keyName);
+  if (!DVec.empty())
+    {
+      double D(0.0);
+      Geometry::Vec3D DOffsetStep;
+      if (!StrFunc::convert(DVec,DOffsetStep) && 
+	  StrFunc::convert(DVec,D))
+	DOffsetStep[1]=D;
+      else
+	ELog::EM<<"DObj "<<DVec<<" not understood "<<ELog::endErr;
+      
+      GX.setDefaultStep(DOffsetStep);
+    }
+
+
+  GX.createAll(Control,Card);
+  return;
+}
+
+void
 createBeamSource(const FuncDataBase& Control,
 		  const std::string& keyName,Source& Card)
   /*!
@@ -380,13 +463,15 @@ createBeamSource(const FuncDataBase& Control,
   ELog::RegMethod RegA("SourceCreate","createBeamSource");
 
   BeamSource GX(keyName);
+  
   GX.createAll(Control,Card);
   return;
 }
   
 void
 createGammaSource(const FuncDataBase& Control,
-		  const std::string& keyName,Source& Card)
+		  const std::string& keyName,
+                  Source& Card)
   /*!
     Create the photon source for gamma-nuclea spectrum
     nuclear experiment source
@@ -416,7 +501,7 @@ createGammaSource(const FuncDataBase& Control,
     \param Card :: Source system
    */
 {
-  ELog::RegMethod RegA("SourceCreate","createGammaSource(FC,link)");
+  ELog::RegMethod RegA("SourceCreate[F]","createGammaSource(FC,link)");
   GammaSource GX(keyName);
 
   GX.createAll(Control,FC,linkIndex,Card);

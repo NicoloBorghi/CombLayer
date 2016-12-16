@@ -3,7 +3,7 @@
  
  * File:   essBuildInc/Bunker.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@ class Simulation;
 namespace essSystem
 {
   class BunkerMainWall;
+  class BunkerRoof;
+  class BunkerWall;
   class BunkerInsert;
   
 /*!
@@ -74,15 +76,10 @@ class Bunker : public attachSystem::ContainedComp,
   size_t nLayers;                ///< number of outgoing layers
   std::vector<double> wallFrac;  ///< thicknesss (fractions)
 
-  // ROOF
-  size_t activeRoof;              ///< Activeity for roof segments
-  size_t nRoofVert;               ///< number of layers
-  size_t nRoofRadial;             ///< number of radial layers
-  size_t nRoofSide;               ///< number of radial layers
-  std::vector<double> roofVert;    ///< Roof fractions
-  std::vector<double> roofRadial;  ///< Roof fractions
-  std::vector<double> roofSide;    ///< Roof fractions 
-  std::vector<int> roofMatVec;     ///< radial layer
+  /// Roof component
+  std::shared_ptr<BunkerRoof> roofObj;              
+  /// Roof component
+  std::shared_ptr<BunkerWall> wallObj;              
 
   // SIDES:
 
@@ -120,10 +117,10 @@ class Bunker : public attachSystem::ContainedComp,
   
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,
-                        const attachSystem::FixedComp&,
-                        const long int,const bool);
+			const attachSystem::FixedComp&,
+			const long int,const bool,const bool);
 
-  void createSurfaces();
+  void createSurfaces(const bool);
   void createLinks();
   void createObjects(Simulation&,const attachSystem::FixedComp&,
                      const long int);
@@ -144,16 +141,18 @@ class Bunker : public attachSystem::ContainedComp,
   Bunker& operator=(const Bunker&);
   virtual ~Bunker();
 
-  std::string calcSegment(const Simulation&,
-                          const Geometry::Vec3D&,
-                          const Geometry::Vec3D&) const;
+  void calcSegPosition(const size_t,Geometry::Vec3D&,
+		       Geometry::Vec3D&,Geometry::Vec3D&,
+		       Geometry::Vec3D&) const;
+  std::string calcSegment(const Simulation&,const Geometry::Vec3D&,
+			  const Geometry::Vec3D&) const;
   
   void setCutWall(const bool,const bool);
 
   void cutInsert(Simulation&,const BunkerInsert&) const;
   void createAll(Simulation&,const attachSystem::FixedComp&,
-                 const attachSystem::FixedComp&,
-                 const long int,const bool);
+		 const attachSystem::FixedComp&,
+		 const long int,const bool,const bool);
 
 };
 

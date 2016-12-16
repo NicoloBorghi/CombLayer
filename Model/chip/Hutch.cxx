@@ -3,7 +3,7 @@
  
  * File:   chip/Hutch.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1152,7 +1152,6 @@ ChipIRHutch::addCollimators(Simulation& System,
 {
   ELog::RegMethod RegA("ChipIRHutch","addCollimators");
 
-  const masterRotate& MR=masterRotate::Instance();
   chipIRDatum::chipDataStore& CS=chipIRDatum::chipDataStore::Instance();
   
   PreColObj->addInsertCell(collimatorVoid);
@@ -1181,8 +1180,7 @@ ChipIRHutch::addCollimators(Simulation& System,
   if (collActiveFlag & 2)
     Jaw->createAll(System,getKey("Beam"),-1);
 
-  return;	
-
+  /*
   CS.setCNum(chipIRDatum::preCollOrigin,
 	     MR.calcRotate(PreColObj->getCentre()));
   CS.setCNum(chipIRDatum::preCollAxis,
@@ -1197,7 +1195,7 @@ ChipIRHutch::addCollimators(Simulation& System,
 	     MR.calcRotate(Jaw->getCentre()));
   CS.setCNum(chipIRDatum::collHAxis,
 	     MR.calcAxisRotate(Jaw->getY()));
-
+  */
   return;
 }
   

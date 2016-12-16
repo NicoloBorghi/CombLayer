@@ -50,6 +50,7 @@
 #include "support.h"
 #include "mathSupport.h"
 #include "stringCombine.h"
+#include "NList.h"
 #include "NRange.h"
 #include "Tally.h"
 #include "TallyCreate.h"
@@ -83,6 +84,32 @@ template<typename T>
 ZoneUnit<T>::ZoneUnit() 
   /// Constructor
 {}
+
+template<typename T>  
+ZoneUnit<T>::ZoneUnit(const ZoneUnit<T>& A) :
+  Zones(A.Zones),ZoneData(A.ZoneData)
+  /*!
+    Copy constructor
+    \param A :: ZoneUnit to copy
+  */
+{}
+
+template<typename T>
+ZoneUnit<T>&
+ZoneUnit<T>::operator=(const ZoneUnit<T>& A)
+  /*!
+    Assignment operator
+    \param A :: ZoneUnit to copy
+    \return *this
+  */
+{
+  if (this!=&A)
+    {
+      Zones=A.Zones;
+      ZoneData=A.ZoneData;
+    }
+  return *this;
+}
 
 template<typename T>
 size_t
@@ -157,12 +184,6 @@ ZoneUnit<T>::procZone(std::vector<std::string>& StrItem)
       const ModelSupport::objectRegister& OR= 
 	ModelSupport::objectRegister::Instance();
       std::vector<int> cellN=OR.getObjectRange(StrItem[1]);
-      //      const int cellN=OR.getCell(StrItem[1]);
-      //      const int rangeN=OR.getRange(StrItem[1]);
-      //      ELog::EM<<"Cells == "<<cellN<<" "<<rangeN<<ELog::endDiag;
-      //if (cellN==0)
-      //throw ColErr::InContainerError<std::string>(StrItem[1],"Object name");
-
       while(!cellN.empty())
 	{
 	  Zones.push_back(createMapRange(cellN));

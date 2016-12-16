@@ -3,7 +3,7 @@
  
  * File:   attachComp/AttachSupport.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,7 @@
 #include "SurInter.h"
 #include "Line.h"
 #include "LineIntersectVisit.h"
+#include "LineTrack.h"
 #include "AttachSupport.h"
 
 #include "Debug.h"
@@ -230,9 +231,9 @@ addToInsertLineCtrl(Simulation& System,
 
   // Determin cells to scan
   const int cellN=OR.getCell(OuterFC.getKeyName());
-  const int cellR=OR.getRange(OuterFC.getKeyName());
+  const int cellL=OR.getLast(OuterFC.getKeyName());
 
-  for(int i=cellN+1;i<=cellN+cellR;i++)
+  for(int i=cellN+1;i<=cellL;i++)
     addToInsertLineCtrl(System,InsertFC,CC,i);
 
   return;
@@ -267,5 +268,72 @@ addToInsertLineCtrl(Simulation& System,
     }
   return;
 }
+
+void
+lineIntersect(Simulation& System,
+	      const FixedComp& FC,
+	      std::map<int,MonteCarlo::Object*>& OMap)
+  /*!
+    For the line from APt to BPt Axis find all the intercepts
+    in the model and add them to cells
+    \param System :: Simualation to use
+    \param FC :: Fixed Comp
+    \param OMap :: Object map to add extra units to
+  */
+{
+  ELog::RegMethod RegA("","lineIntersect(Pt,Axis)");
+
+  const long int NC(static_cast<long int>(FC.NConnect()));
+
+  for(long int i=0;i<=NC;i++)
+    {
+      const Geometry::Vec3D APt(FC.getSignedLinkPt(i));
+      for(long int j=i+1;j<=NC;j++)
+	{
+	  const Geometry::Vec3D BPt(FC.getSignedLinkPt(j));
+	  lineIntersect(System,APt,BPt,OMap);
+	}
+    }
+  return;
+}
+		    	  
+  
+void
+lineIntersect(Simulation& System,
+	      const Geometry::Vec3D& APt,
+	      const Geometry::Vec3D& BPt,
+	      std::map<int,MonteCarlo::Object*>& OMap)
+  /*!
+    For the line from APt to BPt Axis find all the intercepts
+    in the model and add them to cells
+    \param System :: Simualation to use
+    \param APt :: Start Point
+    \param BPt :: Start Point
+    \param OMap :: Object map to add extra units to
+  */
+{
+  ELog::RegMethod RegA("","lineIntersect(Vec3D)");
+
+  // construct lines 
+
+  size_t nOut(0);
+  ModelSupport::LineTrack LT(APt,BPt);
+  LT.calculate(System);
+
+  const std::vector<MonteCarlo::Object*>& OVec=LT.getObjVec();
+  for(MonteCarlo::Object* oc : OVec)
+    {	  
+      const int ONum=oc->getName();
+      if (OMap.find(ONum)==OMap.end())
+	{
+	  nOut++;
+	  OMap.emplace(ONum,oc);
+	}
+    }
+  return;
+}
+	      
+	      
+
   
 }  // NAMESPACE attachSystem

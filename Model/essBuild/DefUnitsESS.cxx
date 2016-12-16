@@ -67,34 +67,36 @@ setDefUnits(FuncDataBase& Control,
   defaultConfig A("");
   if (IParam.flag("defaultConfig"))
     {
-      const size_t ICnt=IParam.itemCnt("defaultConfig",0);
       const std::string Key=IParam.getValue<std::string>("defaultConfig");
-
-      const std::string sndItem=(ICnt>1) ? 
-        IParam.getValue<std::string>("defaultConfig",1) : "";
-      const std::string extraItem=(ICnt>2) ? 
-        IParam.getValue<std::string>("defaultConfig",2) : "";
-      const int filled=(ICnt>3) ? 
-        IParam.getValue<int>("defaultConfig",3) : 0;
       
+      std::vector<std::string> LItems=
+	IParam.getObjectItems("defaultConfig",0);
+
+      const std::string sndItem=(LItems.size()>1) ? LItems[1] : "";
+      const std::string extraItem=(LItems.size()>2) ? LItems[2] : "";
+
       if (Key=="Main")
         setESS(A);
       else if (Key=="Full")
         setESSFull(A);
       else if (Key=="PortsOnly")
-        setESSPortsOnly(A);
+	setESSPortsOnly(A,sndItem,extraItem);
       else if (Key=="Single")
-        setESSSingle(A,sndItem,extraItem,filled);
+	setESSSingle(A,LItems);
+      else if (Key=="neutronics")
+	setESSNeutronics(A,sndItem,extraItem);
       else if (Key=="help")
-        {
-          ELog::EM<<"Options : "<<ELog::endDiag;
-          ELog::EM<<"  Main : Everything that works"<<ELog::endDiag;
-          ELog::EM<<"  Full : Beamline on every port"<<ELog::endDiag;
-          ELog::EM<<"  PortsOnly  : Nothing beyond beamport "<<ELog::endDiag;
-          ELog::EM<<"  Single  beamLine : Single beamline [for BL devel] "
-                  <<ELog::endDiag;
-          throw ColErr::ExitAbort("Iparam.defaultConfig");        
-        }
+	{
+	  ELog::EM<<"Options : "<<ELog::endDiag;
+	  ELog::EM<<"  Main : Everything that works"<<ELog::endDiag;
+	  ELog::EM<<"  Full : Beamline on every port"<<ELog::endDiag;
+	  ELog::EM<<"  PortsOnly [lower/upper] : Nothing beyond beamport "
+		  <<ELog::endDiag;
+	  ELog::EM<<"  Single  beamLine : Single beamline [for BL devel] "
+		  <<ELog::endDiag;
+	  ELog::EM<<"  neutronics {BF1,BF2} [single]: configuration for neutronics calculations " << ELog::endDiag;
+	  throw ColErr::ExitAbort("Iparam.defaultConfig");	  
+	}
       else 
         {
           ELog::EM<<"Unknown Default Key ::"<<Key<<ELog::endDiag;
@@ -120,24 +122,21 @@ setESSFull(defaultConfig& A)
 
   const std::map<std::string,std::string> beamDef=
     {
-      //      {"NMX","G4BLine18"},
-      //      {"SHORTDREAM","G4BLine9"},
-      //      {"SHORTDREAM2","G4BLine1"},
-      //      {"SHORTODIN","G4BLine7"},
-      //      {"DREAM","G4BLine17"},
-      //      {"VOR","G4BLine3"},   // also 17  
-      //      {"LOKI","G4BLine5"},
-      //      {"ODIN","G4BLine15"}
-      {"VOR","G4BLine1"},   // also 17
-      {"SHORTDREAM","G4BLine3"},
-      {"SHORTODIN","G4BLine5"},
-      {"LOKI","G4BLine7"},
-      {"SHORTDREAM2","G4BLine9"},
-      {"DREAM","G4BLine17"},
-      {"ODIN","G4BLine15"}
-    };     
+      {"MAGIC","G4BLine6"},          // W6
+      {"BIFROST","G4BLine4"},    // W4
+      {"NMX","G4BLine1"},        // W1
+      {"VOR","G3BLine10"},   // also 17
+      {"LOKI","G4BLine17"},
+      {"DREAM","G4BLine19"},
+      // {"CSPEC","G4BLine3"},
+       {"VESPA","G3BLine7"},
+      {"FREIA","G4BLine15"}     // N5
+      // {"ODIN","G2BLine2"}
+    };
+  
   const std::set<std::string> beamFilled=
-    {"NMX","DREAM","VOR","SHORTDREAM","SHORTDREAM2","LOKI"};
+    {"NMX","CSPEC","DREAM","FREIA","SHORTDREAM","SHORTDREAM2","LOKI",
+     "MAGIC","VESPA","VOR"};
 
   size_t index(0);
   std::map<std::string,std::string>::const_iterator mc;
@@ -149,87 +148,285 @@ setESSFull(defaultConfig& A)
         A.setVar(mc->second+"Filled",1);
       index++;
     }
-  
-
   return;
 }
 
 void
-setESSPortsOnly(defaultConfig& A)
+setESSPortsOnly(defaultConfig& A,const std::string& lvl,
+                const std::string& lvlExtra)
   /*!
     Default configuration for ESS for beamports only
     \param A :: Paramter for default config
+    \param lvl :: level value (lower/uppper)
+    \param lvlExtra :: extra level value (lower/uppper)
    */
 {
   ELog::RegMethod RegA("DefUnitsESS[F]","setESS");
 
+  static const std::map<std::string,std::string>
+    nameBay({
+        {"lower","G1BLine"},
+        {"upper","G4BLine"},
+        {"farUpper","G3BLine"},
+        {"farLower","G2BLine"}
+      });
+  
   A.setOption("lowMod","Butterfly");
-  for(size_t i=0;i<21;i++)
-    A.setVar("G1BLine"+StrFunc::makeString(i+1)+"Active",1);
 
-  ELog::EM<<"Port Only "<<ELog::endDiag;
+  int defaultFlag(0);
+  std::string GNum;
+  std::map<std::string,std::string>::const_iterator mc=
+    nameBay.find(lvlExtra);
+  if (mc!=nameBay.end())
+    {
+      for(size_t i=0;i<21;i++)
+        A.setVar(mc->second+StrFunc::makeString(i+1)+"Active",1);
+      defaultFlag=1;
+      GNum=mc->second+" ";
+    }
+  // and take default:
+  mc=nameBay.find(lvl);
+  if (mc!=nameBay.end())
+    {
+      for(size_t i=0;i<21;i++)
+        A.setVar(mc->second+StrFunc::makeString(i+1)+"Active",1);
+      defaultFlag=1;
+      GNum+=mc->second;
+    }
+  if (!defaultFlag)
+    {
+      GNum="G4BLine";
+      for(size_t i=0;i<21;i++)
+        A.setVar("G4BLine"+StrFunc::makeString(i+1)+"Active",1);
+    }
+      
+  ELog::EM<<"Port Only on sectors:"<<GNum<<ELog::endDiag;
   return;
 }
 
 void
 setESSSingle(defaultConfig& A,
-             const std::string& beamItem,
-             const std::string& portItem,
-             int filled)
+	     std::vector<std::string>& LItems)
 
   /*!
     Default configuration for ESS for testing single beamlines
     for building
     \param A :: Paramter for default config
-    \param beamItem :: Additional value for beamline name
-    \param portItem :: Additional value for port number/item
-    \param active :: Active flag
+    \param LItems :: single selection
    */
 {
-  ELog::RegMethod RegA("DefUnitsESS[F]","setESS");
+  ELog::RegMethod RegA("DefUnitsESS[F]","setESSSingle");
 
+  
   A.setOption("lowMod","Butterfly");
+  const std::map<std::string,std::string> beamDefNotSet=
+    { 
+     {"HEIMDAL","G4BLine8"},
+     {"SLEIPNIR","G4BLine13"},   // N9
+     {"ANNI","G3BLine3"},        // E3
+     {"SURFSCATTER","G3BLine8"},        // E8
+     {"SKADI","G3BLine5"}         // E5
+    };     
   const std::map<std::string,std::string> beamDef=
-    {{"NMX","G4BLine21"},
-     {"SHORTDREAM","G4BLine9"},
-     {"SHORTODIN","G1BLine16"},
-     {"DREAM","G4BLine17"},
-     {"VOR","G4BLine1"},   // also 17  
-     {"LOKI","G4BLine4"},
-     {"ODIN","G1BLine4"},   // Note reverse because on G1
-     {"ESTIA","G4BLine11"}
+    {{"NMX","G4BLine1"},        // W1
+     {"BIFROST","G4BLine4"},    // W4
+     {"MIRACLES","G4BLine5"},   // W5
+     {"SHORTDREAM","G4BLine17"},
+     {"SHORTODIN","G1BLine4"},
+     {"TREX","G4BLine7"},       // W7
+     {"MAGIC","G4BLine6"},      // W6
+     {"DREAM","G3BLine19"},     // S3
+     {"CSPEC","G4BLine3"},      // W3
+     {"VESPA","G3BLine7"},      // E7
+     {"VOR","G3BLine10"},       // E11  [CHANGED TO FIT]
+     {"SIMPLE","G4BLine17"},
+     {"LOKI","G4BLine17"},      // N7
+     {"ODIN","G2BLine2"},       // Lower S2
+     {"ESTIA","G3BLine2"},      // E2
+     {"FREIA","G4BLine15"},     // N5
+     {"BEER","G4BLine2"}        // W2
     };     
   const std::set<std::string> beamFilled=
-    {"NMX","DREAM","VOR","SHORTDREAM","LOKI"};
-  
-  std::map<std::string,std::string>::const_iterator mc=
-    beamDef.find(beamItem);
-  if (filled<0)  // deactivation if set
-    filled=0;
-  else if (!filled && beamFilled.find(beamItem)!=beamFilled.end())
-    filled=1;
-    
-  if (mc!=beamDef.end())
-    {
-      if (portItem.empty())
-        {
-          A.setMultiOption("beamlines",0,mc->second+" "+beamItem);
-          A.setVar(mc->second+"Active",1);
-          if (filled)
-            A.setVar(mc->second+"Filled",1);
-        }
-      else
-        {
-          A.setMultiOption("beamlines",0,portItem+" "+beamItem);
-          A.setVar(portItem+"Active",1);
-          if (filled)
-            A.setVar(portItem+"Filled",1);
-        }
-    }
-  else
-    throw ColErr::InContainerError<std::string>(beamItem,"BeamItem");
+    {"BEER","BIFROST","CSPEC","DREAM","FREIA","LOKI",
+     "MAGIC","MIRACLES","NMX","VESPA","VOR","SHORTDREAM"};
 
-  ELog::EM<<"TEST of "<<beamItem<<" Only "<<ELog::endDiag;
+  size_t beamLineIndex(0);
+  while(!LItems.empty())
+    {
+      bool portFlag=0;
+      if (LItems.front()!="Single")
+        {
+          const std::string beamItem=LItems.front();
+          const std::string portItem=(LItems.size()>1) ? LItems[1] : "";
+      
+          std::map<std::string,std::string>::const_iterator mc=
+            beamDef.find(beamItem);
+	
+          portFlag=beamDef.find(portItem)==beamDef.end();
+      
+          const int filled =
+            (beamFilled.find(beamItem)==beamFilled.end()) ? 0 : 1;
+          
+          if (mc!=beamDef.end())
+            {
+	      ELog::EM<<"Beam Def  == "<<mc->first<<ELog::endDiag;
+              if (!portFlag || portItem.empty())
+                {
+                  A.setMultiOption("beamlines",beamLineIndex,
+				   mc->second+" "+beamItem);
+                  A.setVar(mc->second+"Active",1);
+                  if (filled)
+                    A.setVar(mc->second+"Filled",1);
+                }
+              else
+                {
+                  A.setMultiOption("beamlines",beamLineIndex,
+				   portItem+" "+beamItem);
+                  A.setVar(portItem+"Active",1);
+                  if (filled)
+                    A.setVar(portItem+"Filled",1);
+                }
+	      beamLineIndex++;
+            }
+          else
+            throw ColErr::InContainerError<std::string>(beamItem,"BeamItem");
+        }
+      if (portFlag)
+        LItems.erase(LItems.begin(),LItems.begin()+1);
+      else
+        LItems.erase(LItems.begin());
+    }
+  return;
+}
+
+void
+setESSNeutronics(defaultConfig& A, const std::string& modtype, const std::string& single)
+
+  /*!
+    Default configuration for ESS for testing single beamlines
+    for building
+    \param A :: Paramter for default config
+    \param modtype :: Moderator type: either BF1 or BF2
+    \param single :: if "single" then only top moderator is built;
+                     if not specified then both moderators are built.
+   */
+{
+  ELog::RegMethod RegA("DefUnitsESS[F]","setESSSingle");
+
+  size_t bfType=0;
+  
+  if (modtype=="BF1")
+    {
+      bfType = 1;
+      A.setVar("TopFlyLeftLobeXStep", -2.0);
+      A.setVar("TopFlyRightLobeXStep", 2.0);
+      A.setVar("TopFlyMidWaterMidYStep", 7.0);
+      A.setOption("topPipe", "supply");
+
+      A.setVar("LowFlyLeftLobeXStep", -2.0);
+      A.setVar("LowFlyRightLobeXStep", 2.0);
+      A.setVar("LowFlyMidWaterMidYStep", 7.0);
+      A.setOption("lowPipe", "supply");
+
+      // straighten the pipes
+      A.setVar("TSupplyRightAlNSegIn", 1);
+      A.setVar("TSupplyRightAlPPt0", Geometry::Vec3D(0,0,0));
+      A.setVar("TSupplyRightAlPPt1", Geometry::Vec3D(0,15,0));
+      A.setVar("TSupplyLeftAlNSegIn", 1);
+      A.setVar("TSupplyLeftAlPPt0", Geometry::Vec3D(0,0,0));
+      A.setVar("TSupplyLeftAlPPt1", Geometry::Vec3D(0,15,0));
+
+      A.setVar("LSupplyRightAlNSegIn", 1);
+      A.setVar("LSupplyRightAlPPt0", Geometry::Vec3D(0,0,0));
+      A.setVar("LSupplyRightAlPPt1", Geometry::Vec3D(0,15,0));
+      A.setVar("LSupplyLeftAlNSegIn", 1);
+      A.setVar("LSupplyLeftAlPPt0", Geometry::Vec3D(0,0,0));
+      A.setVar("LSupplyLeftAlPPt1", Geometry::Vec3D(0,15,0));
+    } else if (modtype=="BF2")
+    {
+      bfType = 2;
+      // variables are set in moderatorVariables
+      // build pipes
+      A.setOption("topPipe", "supply,return");
+      A.setOption("lowPipe", "supply,return");
+    } else
+    throw ColErr::InvalidLine(modtype, "Either BF1 or BF2 are supported in defaultConfig");
+
+  if (single=="")
+    {
+      A.setOption("lowMod", "Butterfly");
+      A.setOption("topMod", "Butterfly");
+    } else if (single=="single")
+    {
+      A.setOption("lowMod", "None");
+      A.setOption("topMod", "Butterfly");
+      A.setVar("BeRefLowVoidThick", 0);
+      A.setVar("BeRefLowRefMat", "Iron_10H2O");
+      A.setVar("BeRefLowWallMat", "Iron_10H2O");
+      A.setVar("BeRefInnerStructureLowActive", 0);
+      // Since there is no bunkers, we have to 
+      // prolong collimators until they are emerged into ShutterBay, otherwise a neutron crosses imp=0 cell
+      A.setVar("F5DefaultLength", 500.0);
+    } else
+    throw ColErr::InvalidLine(single,"Either 'single' or nothing are supported in defaultConfig");
+
+  A.setVar("LowFlyType", bfType);
+  A.setVar("TopFlyType", bfType);
+
+  A.setOption("matDB", "neutronics");
+  A.setOption("physModel", "BD");
+
+  // simplify the bunkers
+  A.setOption("bunker", "noPillar");
+  A.setVar("ABunkerNRoofRadial", 1);
+  A.setVar("ABunkerNRoofVert", 1);
+  A.setVar("ABunkerNSectors", 1);
+  A.setVar("ABunkerNSegment", 1);
+  A.setVar("ABunkerNSideThick", 1);
+  A.setVar("ABunkerNSideVert", 1);
+  A.setVar("ABunkerRoofMat", "Void");
+  A.setVar("ABunkerWallMat", "Void");
+
+  A.setVar("BBunkerNRoofRadial", 1);
+  A.setVar("BBunkerNRoofVert", 1);
+  A.setVar("BBunkerNSectors", 1);
+  A.setVar("BBunkerNSegment", 1);
+  A.setVar("BBunkerNSideThick", 1);
+  A.setVar("BBunkerNSideVert", 1);
+  A.setVar("BBunkerRoofMat", "Void");
+  A.setVar("BBunkerWallMat", "Void");
+
+  A.setVar("CBunkerNRoofRadial", 1);
+  A.setVar("CBunkerNRoofVert", 1);
+  A.setVar("CBunkerNSectors", 1);
+  A.setVar("CBunkerNSegment", 1);
+  A.setVar("CBunkerNSideThick", 1);
+  A.setVar("CBunkerNSideVert", 1);
+  A.setVar("CBunkerRoofMat", "Void");
+  A.setVar("CBunkerWallMat", "Void");
+
+  A.setVar("DBunkerNRoofRadial", 1);
+  A.setVar("DBunkerNRoofVert", 1);
+  A.setVar("DBunkerNSectors", 1);
+  A.setVar("DBunkerNSegment", 1);
+  A.setVar("DBunkerNSideThick", 1);
+  A.setVar("DBunkerNSideVert", 1);
+  A.setVar("DBunkerRoofMat", "Void");
+  A.setVar("DBunkerWallMat", "Void");
+
+  // simplify the curtain
+  A.setVar("CurtainNBaseLayers", 1);
+  A.setVar("CurtainNMidLayers", 1);
+  A.setVar("CurtainNTopLayers", 1);
+  A.setVar("CurtainWallMat", "Void");
+
+  // sdef
+  A.setVar("sdefEnergy", 2000.0);
+  A.setVar("sdefWidth", 7.0);
+  A.setVar("sdefHeight", 1.6);
+  A.setVar("sdefYPos", -500);
+  A.setVar("sdefPDF", "uniform");
+  
   return;
 }
 
@@ -250,15 +447,14 @@ setESS(defaultConfig& A)
     {
       {"NMX","G4BLine17"},
       {"DREAM","G4BLine14"},
+      {"CSPEC","G4BLine13"},
       {"VOR","G4BLine7"},   // also 17  
       {"LOKI","G4BLine4"},
       {"ODIN","G4BLine19"}
     };     
   const std::set<std::string> beamFilled=
-    {"NMX","DREAM","VOR","LOKI"};
+    {"NMX","CSPEC","DREAM","VOR","LOKI"};
 
-
-  
   size_t index(0);
   std::map<std::string,std::string>::const_iterator mc;
   for(mc=beamDef.begin();mc!=beamDef.end();mc++)
@@ -273,4 +469,5 @@ setESS(defaultConfig& A)
   return;
 }
 
+  
 } // NAMESPACE mainSystem

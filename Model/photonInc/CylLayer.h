@@ -3,7 +3,7 @@
  
  * File:   photonInc/CylLayer.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,14 @@ class Simulation;
 namespace photonSystem
 {
 
+/*!
+  \struct LInfo
+  \author S. Ansell
+  \version 1.0
+  \date Janurary 2015
+  \brief Data unit for a layer in an object
+*/
+
 struct LInfo
 {
   size_t nDisk;                ///< number of units
@@ -48,18 +56,13 @@ struct LInfo
 */
 
 class CylLayer : public attachSystem::ContainedComp,
-   public attachSystem::FixedComp
+  public attachSystem::FixedOffset,
+  public attachSystem::BoundOuter
 {
  private:
 
   const int layerIndex;         ///< Index of surface offset
   int cellIndex;                ///< Cell index
-
-  double xStep;                 ///< X-Step
-  double yStep;                 ///< Y-Step
-  double zStep;                 ///< Z-Step
-  double xyAngle;               ///< Angle rotation [deg]
-  double zAngle;                ///< horizontal rotation [deg]
 
   double outerRadius;                ///< Outer radius
   size_t nLayers;                    ///< Layer count

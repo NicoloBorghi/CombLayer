@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   snsBuild/RefPlug.cxx
  *
- * Copyright (c) 2004-2014 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@
 #include "stringCombine.h"
 #include "LinkUnit.h"
 #include "FixedComp.h"
+#include "FixedOffset.h"
 #include "ContainedComp.h"
 #include "LayerComp.h"
 #include "RefPlug.h"
@@ -74,7 +75,7 @@ namespace snsSystem
 
 RefPlug::RefPlug(const std::string& Key) :
   attachSystem::ContainedComp(),attachSystem::LayerComp(0),
-  attachSystem::FixedComp(Key,6),
+  attachSystem::FixedOffset(Key,6),
   refIndex(ModelSupport::objectRegister::Instance().cell(Key)),
   cellIndex(refIndex+1)
   /*!
@@ -86,10 +87,9 @@ RefPlug::RefPlug(const std::string& Key) :
 RefPlug::RefPlug(const RefPlug& A) : 
   attachSystem::ContainedComp(A),
   attachSystem::LayerComp(A),
-  attachSystem::FixedComp(A),
-  refIndex(A.refIndex),cellIndex(A.cellIndex),xStep(A.xStep),
-  yStep(A.yStep),zStep(A.zStep),xyAngle(A.xyAngle),
-  zAngle(A.zAngle),height(A.height),depth(A.depth),
+  attachSystem::FixedOffset(A),
+  refIndex(A.refIndex),cellIndex(A.cellIndex),
+  height(A.height),depth(A.depth),
   radius(A.radius),temp(A.temp),mat(A.mat)
   /*!
     Copy constructor
@@ -109,13 +109,8 @@ RefPlug::operator=(const RefPlug& A)
     {
       attachSystem::ContainedComp::operator=(A);
       attachSystem::LayerComp::operator=(A);
-      attachSystem::FixedComp::operator=(A);
+      attachSystem::FixedOffset::operator=(A);
       cellIndex=A.cellIndex;
-      xStep=A.xStep;
-      yStep=A.yStep;
-      zStep=A.zStep;
-      xyAngle=A.xyAngle;
-      zAngle=A.zAngle;
       height=A.height;
       depth=A.depth;
       radius=A.radius;
@@ -149,13 +144,8 @@ RefPlug::populate(const FuncDataBase& Control)
   */
 {
   ELog::RegMethod RegA("RefPlug","populate");
-
+  FixedOffset::populate(Control);
     // Master values
-  xStep=Control.EvalVar<double>(keyName+"XStep");
-  yStep=Control.EvalVar<double>(keyName+"YStep");
-  zStep=Control.EvalVar<double>(keyName+"ZStep");
-  xyAngle=Control.EvalVar<double>(keyName+"XYangle");
-  zAngle=Control.EvalVar<double>(keyName+"Zangle");
   height=Control.EvalVar<double>(keyName+"Height");
   depth=Control.EvalVar<double>(keyName+"Depth");
 
@@ -189,16 +179,16 @@ RefPlug::populate(const FuncDataBase& Control)
 }
 
 void
-RefPlug::createUnitVector(const attachSystem::FixedComp& FC)
+RefPlug::createUnitVector(const attachSystem::FixedComp& FC,
+                          const long int sideIndex)
   /*!
     Create the unit vectors
     \param FC :: Fixed Component
   */
 {
   ELog::RegMethod RegA("RefPlug","createUnitVector");
-  attachSystem::FixedComp::createUnitVector(FC);
-  applyShift(xStep,yStep,zStep);
-  applyAngleRotate(xyAngle,zAngle);
+  attachSystem::FixedComp::createUnitVector(FC,sideIndex);
+  FixedOffset::applyOffset();
 
   return;
 }
@@ -295,23 +285,26 @@ RefPlug::createLinks()
 
 Geometry::Vec3D
 RefPlug::getSurfacePoint(const size_t layerIndex,
-			      const size_t sideIndex) const
+                         const long int sideIndex) const
   /*!
     Given a side and a layer calculate the link point
-    \param sideIndex :: Side [0-5]
     \param layerIndex :: layer, 0 is inner moderator [0-6]
+    \param sideIndex :: Side [0-6]
     \return Surface point
   */
 {
   ELog::RegMethod RegA("RefPlug","getSurfacePoint");
 
-  if (sideIndex>5) 
-    throw ColErr::IndexError<size_t>(sideIndex,5,"sideIndex ");
+  if (!sideIndex) return Origin;
   if (layerIndex>=nLayers) 
     throw ColErr::IndexError<size_t>(layerIndex,nLayers,"layer");
 
+  const size_t SI((sideIndex>0) ?
+                  static_cast<size_t>(sideIndex-1) :
+                  static_cast<size_t>(-1-sideIndex));
+
   // Modification map:
-  switch(sideIndex)
+  switch(SI)
     {
     case 0:
       return Origin-Y*radius[layerIndex];
@@ -326,16 +319,16 @@ RefPlug::getSurfacePoint(const size_t layerIndex,
     case 5:
       return Origin+Z*height;
     }
-  throw ColErr::IndexError<size_t>(sideIndex,5,"sideIndex ");
+  throw ColErr::IndexError<long int>(sideIndex,6,"sideIndex");
 }
 
 std::string
 RefPlug::getLayerString(const size_t layerIndex,
-			     const size_t sideIndex) const
+			const long int sideIndex) const
   /*!
     Given a side and a layer calculate the link surf
-    \param sideIndex :: Side [0-5]
     \param layerIndex :: layer, 0 is inner moderator [0-4]
+    \param sideIndex :: Side [1-6]
     \return Surface string
   */
 {
@@ -345,57 +338,69 @@ RefPlug::getLayerString(const size_t layerIndex,
     throw ColErr::IndexError<size_t>(layerIndex,nLayers,"layer");
 
   const int SI(refIndex+static_cast<int>(layerIndex)*10);
-  std::ostringstream cx;
-  switch(sideIndex)
+  const long int uSIndex(std::abs(sideIndex));
+  std::string Out;
+  switch(uSIndex)
     {
-    case 0:
-      return ModelSupport::getComposite(SMap,SI,refIndex," 7 -2M ");
     case 1:
-      return ModelSupport::getComposite(SMap,SI,refIndex," 7 2M ");
+      Out=ModelSupport::getComposite(SMap,SI,refIndex," 7 -2M ");
+      break;
     case 2:
-      return ModelSupport::getComposite(SMap,SI,refIndex," 7 -1M ");
+      Out=ModelSupport::getComposite(SMap,SI,refIndex," 7 2M ");
+      break;
     case 3:
-      return ModelSupport::getComposite(SMap,SI,refIndex," 7 1M ");
+      Out=ModelSupport::getComposite(SMap,SI,refIndex," 7 -1M ");
+      break;
     case 4:
-      cx<<" "<<-SMap.realSurf(SI+5)<<" ";
-      return cx.str();
+      Out=ModelSupport::getComposite(SMap,SI,refIndex," 7 -1M ");
+      break;
     case 5:
-      cx<<" "<<SMap.realSurf(SI+6)<<" ";
-      return cx.str();
+      Out=ModelSupport::getComposite(SMap,SI," -5 ");
+      break;
+    case 6:
+      Out=ModelSupport::getComposite(SMap,SI," 6 ");
+      break;
+    default:
+      throw ColErr::IndexError<long int>(sideIndex,6,"sideIndex");
     }
-  throw ColErr::IndexError<size_t>(sideIndex,5,"sideIndex ");
+  
+  HeadRule HR(Out);
+  if (sideIndex<0)
+    HR.makeComplement();
+  return HR.display();
+  
 }
 
 int
-RefPlug::getCommonSurf(const size_t sideIndex) const
+RefPlug::getCommonSurf(const long int sideIndex) const
   /*!
     Given a side calculate the boundary surface
-    \param sideIndex :: Side [0-5]
+    \param sideIndex :: Side [1-6]
     \return Common dividing surface [outward pointing]
   */
 {
   ELog::RegMethod RegA("RefPlug","getCommonSurf");
 
-  switch(sideIndex)
+  switch(std::abs(sideIndex))
     {
-    case 0:
-      return -SMap.realSurf(refIndex+2);
     case 1:
-      return SMap.realSurf(refIndex+2);
+      return -SMap.realSurf(refIndex+2);
     case 2:
-      return -SMap.realSurf(refIndex+1);
+      return SMap.realSurf(refIndex+2);
     case 3:
-      return SMap.realSurf(refIndex+1);
+      return -SMap.realSurf(refIndex+1);
     case 4:
+      return SMap.realSurf(refIndex+1);
     case 5:
+    case 6:
       return 0;
     }
-  throw ColErr::IndexError<size_t>(sideIndex,5,"sideIndex ");
+  throw ColErr::IndexError<long int>(sideIndex,6,"sideIndex ");
 }
 
 int
 RefPlug::getLayerSurf(const size_t layerIndex,
-		      const size_t sideIndex) const
+		      const long int sideIndex) const
   /*!
     Given a side and a layer calculate the link surf
     \param sideIndex :: Side [0-5]
@@ -409,37 +414,42 @@ RefPlug::getLayerSurf(const size_t layerIndex,
     throw ColErr::IndexError<size_t>(layerIndex,nLayers,"layer");
   
   const int SI(refIndex+static_cast<int>(layerIndex)*10);
-  switch(sideIndex)
+  const long int uSIndex(std::abs(sideIndex));
+  const int signValue((sideIndex>0) ? 1 : -1);
+
+  switch(uSIndex)
     {
-    case 0:
-      return SMap.realSurf(SI+7);
     case 1:
-      return SMap.realSurf(SI+7);
+      return signValue*SMap.realSurf(SI+7);
     case 2:
-      return SMap.realSurf(SI+7);
+      return signValue*SMap.realSurf(SI+7);
     case 3:
-      return SMap.realSurf(SI+7);
+      return signValue*SMap.realSurf(SI+7);
     case 4:
-      return -SMap.realSurf(refIndex+5);
+      return signValue*SMap.realSurf(SI+7);
     case 5:
-      return SMap.realSurf(refIndex+6);
+      return -signValue*SMap.realSurf(refIndex+5);
+    case 6:
+      return signValue*SMap.realSurf(refIndex+6);
     }
-  throw ColErr::IndexError<size_t>(sideIndex,5,"sideIndex ");
+  throw ColErr::IndexError<long int>(sideIndex,5,"sideIndex ");
 }
 
 void
 RefPlug::createAll(Simulation& System,
-		     const attachSystem::FixedComp& FC)
+		   const attachSystem::FixedComp& FC,
+                   const long int sideIndex)
   /*!
     Extrenal build everything
     \param System :: Simulation
-    \param FC :: FixedComponent for origin
+    \param FC :: FixedComp for origin
+    \param sideIndex :: link point
    */
 {
   ELog::RegMethod RegA("RefPlug","createAll");
   populate(System.getDataBase());
 
-  createUnitVector(FC);
+  createUnitVector(FC,sideIndex);
   createSurfaces();
   createObjects(System);
   createLinks();
@@ -448,4 +458,4 @@ RefPlug::createAll(Simulation& System,
   return;
 }
 
-}  // NAMESPACE instrumentSystem
+}  // NAMESPACE snsSystem

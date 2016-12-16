@@ -3,7 +3,7 @@
  
  * File:   attachCompInc/AttachSupport.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,6 +110,14 @@ HeadRule unionLink(const FixedComp&,
 		   const std::vector<long int>&);
 HeadRule intersectionLink(const FixedComp&,
 			  const std::vector<long int>&);
+
+
+void
+lineIntersect(Simulation&,const FixedComp&,
+	std::map<int,MonteCarlo::Object*>&);
+void
+lineIntersect(Simulation&,const Geometry::Vec3D&,const Geometry::Vec3D&,
+	      std::map<int,MonteCarlo::Object*>&);
  
 }
 

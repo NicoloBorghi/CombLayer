@@ -3,7 +3,7 @@
  
  * File:   essBuild/BunkerInsert.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,12 +77,7 @@
 #include "BaseMap.h"
 #include "CellMap.h"
 #include "SurfMap.h"
-#include "surfDBase.h"
-#include "surfDIter.h"
-#include "surfDivide.h"
-#include "mergeTemplate.h"
-
-#include "World.h"
+#include "FrontBackCut.h"
 #include "Bunker.h"
 #include "BunkerInsert.h"
 
@@ -90,8 +85,8 @@ namespace essSystem
 {
 
 BunkerInsert::BunkerInsert(const std::string& Key)  :
-  attachSystem::ContainedComp(),attachSystem::FixedOffset(Key,6),
-  attachSystem::CellMap(),
+  attachSystem::ContainedComp(),attachSystem::FixedOffset(Key,15),
+  attachSystem::CellMap(),attachSystem::FrontBackCut(),
   insIndex(ModelSupport::objectRegister::Instance().cell(Key)),
   cellIndex(insIndex+1)
   /*!
@@ -99,6 +94,48 @@ BunkerInsert::BunkerInsert(const std::string& Key)  :
     \param Key :: Name for item in search
   */
 {}
+
+BunkerInsert::BunkerInsert(const BunkerInsert& A) : 
+  attachSystem::ContainedComp(A),attachSystem::FixedOffset(A),
+  attachSystem::CellMap(A),attachSystem::FrontBackCut(A),
+  insIndex(A.insIndex),cellIndex(A.cellIndex),backStep(A.backStep),
+  height(A.height),width(A.width),topWall(A.topWall),
+  lowWall(A.lowWall),leftWall(A.leftWall),rightWall(A.rightWall),
+  wallMat(A.wallMat),voidMat(A.voidMat),outCut(A.outCut)
+  /*!
+    Copy constructor
+    \param A :: BunkerInsert to copy
+  */
+{}
+
+BunkerInsert&
+BunkerInsert::operator=(const BunkerInsert& A)
+  /*!
+    Assignment operator
+    \param A :: BunkerInsert to copy
+    \return *this
+  */
+{
+  if (this!=&A)
+    {
+      attachSystem::ContainedComp::operator=(A);
+      attachSystem::FixedOffset::operator=(A);
+      attachSystem::CellMap::operator=(A);
+      attachSystem::FrontBackCut::operator=(A);
+      cellIndex=A.cellIndex;
+      backStep=A.backStep;
+      height=A.height;
+      width=A.width;
+      topWall=A.topWall;
+      lowWall=A.lowWall;
+      leftWall=A.leftWall;
+      rightWall=A.rightWall;
+      wallMat=A.wallMat;
+      voidMat=A.voidMat;
+      outCut=A.outCut;
+    }
+  return *this;
+}
 
 BunkerInsert::~BunkerInsert() 
   /*!
@@ -136,7 +173,6 @@ BunkerInsert::createUnitVector(const attachSystem::FixedComp& FC,
                                const long int orgIndex)
   /*!
     Create the unit vectors
-    \param MainCentre :: Main rotation centre
     \param FC :: Linked object
     \param orgIndex :: link point
   */
@@ -177,8 +213,9 @@ BunkerInsert::createSurfaces()
 int
 BunkerInsert::objectCut(const std::vector<Geometry::Vec3D>& Corners) const
   /*!
-    Determine if Pts are within or within completely the bunker unit
-    \param Pts :: Point to check
+    Determine if a set of corners from another BunkerInsert item
+    are within, completely within, outside this bunker unit
+    \param Corners :: Points to test
     \retval 0 :: No intercept
     \retval -1 :: Partial inside
     \retval 1 :: Full inside 
@@ -260,6 +297,7 @@ BunkerInsert::createLinks(const attachSystem::FixedComp& BUnit)
 
 
   // Calc bunker edge intersectoin
+  std::vector<Geometry::Vec3D> endMidPt;
   std::vector<Geometry::Vec3D> Pts;
   std::vector<int> SNum;
 
@@ -270,7 +308,8 @@ BunkerInsert::createLinks(const attachSystem::FixedComp& BUnit)
   HM.calcSurfIntersection(Origin,Y,Pts,SNum);
   const size_t indexA=SurInter::closestPt(Pts,Origin);
   FixedComp::setConnect(0,Pts[indexA],-Y);
-
+  endMidPt.push_back(Pts[indexA]);
+  
   // Outer point
   HM=BUnit.getMainRule(1);
   HM.addIntersection(BUnit.getCommonRule(1));
@@ -278,6 +317,37 @@ BunkerInsert::createLinks(const attachSystem::FixedComp& BUnit)
   HM.calcSurfIntersection(Origin,Y,Pts,SNum);
   const size_t indexB=SurInter::closestPt(Pts,Origin);
   FixedComp::setConnect(1,Pts[indexB],Y);
+  endMidPt.push_back(Pts[indexB]);
+
+  // Mid point [useful for guides etc]
+  FixedComp::setConnect(6,(Pts[indexA]+Pts[indexB])/2.0,Y);
+
+  FixedComp::setConnect(2,Origin-X*(width/2.0),X);
+  FixedComp::setConnect(3,Origin+X*(width/2.0),X);
+  FixedComp::setConnect(4,Origin-Z*(height/2.0),Z);
+  FixedComp::setConnect(5,Origin+Z*(height/2.0),Z);
+  
+  FixedComp::setLinkSurf(2,SMap.realSurf(insIndex+3));
+  FixedComp::setLinkSurf(3,-SMap.realSurf(insIndex+4));
+  FixedComp::setLinkSurf(4,SMap.realSurf(insIndex+5));
+  FixedComp::setLinkSurf(5,-SMap.realSurf(insIndex+6));
+  
+  // add endpoint [not mid line]
+
+  size_t index(5);
+  for(const Geometry::Vec3D& EP : endMidPt)
+    {
+      FixedComp::setConnect(index+2,EP-X*(width/2.0),X);
+      FixedComp::setConnect(index+3,EP+X*(width/2.0),X);
+      FixedComp::setConnect(index+4,EP-Z*(height/2.0),Z);
+      FixedComp::setConnect(index+5,EP+Z*(height/2.0),Z);
+      
+      FixedComp::setLinkSurf(index+2,SMap.realSurf(insIndex+3));
+      FixedComp::setLinkSurf(index+3,-SMap.realSurf(insIndex+4));
+      FixedComp::setLinkSurf(index+4,SMap.realSurf(insIndex+5));
+      FixedComp::setLinkSurf(index+5,-SMap.realSurf(insIndex+6));
+      index+=4;
+    }
 
   
   return;

@@ -3,7 +3,7 @@
  
  * File:   attachCompInc/FixedComp.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #define attachSystem_FixedComp_h
 
 class localRotate;
+class HeadRule;
+
 
 namespace attachSystem
 {
@@ -46,11 +48,18 @@ class FixedComp
   Geometry::Vec3D Z;            ///< Z-coordinate 
   Geometry::Vec3D Origin;       ///< Origin  
 
-  Geometry::Vec3D beamOrigin;   ///< Neutron origin [if different]
-  Geometry::Vec3D beamAxis;     ///< Neutron direction [if different]
+  Geometry::Vec3D beamOrigin;    ///< Neutron origin [if different]
+  Geometry::Vec3D beamAxis;      ///< Neutron direction [if different]
+  Geometry::Vec3D orientateAxis; ///< Axis for reorientation
+  long int primeAxis;      ///< X/Y/Z Axis for reorientation [-ve for delay]
 
   std::vector<LinkUnit> LU;     ///< Linked unit items
-
+  static void computeZOffPlane(const Geometry::Vec3D&,
+			       const Geometry::Vec3D&,
+			       Geometry::Vec3D&);
+  
+  void makeOrthogonal();
+  
  public:
 
   FixedComp(const std::string&,const size_t);
@@ -64,21 +73,27 @@ class FixedComp
 
   const LinkUnit& operator[](const size_t) const; 
 
+  void reOrientate();
+  void reOrientate(const size_t,const Geometry::Vec3D&);
+  
   // Operator Set:
-  void createUnitVector();
   void createUnitVector(const FixedComp&);
   void createUnitVector(const FixedComp&,const Geometry::Vec3D&);
   void createUnitVector(const FixedComp&,const long int);
   void createUnitVector(const Geometry::Vec3D&,const Geometry::Vec3D&,
-			const Geometry::Vec3D&);
+			const Geometry::Vec3D&,const Geometry::Vec3D&);
 
   void setCentre(const Geometry::Vec3D&);
   void applyShift(const double,const double,const double);
+
   void applyAngleRotate(const double,const double);
   void applyAngleRotate(const double,const double,const double);
-  void linkAngleRotate(const long int,const double,const double);
   void applyFullRotate(const double,const double,
 		       const Geometry::Vec3D&);
+
+  void linkAngleRotate(const long int,const double,const double);
+  void linkShift(const long int,const double,const double,const double);
+
   void reverseZ();
   
   void setConnect(const size_t,const Geometry::Vec3D&,const Geometry::Vec3D&);
@@ -88,6 +103,8 @@ class FixedComp
   void setLinkSurf(const size_t,const int);
   void setLinkSurf(const size_t,const std::string&);
   void setLinkSurf(const size_t,const HeadRule&);
+  void setLinkSurf(const size_t,const HeadRule&,const bool,
+		   const HeadRule&,const bool);
   void addLinkSurf(const size_t,const int);
   void addLinkSurf(const size_t,const std::string&);
 
@@ -137,14 +154,16 @@ class FixedComp
   virtual int getLinkSurf(const size_t) const;
   virtual const Geometry::Vec3D& getLinkPt(const size_t) const;
   virtual const Geometry::Vec3D& getLinkAxis(const size_t) const;
-
+  
   virtual Geometry::Vec3D getSignedLinkPt(const long int) const;
   virtual Geometry::Vec3D getSignedLinkAxis(const long int) const;
   virtual std::string getSignedLinkString(const long int) const;
+  virtual double getLinkDistance(const long int,const long int) const;
   virtual int getSignedLinkSurf(const long int) const;
+  
+  HeadRule getSignedFullRule(const long int) const;
   HeadRule getSignedMainRule(const long int) const;
   HeadRule getSignedCommonRule(const long int) const;
-  
   
   const HeadRule& getMainRule(const size_t) const;
   const HeadRule& getCommonRule(const size_t) const;
@@ -164,11 +183,14 @@ class FixedComp
 
   const Geometry::Vec3D& getExit() const;
   const Geometry::Vec3D& getExitNorm() const;
-  void selectAltAxis(const size_t,Geometry::Vec3D&,
-		      Geometry::Vec3D&,Geometry::Vec3D&) const;
+  void selectAltAxis(const long int,Geometry::Vec3D&,
+		     Geometry::Vec3D&,Geometry::Vec3D&) const;
   void calcLinkAxis(const long int,Geometry::Vec3D&,
 		    Geometry::Vec3D&,Geometry::Vec3D&) const;
 
+  /// remove secondary control on axis
+  void clearAxisControl() { primeAxis=0; }
+  void setAxisControl(const long int,const Geometry::Vec3D&);
   virtual void applyRotation(const localRotate&);
   virtual void applyRotation(const Geometry::Vec3D&,const double);
   void setExit(const Geometry::Vec3D&,const Geometry::Vec3D&);

@@ -3,7 +3,7 @@
  
  * File:   include/Simulation.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,8 +88,7 @@ class Simulation
 
  protected:
 
-  int mcnpType;                         ///< MCNP(X) type
-
+  int mcnpVersion;                      ///< version of mcnp
   std::string inputFile;                ///< Input file
   std::string cmdLine;                  ///< Command line : historical recall 
   int CNum;                             ///< Number of complementary components
@@ -104,7 +103,7 @@ class Simulation
 
   TallyTYPE TItem;                        ///< Tally Items
   physicsSystem::PhysicsCards* PhysPtr;   ///< Physics Cards
-  WeightSystem::WeightControl* WCtrlPtr;  ///< Weight control pointer
+  //  WeightSystem::WeightControl* WCtrlPtr;  ///< Weight control pointer
   
   // METHODS:
 
@@ -150,8 +149,9 @@ class Simulation
   int isValidCell(const int,const Geometry::Vec3D&) const;
 
 
+  /// is the system MCNP6
+  bool isMCNP6() const { return mcnpVersion!=10; }
   
-
   MonteCarlo::Qhull* findQhull(const int);         
   const MonteCarlo::Qhull* findQhull(const int) const; 
   MonteCarlo::Object* findCell(const Geometry::Vec3D&,
@@ -170,8 +170,9 @@ class Simulation
   const FuncDataBase& getDataBase() const { return DB; }
   /// Get PhysicsCards
   physicsSystem::PhysicsCards& getPC() { return *PhysPtr; }
-  /// Access weight control
-  const OTYPE& getCells() const { return OList; } ///< Get cells
+
+  
+  const OTYPE& getCells() const { return OList; } ///< Get cells(const)
   OTYPE& getCells() { return OList; } ///< Get cells
   Geometry::Transform* createSourceTransform();
   
@@ -224,11 +225,8 @@ class Simulation
 
   // Tally processing
 
-  bool isMCNP6() { return (mcnpType==1) ? 1 : 0; }  ///< get a state
-  void setMcnpType(const int T) { mcnpType=T; }  ///< Set type
   void removeAllTally();
   int removeTally(const int);
-
 
   int addTally(const tallySystem::Tally&);
   tallySystem::Tally* getTally(const int) const;
@@ -241,7 +239,9 @@ class Simulation
 
   void setEnergy(const double);
   void setENDF7();
-
+  /// set MCNPversion
+  void setMCNPversion(const int);
+  
   void renumberAll();
   void renumberCells(const std::vector<int>&,const std::vector<int>&);
   void renumberSurfaces(const std::vector<int>&,const std::vector<int>&);

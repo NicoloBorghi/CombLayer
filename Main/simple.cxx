@@ -3,7 +3,7 @@
  
  * File:   Main/simple.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,6 +87,7 @@
 #include "DefPhysics.h"
 #include "BasicWWE.h"
 #include "MainProcess.h"
+#include "MainInputs.h"
 #include "SimProcess.h"
 #include "SurInter.h"
 #include "ReadFunctions.h"
@@ -149,7 +150,6 @@ main(int argc,char* argv[])
 	  SimPtr->resetAll();
 	  
 	  SimPtr->readMaster(Fname);
-	  SDef::sourceSelection(*SimPtr,IParam);
 	  
 	  SimPtr->removeComplements();
 	  SimPtr->removeDeadSurfaces(0);         
@@ -170,14 +170,11 @@ main(int argc,char* argv[])
 	    SimPtr->setENDF7();
 	  
 	  SimProcess::importanceSim(*SimPtr,IParam);
-	  SimProcess::inputPatternSim(*SimPtr,IParam); // energy cut etc
+	  SimProcess::inputProcessForSim(*SimPtr,IParam); // energy cut etc
 	  
 	  if (renumCellWork)
 	    tallyRenumberWork(*SimPtr,IParam);
 	  tallyModification(*SimPtr,IParam);
-	  
-	  if (IParam.flag("cinder"))
-	    SimPtr->setForCinder();
 	  
 	  // Ensure we done loop
 	  SimProcess::writeIndexSim(*SimPtr,Oname,MCIndex);

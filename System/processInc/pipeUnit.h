@@ -1,9 +1,9 @@
 /********************************************************************* 
-  CombLayer : MNCPX Input builder
+  CombLayer : MCNP(X) Input builder
  
  * File:   processInc/pipeUnit.h
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,9 +76,9 @@ class pipeUnit : public attachSystem::FixedComp,
   HeadRule ASurf;           ///< Start point rule if used [inward facing]
   HeadRule BSurf;           ///< End point rule if used [inward facing]
 
-  size_t activeFlag;           ///< Flag for active layers
+  size_t activeFlag;                  ///< Flag for active layers
   std::vector<cylValues> cylVar;      ///< Cylinder variables
-  std::set<int> cellCut;        ///< Cells the pipe 
+  std::set<int> cellCut;              ///< Cells the pipe 
   
   void calcNorm(const int,const Geometry::Vec3D&,
 		const Geometry::Vec3D&);
@@ -102,7 +102,7 @@ class pipeUnit : public attachSystem::FixedComp,
   pipeUnit& operator=(const pipeUnit&);
   virtual ~pipeUnit();
 
-  // Set Number of angles
+  /// Set Number of angles
   void setNAngle(const size_t A) { nAngle=(A) ? A : 6; }
   /// Access Axis
   const Geometry::Vec3D& getAxis() const { return Axis; }
@@ -118,7 +118,6 @@ class pipeUnit : public attachSystem::FixedComp,
   void setBSurf(const HeadRule&);
   void connectFrom(pipeUnit*);
   void connectTo(pipeUnit*);
-  void addCutCell(const int);  
 
   void createAll(Simulation&,const size_t,const std::vector<cylValues>&);
     

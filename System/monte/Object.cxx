@@ -3,7 +3,7 @@
  
  * File:   monte/Object.cxx
  *
- * Copyright (c) 2004-2015 by Stuart Ansell
+ * Copyright (c) 2004-2016 by Stuart Ansell
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1044,7 +1044,7 @@ Object::trackCell(const MonteCarlo::neutron& N,double& D,
 	  const int pAB=isDirectionValid(IPts[i],NS);
 	  const int mAB=isDirectionValid(IPts[i],-NS);
 	  const int normD=surfIndex[i]->sideDirection(IPts[i],N.uVec);
-
+          
 	  if (direction<0)
 	    {
 	      if (pAB!=mAB)  // out going positive surface
