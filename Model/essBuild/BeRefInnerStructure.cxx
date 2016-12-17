@@ -154,11 +154,7 @@ namespace essSystem
     ELog::RegMethod RegA("BeRefInnerStructure","populate");
 
     nLayers=Control.EvalVar<size_t>(keyName+"NLayers");
-<<<<<<< HEAD
-    ModelSupport::populateDivideLen(Control,nLayers,keyName+"BaseLen", 1.0, baseFrac); // \todo check if 1.0 is correct here
-=======
     ModelSupport::populateDivideLen(Control,nLayers,keyName+"BaseLen", 1.0, baseFrac);
->>>>>>> CombLayer/ButterflyEngineering
     ModelSupport::populateDivide(Control,nLayers,keyName+"Mat", 0, mat);
 
     active=Control.EvalDefVar<int>(keyName+"Active", 1);
@@ -272,14 +268,10 @@ namespace essSystem
 
   void
   BeRefInnerStructure::createAll(Simulation& System,
-<<<<<<< HEAD
-                                 const attachSystem::FixedComp& FC)
-=======
 				 const attachSystem::FixedComp& FC,
 				 const std::string& BeCell,
 				 const size_t& topLP,
 				 const size_t& lowLP)
->>>>>>> CombLayer/ButterflyEngineering
   /*!
     Extrenal build everything
     \param System :: Simulation
