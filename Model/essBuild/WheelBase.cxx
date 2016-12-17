@@ -75,7 +75,7 @@ namespace essSystem
 {
 
 WheelBase::WheelBase(const std::string& Key) :
-  attachSystem::ContainedGroup("Wheel","Shaft"),attachSystem::FixedComp(Key,10),
+  attachSystem::ContainedGroup("Wheel","Shaft"),attachSystem::FixedComp(Key,20),
   attachSystem::CellMap(),
   wheelIndex(ModelSupport::objectRegister::Instance().cell(Key)),
   cellIndex(wheelIndex+1)
