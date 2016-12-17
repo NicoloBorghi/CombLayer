@@ -167,6 +167,8 @@ namespace essSystem
   {
     ELog::RegMethod RegA("BilbaoWheelInnerStructure","populate");
 
+    xyAngle=Control.EvalVar<double>(keyName+"XYangle");
+
     brickLen=Control.EvalVar<double>(keyName+"BrickLength");
     brickWidth=Control.EvalVar<double>(keyName+"BrickWidth");
     brickMat=ModelSupport::EvalMat<int>(Control,keyName+"BrickMat");
@@ -200,6 +202,8 @@ namespace essSystem
   {
     ELog::RegMethod RegA("BilbaoWheelInnerStructure","createUnitVector");
     attachSystem::FixedComp::createUnitVector(FC);
+
+    applyAngleRotate(xyAngle,0.0);
 
     return;
   }
@@ -293,13 +297,17 @@ namespace essSystem
 	    // Tungsten
 	    SI1 = (j!=nSectors-1) ? SIsec+10 : insIndex+0;
 	    Out = ModelSupport::getComposite(SMap, SIsec, SI1, " 4 -3M ");
-	    if (j>=nBrickSectors)
+	    /*if (j>=nBrickSectors)
 		System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,temp,
 						 Out+vertStr+cylStr));
-	    else
+	    else*/ if ((j == 1) || (j == 20)) {
 	      createBricks(System, Wheel, 
 			   ModelSupport::getComposite(SMap, SIsec," 4 "), // side plane
 			   ModelSupport::getComposite(SMap, SI1, " -3 "), j); // another side plane
+            } else {
+		System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,temp,
+						 Out+vertStr+cylStr));
+            }
 	    
 	    // Pieces of steel between Tungsten sectors
 	    // -1 is needed since planes 3 and -4 cross Tunsten in two places,
