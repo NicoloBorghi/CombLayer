@@ -580,6 +580,8 @@ createESSInputs(inputParam& IParam)
   //  IParam.setValue("sdefEnergy",2503.0);    
   IParam.setValue("sdefType",std::string("ess"));  
   IParam.setValue("targetType",std::string("Bilbao"));
+
+  IParam.setValue("physModel",std::string("BD")); // NB set to Bertini instead of CEM03
   
   IParam.regDefItem<std::string>("lowMod","lowModType",1,std::string("lowMod"));
   IParam.regDefItem<std::string>("topMod","topModType",1,std::string("topMod"));
