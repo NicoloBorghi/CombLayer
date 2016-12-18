@@ -47,6 +47,7 @@
 #include "MatrixBase.h"
 #include "Matrix.h"
 #include "Vec3D.h"
+#include "Vec2D.h"
 #include "stringCombine.h"
 #include "inputParam.h"
 #include "Surface.h"
@@ -95,6 +96,12 @@
 #include "IradCylinder.h"
 #include "BulkModule.h"
 #include "TwisterModule.h"
+#include "DiagnosticPlug.h"
+#include "PinholeBase.h"
+#include "RectangularPinhole.h"
+#include "RectangularPinholeArray.h"
+#include "StrawCollimator.h"
+#include "ScintillatorBlock.h"
 #include "ShutterBay.h"
 #include "GuideBay.h"
 #include "DiskPreMod.h"
@@ -852,6 +859,49 @@ makeESS::buildTwister(Simulation& System)
   return;
 }
 
+void
+makeESS::buildDiagnosticPlug(Simulation& System, const std::string& pinholeType)
+        {
+
+          PinholeBase *pinhole;
+
+          ModelSupport::objectRegister& OR=
+            ModelSupport::objectRegister::Instance();
+
+          DPlug = std::shared_ptr<DiagnosticPlug>(new DiagnosticPlug("DiagnosticPlug"));
+          OR.addObject(DPlug);
+
+          if (pinholeType == "Rectangular") {
+
+                pinhole = new RectangularPinhole("RectangularPinhole");
+                DPlug->setPinhole(pinhole);
+
+          } else if (pinholeType == "RectangularArray") {
+
+                pinhole = new RectangularPinholeArray("RectangularPinholeArray");
+                DPlug->setPinhole(pinhole);
+
+          } else if (pinholeType == "Straws") {
+
+                DPlug->setStraws( new StrawCollimator("StrawCollimator") );
+                DPlug->setScintillators( new ScintillatorBlock("ScintillatorBlock") );
+
+          } else {
+
+                throw ColErr::InContainerError<std::string>(pinholeType,"Unknown pinholeType");
+
+          }
+
+          DPlug->createAll(System, *Bulk, *Target, 5, *ShutterBayObj, 5);
+          // ??? how to exclude DPlug from Bulk and ShutterBayObj in such a way that if DPlug
+          // does not cut one of these objects it is not removed from it (and does not make its
+          // HeadRule more complex) ???
+          attachSystem::addToInsertForced(System, *ShutterBayObj, *DPlug);
+          //  attachSystem::addToInsertControl(System, *DPlug, *ShutterBayObj); // why this does not work???   // attachSystem::addToInsertSurfCtrl(System, *DPlug, *ShutterBayObj); // and this???
+          attachSystem::addToInsertForced(System, *Bulk, *DPlug);
+ 
+}
+  
 void 
 makeESS::build(Simulation& System,
 	       const mainSystem::inputParam& IParam)
@@ -875,6 +925,8 @@ makeESS::build(Simulation& System,
   
   const std::string targetType=IParam.getValue<std::string>("targetType");
   const std::string iradLine=IParam.getValue<std::string>("iradLineType");
+
+  const std::string pinholeType=IParam.getValue<std::string>("pinholeType");
 
   const int matmesh=IParam.getValue<int>("matmesh"); // generate material mesh
 
@@ -998,6 +1050,7 @@ makeESS::build(Simulation& System,
   if (engActive)
     {
       buildTwister(System);
+      buildDiagnosticPlug(System,pinholeType);
     }
 
   if (lowModType != "None")
