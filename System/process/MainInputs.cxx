@@ -126,6 +126,7 @@ createInputs(inputParam& IParam)
   IParam.regDefItem<double>("photon","photon",1,0.001);  // 1keV
   IParam.regDefItem<double>("photonModel","photonModel",1,100.0);
   IParam.regItem("PTRAC","ptrac");
+  IParam.regItem("pinholeType","pinholeType",1);
   IParam.regDefItemList<std::string>("r","renum",10,RItems);
   IParam.regMulti("R","report",1000,0);
   IParam.regFlag("sdefVoid","sdefVoid");
@@ -582,6 +583,7 @@ createESSInputs(inputParam& IParam)
   IParam.setValue("targetType",std::string("Bilbao"));
 
   IParam.setValue("physModel",std::string("BD")); // NB set to Bertini instead of CEM03
+  IParam.setValue("pinholeType",std::string("Straws")); //  NB Set default Pinhole collimator type
   
   IParam.regDefItem<std::string>("lowMod","lowModType",1,std::string("lowMod"));
   IParam.regDefItem<std::string>("topMod","topModType",1,std::string("topMod"));
@@ -615,6 +617,7 @@ createESSInputs(inputParam& IParam)
   IParam.setDesc("nF5","Number of F5 collimators to build. \n"
 		 "  -- The collimators will be named as F5, F15, etc.\n"
 		 "  -- The corresponding variables must exist.");
+  IParam.setDesc("pinholeType","Set default Pinhole collimator type");
 
   return;
 }
