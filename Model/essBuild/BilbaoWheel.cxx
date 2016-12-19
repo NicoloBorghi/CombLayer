@@ -1160,16 +1160,17 @@ BilbaoWheel::createObjects(Simulation& System)
   Out=ModelSupport::getComposite(SMap,wheelIndex,SI," -7M 15 -5 117 " );
   System.addCell(MonteCarlo::Qhull(cellIndex++,0,0,Out));
 
-  // Steel above W
+  // Steel above W /// CELL OF INTEREST
   Out=ModelSupport::getComposite(SMap,wheelIndex,SI," -7M 16 -26 117 " );
   System.addCell(MonteCarlo::Qhull(cellIndex++,steelMat,mainTemp,Out));
+  CellMap::setCell("SteelAboveTungsten",cellIndex-1);
 
   // Steel below W
   Out=ModelSupport::getComposite(SMap,wheelIndex,SI," -7M 25 -15 117 ");
   System.addCell(MonteCarlo::Qhull(cellIndex++,steelMat,mainTemp,Out));
 
 
-  // Coolant above steel
+  // Coolant above steel /// CELL OF INTEREST
   Out=ModelSupport::getComposite(SMap,wheelIndex,SI, " -7M 26 -36 117 " );
   System.addCell(MonteCarlo::Qhull(cellIndex++,ssVoidMat,mainTemp,Out));
   CellMap::setCell("CoolantAboveSteel",cellIndex-1);
@@ -1183,9 +1184,10 @@ BilbaoWheel::createObjects(Simulation& System)
   Out=ModelSupport::getComposite(SMap,wheelIndex,"-527 517 35 -36");    
   divideRadial(System, Out, steelMat);
 
-  // forward Main sections:
+  // forward Main sections: // CELL OF INTEREST
   Out=ModelSupport::getComposite(SMap,wheelIndex,"-527 1027 -126 36");   // outer above W
   System.addCell(MonteCarlo::Qhull(cellIndex++,steelMat,mainTemp,Out));
+  CellMap::setCell("TopSteel",cellIndex-1);
 
   Out=ModelSupport::getComposite(SMap,wheelIndex,"-527 1027 125 -35");  
   System.addCell(MonteCarlo::Qhull(cellIndex++,steelMat,mainTemp,Out)); // outer below W
@@ -1257,6 +1259,30 @@ BilbaoWheel::createLinks()
 
           FixedComp::setConnect(10, Origin+Z*targetZTopSurface, Z);
           FixedComp::setLinkSurf(10, SMap.realSurf(wheelIndex+126));
+
+          double NH = TH + voidTungstenThick;
+          FixedComp::setConnect(11,Origin+Z*NH,Z);
+          FixedComp::setLinkSurf(11,SMap.realSurf(wheelIndex+16));
+
+          NH += steelTungstenThick;
+          FixedComp::setConnect(12,Origin+Z*NH,Z);
+          FixedComp::setLinkSurf(12,SMap.realSurf(wheelIndex+26));
+
+          FixedComp::setConnect(13,Origin-Y*radius[1], Y);
+          FixedComp::setLinkSurf(13,SMap.realSurf(wheelIndex+27));
+
+          NH += coolantThick;
+          FixedComp::setConnect(14,Origin+Z*NH,Z);
+          FixedComp::setLinkSurf(14,SMap.realSurf(wheelIndex+36));
+
+          FixedComp::setConnect(15,Origin-Y*radius[2], Y);
+          FixedComp::setLinkSurf(15,SMap.realSurf(wheelIndex+37));
+
+          FixedComp::setConnect(16,Origin-Y*caseRadius, Y);
+          FixedComp::setLinkSurf(16,SMap.realSurf(wheelIndex+527));
+
+          FixedComp::setConnect(17,Origin-Y*coolantRadiusIn, Y);
+          FixedComp::setLinkSurf(17,SMap.realSurf(wheelIndex+1027));
 
           return; // !!! we assume that there is only one Tungsten layer
         }

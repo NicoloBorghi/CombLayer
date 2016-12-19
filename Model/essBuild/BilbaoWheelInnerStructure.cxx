@@ -279,11 +279,38 @@ namespace essSystem
     int innerMat = MatInfo.first;
     temp = MatInfo.second;
 
+        HeadRule HR = (System.findQhull(CM->getCell("TopSteel")))->getHeadRule();
+        std::cout << "#################### HR ######################" << HR.display() << std::endl;
+        HR = (System.findQhull(CM->getCell("SteelAboveTungsten")))->getHeadRule();
+        std::cout << "#################### HR ######################" << HR.display() << std::endl;
+        HR = (System.findQhull(CM->getCell("CoolantAboveSteel")))->getHeadRule();
+        std::cout << "#################### HR ######################" << HR.display() << std::endl;
+
     std::string vertStr = Wheel.getLinkString(6) + Wheel.getLinkString(7); // top+bottom
     std::string cylStr = Wheel.getLinkString(8) + Wheel.getLinkString(9); // min+max radii
 
     //    System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,temp,vertStr+cylStr));
+
+    ////// Retrieve surfaces from wheel
+
+        std::string Pl1 = Wheel.getLinkString(14);
+        std::string Pl2 = Wheel.getLinkComplement(10);
+        std::string Cyl1 = Wheel.getLinkString(13);
+        std::string El1 = Wheel.getLinkComplement(16);
+        std::string Pl3 = Wheel.getLinkComplement(12);
+        std::string Pl4 = Wheel.getLinkString(11);
+        std::string Cyl2 = Wheel.getLinkComplement(15);
+
+        std::string compare1 = Pl1 + Pl2 + Cyl1 + El1; std::cout << "=== COMPARE === " << compare1 << std::endl;
+
+    ///////////////////////////////////
     
+    ////// Retrieve surfaces from wheel
+
+        std::string Sec1Right, Sec1Left;
+        std::string Sec20Right, Sec20Left;
+
+    ///////////////////////////////////
 
     //    int SI(insIndex);
     int SIsec(insIndex+0), SI1;
@@ -304,6 +331,19 @@ namespace essSystem
 	      createBricks(System, Wheel, 
 			   ModelSupport::getComposite(SMap, SIsec," 4 "), // side plane
 			   ModelSupport::getComposite(SMap, SI1, " -3 "), j); // another side plane
+
+                if (j == 1) {
+
+                        Sec1Left = ModelSupport::getComposite(SMap, SIsec," 4 ");
+                        Sec1Right = ModelSupport::getComposite(SMap, SI1, " -3 ");
+
+                } else if (j == 20) {
+
+                        Sec20Left = ModelSupport::getComposite(SMap, SIsec," 4 ");
+                        Sec20Right = ModelSupport::getComposite(SMap, SI1, " -3 ");
+
+                }
+
             } else {
 		System.addCell(MonteCarlo::Qhull(cellIndex++,innerMat,temp,
 						 Out+vertStr+cylStr));
@@ -327,6 +367,12 @@ namespace essSystem
     //    vertStr =  // top+bottom
     //    cylStr = Wheel.getLinkString(9) + " a " + Wheel.getLinkString(10) + "b"; // min+max radii
     //    ELog::EM << "cylStr" << cylStr << ELog::endDiag;
+
+        Out = Pl1 + Pl2 + Cyl1 + El1 + Sec1Left + Sec1Right;
+        System.addCell(MonteCarlo::Qhull(cellIndex++,0,temp,Out));
+    
+        Out = Pl1 + Pl2 + Cyl1 + El1 + Sec20Left + Sec20Right;
+        System.addCell(MonteCarlo::Qhull(cellIndex++,0,temp,Out));
     
     return; 
   }
