@@ -286,6 +286,10 @@ namespace essSystem
         HR = (System.findQhull(CM->getCell("CoolantAboveSteel")))->getHeadRule();
         std::cout << "#################### HR ######################" << HR.display() << std::endl;
 
+    std::pair<int,double> TopSteelInfo = CM->deleteCellWithData(System,"TopSteel");
+    std::pair<int,double> SteelAboveTungstenInfo = CM->deleteCellWithData(System,"SteelAboveTungsten");
+    std::pair<int,double> CoolantAboveSteelInfo = CM->deleteCellWithData(System,"CoolantAboveSteel");
+
     std::string vertStr = Wheel.getLinkString(6) + Wheel.getLinkString(7); // top+bottom
     std::string cylStr = Wheel.getLinkString(8) + Wheel.getLinkString(9); // min+max radii
 
@@ -303,6 +307,7 @@ namespace essSystem
         std::string Cyl3 = Wheel.getLinkString(17);
 
         std::string compare1 = Pl1 + Pl2 + Cyl1 + El1; std::cout << "=== COMPARE === " << compare1 << std::endl;
+        std::string compare2 = Pl1 + Pl2 + Cyl3 + El1; std::cout << "=== COMPARE === " << compare2 << std::endl;
 
     ///////////////////////////////////
     
@@ -369,12 +374,22 @@ namespace essSystem
     //    cylStr = Wheel.getLinkString(9) + " a " + Wheel.getLinkString(10) + "b"; // min+max radii
     //    ELog::EM << "cylStr" << cylStr << ELog::endDiag;
 
+        HeadRule HRSegments;
         Out = Pl1 + Pl2 + Cyl1 + El1 + Sec1Left + Sec1Right;
-        System.addCell(MonteCarlo::Qhull(cellIndex++,0,temp,Out));
+        System.addCell(MonteCarlo::Qhull(cellIndex++,TopSteelInfo.first,TopSteelInfo.second,Out));
 
-        Out = Pl1 + Pl2 + Cyl1 + El1 + Sec20Left + Sec20Right;
-        System.addCell(MonteCarlo::Qhull(cellIndex++,0,temp,Out));
+        HRSegments.procString(Out);
     
+        Out = Pl1 + Pl2 + Cyl1 + El1 + Sec20Left + Sec20Right;
+        System.addCell(MonteCarlo::Qhull(cellIndex++,TopSteelInfo.first,TopSteelInfo.second,Out));
+
+        HRSegments.addUnion(Out);
+        HRSegments.makeComplement();
+
+        HRSegments.addIntersection(compare2);
+
+        System.addCell(MonteCarlo::Qhull(cellIndex++,TopSteelInfo.first,TopSteelInfo.second,HRSegments.display()));
+
     return; 
   }
 
