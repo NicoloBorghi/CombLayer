@@ -300,6 +300,7 @@ namespace essSystem
         std::string Pl3 = Wheel.getLinkComplement(12);
         std::string Pl4 = Wheel.getLinkString(11);
         std::string Cyl2 = Wheel.getLinkComplement(15);
+        std::string Cyl3 = Wheel.getLinkString(17);
 
         std::string compare1 = Pl1 + Pl2 + Cyl1 + El1; std::cout << "=== COMPARE === " << compare1 << std::endl;
 
@@ -370,7 +371,7 @@ namespace essSystem
 
         Out = Pl1 + Pl2 + Cyl1 + El1 + Sec1Left + Sec1Right;
         System.addCell(MonteCarlo::Qhull(cellIndex++,0,temp,Out));
-    
+
         Out = Pl1 + Pl2 + Cyl1 + El1 + Sec20Left + Sec20Right;
         System.addCell(MonteCarlo::Qhull(cellIndex++,0,temp,Out));
     
