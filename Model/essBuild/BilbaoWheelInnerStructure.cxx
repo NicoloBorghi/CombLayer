@@ -279,17 +279,6 @@ namespace essSystem
     int innerMat = MatInfo.first;
     temp = MatInfo.second;
 
-        HeadRule HR = (System.findQhull(CM->getCell("TopSteel")))->getHeadRule();
-        std::cout << "#################### HR ######################" << HR.display() << std::endl;
-        HR = (System.findQhull(CM->getCell("SteelAboveTungsten")))->getHeadRule();
-        std::cout << "#################### HR ######################" << HR.display() << std::endl;
-        HR = (System.findQhull(CM->getCell("CoolantAboveSteel")))->getHeadRule();
-        std::cout << "#################### HR ######################" << HR.display() << std::endl;
-
-    std::pair<int,double> TopSteelInfo = CM->deleteCellWithData(System,"TopSteel");
-    std::pair<int,double> SteelAboveTungstenInfo = CM->deleteCellWithData(System,"SteelAboveTungsten");
-    std::pair<int,double> CoolantAboveSteelInfo = CM->deleteCellWithData(System,"CoolantAboveSteel");
-
     std::string vertStr = Wheel.getLinkString(6) + Wheel.getLinkString(7); // top+bottom
     std::string cylStr = Wheel.getLinkString(8) + Wheel.getLinkString(9); // min+max radii
 
@@ -297,17 +286,14 @@ namespace essSystem
 
     ////// Retrieve surfaces from wheel
 
-        std::string Pl1 = Wheel.getLinkString(14);
-        std::string Pl2 = Wheel.getLinkComplement(10);
-        std::string Cyl1 = Wheel.getLinkString(13);
-        std::string El1 = Wheel.getLinkComplement(16);
-        std::string Pl3 = Wheel.getLinkComplement(12);
-        std::string Pl4 = Wheel.getLinkString(11);
-        std::string Cyl2 = Wheel.getLinkComplement(15);
-        std::string Cyl3 = Wheel.getLinkString(17);
+        HeadRule TopSteelHR = (System.findQhull(CM->getCell("TopSteel")))->getHeadRule();
+        std::pair<int,double> TopSteelInfo = CM->deleteCellWithData(System,"TopSteel");
 
-        std::string compare1 = Pl1 + Pl2 + Cyl1 + El1; std::cout << "=== COMPARE === " << compare1 << std::endl;
-        std::string compare2 = Pl1 + Pl2 + Cyl3 + El1; std::cout << "=== COMPARE === " << compare2 << std::endl;
+        HeadRule SteelAboveTungstenHR = (System.findQhull(CM->getCell("SteelAboveTungsten")))->getHeadRule();
+        std::pair<int,double> SteelAboveTungstenInfo = CM->deleteCellWithData(System,"SteelAboveTungsten");
+
+        HeadRule CoolantAboveSteelHR = (System.findQhull(CM->getCell("CoolantAboveSteel")))->getHeadRule();
+        std::pair<int,double> CoolantAboveSteelInfo = CM->deleteCellWithData(System,"CoolantAboveSteel");
 
     ///////////////////////////////////
     
@@ -374,21 +360,56 @@ namespace essSystem
     //    cylStr = Wheel.getLinkString(9) + " a " + Wheel.getLinkString(10) + "b"; // min+max radii
     //    ELog::EM << "cylStr" << cylStr << ELog::endDiag;
 
+        // TopSteel
         HeadRule HRSegments;
-        Out = Pl1 + Pl2 + Cyl1 + El1 + Sec1Left + Sec1Right;
+        Out = TopSteelHR.display() + Sec1Left + Sec1Right;
         System.addCell(MonteCarlo::Qhull(cellIndex++,TopSteelInfo.first,TopSteelInfo.second,Out));
 
         HRSegments.procString(Out);
     
-        Out = Pl1 + Pl2 + Cyl1 + El1 + Sec20Left + Sec20Right;
+        Out = TopSteelHR.display() + Sec20Left + Sec20Right;
         System.addCell(MonteCarlo::Qhull(cellIndex++,TopSteelInfo.first,TopSteelInfo.second,Out));
 
         HRSegments.addUnion(Out);
         HRSegments.makeComplement();
 
-        HRSegments.addIntersection(compare2);
+        HRSegments.addIntersection(TopSteelHR);
 
         System.addCell(MonteCarlo::Qhull(cellIndex++,TopSteelInfo.first,TopSteelInfo.second,HRSegments.display()));
+
+        // CoolantAboveSteel
+        HRSegments.reset();
+        Out = CoolantAboveSteelHR.display() + Sec1Left + Sec1Right;
+        System.addCell(MonteCarlo::Qhull(cellIndex++,CoolantAboveSteelInfo.first,CoolantAboveSteelInfo.second,Out));
+
+        HRSegments.procString(Out);
+
+        Out = CoolantAboveSteelHR.display() + Sec20Left + Sec20Right;
+        System.addCell(MonteCarlo::Qhull(cellIndex++,CoolantAboveSteelInfo.first,CoolantAboveSteelInfo.second,Out));
+
+        HRSegments.addUnion(Out);
+        HRSegments.makeComplement();
+
+        HRSegments.addIntersection(CoolantAboveSteelHR);
+
+        System.addCell(MonteCarlo::Qhull(cellIndex++,CoolantAboveSteelInfo.first,CoolantAboveSteelInfo.second,HRSegments.display()));
+
+        // SteelAboveTungsten
+        HRSegments.reset();
+        Out = SteelAboveTungstenHR.display() + Sec1Left + Sec1Right;
+        System.addCell(MonteCarlo::Qhull(cellIndex++,SteelAboveTungstenInfo.first,SteelAboveTungstenInfo.second,Out));
+
+        HRSegments.procString(Out);
+
+        Out = SteelAboveTungstenHR.display() + Sec20Left + Sec20Right;
+        System.addCell(MonteCarlo::Qhull(cellIndex++,SteelAboveTungstenInfo.first,SteelAboveTungstenInfo.second,Out));
+
+        HRSegments.addUnion(Out);
+        HRSegments.makeComplement();
+
+        HRSegments.addIntersection(SteelAboveTungstenHR);
+
+        System.addCell(MonteCarlo::Qhull(cellIndex++,SteelAboveTungstenInfo.first,SteelAboveTungstenInfo.second,HRSegments.display()));
 
     return; 
   }
