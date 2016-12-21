@@ -164,6 +164,8 @@ EssWheel(FuncDataBase& Control)
   Control.addVariable("BilbaoWheelInnerStructureBrickGapLength",0.2);
   Control.addVariable("BilbaoWheelInnerStructureBrickGapWidth",0.2);
   Control.addVariable("BilbaoWheelInnerStructureBrickGapMat","Helium"); // shoud be the same as BilbaoWheelHeMat
+  Control.addVariable("BilbaoWheelInnerStructureSec0BrickActive",1);
+  Control.addVariable("BilbaoWheelInnerStructureSec19BrickActive",1);
 
   Control.addVariable("BilbaoWheelInnerStructureNSectors", 36);
   Control.addVariable("BilbaoWheelInnerStructureSectorSepThick", 1.0);
