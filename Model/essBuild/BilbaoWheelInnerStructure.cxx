@@ -324,12 +324,12 @@ namespace essSystem
 			   ModelSupport::getComposite(SMap, SIsec," 4 "), // side plane
 			   ModelSupport::getComposite(SMap, SI1, " -3 "), j); // another side plane
 
-                if (j == 1) {
+                if (j == 0) {
 
                         Sec1Left = ModelSupport::getComposite(SMap, SIsec," 4 ");
                         Sec1Right = ModelSupport::getComposite(SMap, SI1, " -3 ");
 
-                } else if (j == 20) {
+                } else if (j == 19) {
 
                         Sec20Left = ModelSupport::getComposite(SMap, SIsec," 4 ");
                         Sec20Right = ModelSupport::getComposite(SMap, SI1, " -3 ");
