@@ -582,10 +582,6 @@ createESSInputs(inputParam& IParam)
   IParam.setValue("sdefType",std::string("ess"));  
   IParam.setValue("targetType",std::string("Bilbao"));
 
-  //IParam.setValue("physModel",std::string("BD")); // NB set to Bertini instead of CEM03
-  //IParam.setValue("pinholeType",std::string("Straws")); //  NB Set default Pinhole collimator type
-  IParam.setValue("mcnp",10); // NB Set default output syntax to MCNPX instead of MCNP6
-  
   IParam.regDefItem<std::string>("lowMod","lowModType",1,std::string("lowMod"));
   IParam.regDefItem<std::string>("topMod","topModType",1,std::string("topMod"));
   IParam.regDefItem<std::string>("lowPipe","lowPipeType",1,std::string("side"));
