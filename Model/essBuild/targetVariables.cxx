@@ -149,7 +149,7 @@ EssWheel(FuncDataBase& Control)
   Control.addVariable("BilbaoWheelMatTYPE1",1); // SS316L
 
   //Control.addVariable("BilbaoWheelRadius2",77.0); // TSM141108V3000
-  Control.addVariable("BilbaoWheelRadius2",75.0); // Reflecting Target_Station_mcnp_Wheel_2016 (28/07/2016 from Luca)
+  Control.addVariable("BilbaoWheelRadius2",75.001); // Reflecting Target_Station_mcnp_Wheel_2016 (28/07/2016 from Luca)
   Control.addVariable("BilbaoWheelMatTYPE2",0); // TSM141108V3000
 
   Control.addVariable("BilbaoWheelRadius3",125.0);
