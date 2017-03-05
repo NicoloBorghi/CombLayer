@@ -687,6 +687,14 @@ MObj.setMaterial(imat++/*2660*/, "Invar36",
 MObj.setDensity(-7.13);
 MDB.resetMaterial(MObj);
 
+  MObj.setMaterial(6816,"PMMA",
+                "1001.70c    -8.0538000E-002 "
+                "6000.70c    -5.9984800E-001 "
+                "8016.70c    -3.1961000E-001 ",
+                "",MLib);
+  MObj.setDensity(-1.19);
+  MDB.resetMaterial(MObj);
+
 
   // END OF Materials for the Target Diagnostic System
   

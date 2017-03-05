@@ -179,7 +179,7 @@ namespace essSystem {
 
                 bulkMat  = ModelSupport::EvalMat<int>(Control,keyName+"Material");
                 scintMat = ModelSupport::EvalMat<int>(Control,keyName+"ScintillatorMaterial");
-                //fiberMat  = ModelSupport::EvalMat<int>(Control,keyName+"FiberMaterial");
+                fiberMat  = ModelSupport::EvalMat<int>(Control,keyName+"FiberMaterial");
                 //epoxyMat = ModelSupport::EvalMat<int>(Control,keyName+"EpoxyMaterial");
 
                 return;
@@ -410,7 +410,7 @@ namespace essSystem {
 
                 Out = ModelSupport::getComposite(SMap,scintIndex," -5 15");
 
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0, 300.0, Out + HR.display()));
+                System.addCell(MonteCarlo::Qhull(cellIndex++,fiberMat, 300.0, Out + HR.display()));
 
                 HR.makeComplement();
                 Out = ModelSupport::getComposite(SMap,scintIndex," -5 15") + strRightWall + strLeftWall + strBackWall + strFrontWall;

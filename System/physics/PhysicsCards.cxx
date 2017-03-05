@@ -71,7 +71,7 @@ PhysicsCards::PhysicsCards() :
   RAND(new nameCard("RAND",0)),
   PTRAC(new nameCard("PTRAC",0)),
   dbCard(new nameCard("dbcn",1)),
-  voidCard(0),nImpOut(0),prdmp("1e7 1e7 0 2 1e7"),/*prdmp("1e5 1e5 1 5"),*/
+  voidCard(0),nImpOut(0),/*prdmp("1e7 1e7 0 2 1e7"),*/prdmp("1e6 1e6 1 5"),
   Volume("vol"),ExtCard(new ExtControl),
   PWTCard(new PWTControl),DXTCard(new DXTControl)
   /*!
