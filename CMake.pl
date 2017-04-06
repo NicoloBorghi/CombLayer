@@ -8,7 +8,7 @@ use strict;
 ## EXECUTABLES
 my @masterprog=("fullBuild","ess","muBeam","pipe","photonMod2","t1Real",
 		"sns","reactor","t1MarkII","linac","essBeamline",
-		"filter","singleItem","testMain"); 
+		"filter","singleItem","testMain","tungsten"); 
 
 
 
@@ -17,7 +17,7 @@ my @modelLibDir=qw( bibBuild bnctBuild build chip
                     cuBlock d4cModel delft epbBuild essBuild
                     gammaBuild imat lensModel moderator 
                     muon pipeBuild photon sinbadBuild snsBuild t1Build 
-                    t1Engineer t1Upgrade t3Model zoom );
+                    t1Engineer t1Upgrade t3Model tungstenActivationBuild zoom );
 
 my @modelNames= @modelLibDir;
 
@@ -38,7 +38,7 @@ my @modelInclude = qw( bibBuildInc bnctBuildInc buildInc chipInc
                        essBuildInc gammaBuildInc imatInc lensModelInc 
                        moderatorInc muonInc pipeBuildInc photonInc
                        singleItemBuildInc sinbadBuildInc snsBuildInc t1BuildInc 
-                       t1EngineerInc t1UpgradeInc t3ModelInc zoomInc );
+                       t1EngineerInc t1UpgradeInc t3ModelInc tungstenActivationBuildInc zoomInc );
 
 
 ## SYSTEM Directory
@@ -236,6 +236,14 @@ $gM->addDepUnit("photonMod3", ["photon","visit","src","simMC",
 			      "md5","global","attachComp","visit","poly"]);
 
 $gM->addDepUnit("pipe", ["pipeBuild","visit","src","simMC",
+			 "construct","physics","input","process",
+			 "transport","scatMat","endf","crystal",
+			 "source","monte","funcBase","log","monte",
+			 "tally","geometry","mersenne","src","world",
+			 "work","xml","poly","support","weights",
+			 "md5","global","attachComp","visit","poly"]);
+
+$gM->addDepUnit("tungsten", ["tungstenActivationBuild","visit","src","simMC",
 			 "construct","physics","input","process",
 			 "transport","scatMat","endf","crystal",
 			 "source","monte","funcBase","log","monte",
