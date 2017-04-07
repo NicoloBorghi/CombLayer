@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   t1UpgradeInc/DefUnitsTungsten.h
+ * File:   tungstenBuildInc/DefUnitsTungsten.h
  *
  * Copyright (c) 2004-2015 by Stuart Ansell
  *

@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   essBuild/DefUnitsESS.cxx
+ * File:   tungstenBuild/DefUnitsTungsten.cxx
  *
  * Copyright (c) 2004-2015 by Stuart Ansell
  *

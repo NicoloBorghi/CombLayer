@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   tungstenInc/tungstenTube.h
+ * File:   tungstenBuildInc/tungstenTube.h
  *
  * Copyright (c) 2004-2015 by Stuart Ansell
  *
