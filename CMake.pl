@@ -17,7 +17,7 @@ my @modelLibDir=qw( bibBuild bnctBuild build chip
                     cuBlock d4cModel delft epbBuild essBuild
                     gammaBuild imat lensModel moderator 
                     muon pipeBuild photon sinbadBuild snsBuild t1Build 
-                    t1Engineer t1Upgrade t3Model tungstenActivationBuild zoom );
+                    t1Engineer t1Upgrade t3Model tungstenBuild zoom );
 
 my @modelNames= @modelLibDir;
 
@@ -38,7 +38,7 @@ my @modelInclude = qw( bibBuildInc bnctBuildInc buildInc chipInc
                        essBuildInc gammaBuildInc imatInc lensModelInc 
                        moderatorInc muonInc pipeBuildInc photonInc
                        singleItemBuildInc sinbadBuildInc snsBuildInc t1BuildInc 
-                       t1EngineerInc t1UpgradeInc t3ModelInc tungstenActivationBuildInc zoomInc );
+                       t1EngineerInc t1UpgradeInc t3ModelInc tungstenBuildInc zoomInc );
 
 
 ## SYSTEM Directory
@@ -243,7 +243,7 @@ $gM->addDepUnit("pipe", ["pipeBuild","visit","src","simMC",
 			 "work","xml","poly","support","weights",
 			 "md5","global","attachComp","visit","poly"]);
 
-$gM->addDepUnit("tungsten", ["tungstenActivationBuild","visit","src","simMC",
+$gM->addDepUnit("tungsten", ["tungstenBuild","visit","src","simMC",
 			 "construct","physics","input","process",
 			 "transport","scatMat","endf","crystal",
 			 "source","monte","funcBase","log","monte",
