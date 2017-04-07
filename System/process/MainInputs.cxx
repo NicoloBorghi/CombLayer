@@ -558,6 +558,20 @@ createPipeInputs(inputParam& IParam)
 }
 
 void
+createTungstenInputs(inputParam& IParam)
+  /*!
+    Set the specialise inputs for TS2
+    \param IParam :: Input Parameters
+  */
+{
+  ELog::RegMethod RegA("MainProcess::","createTungstenInputs");
+  createInputs(IParam);
+  
+  IParam.setValue("sdefType",std::string("Point"));    
+  return;
+}
+
+void
 createLinacInputs(inputParam& IParam)
   /*!
     Set the specialise inputs for the ESS-Linac

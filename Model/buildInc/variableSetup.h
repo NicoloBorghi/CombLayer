@@ -47,6 +47,7 @@ namespace setVariable
   void IMatVariables(FuncDataBase&);
   void MuonVariables(FuncDataBase&);
   void PipeVariables(FuncDataBase&);
+  void TungstenVariables(FuncDataBase&);
   void PhotonVariables(FuncDataBase&);
   void SinbadVariables(FuncDataBase&);
   void SingleItemVariables(FuncDataBase&);

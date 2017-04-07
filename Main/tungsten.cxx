@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MCNP(X) Input builder
  
- * File:   Main/pipe.cxx
+ * File:   Main/tungsten.cxx
  *
  * Copyright (c) 2004-2017 by Stuart Ansell
  *
@@ -73,7 +73,7 @@
 #include "DefPhysics.h"
 #include "Volumes.h"
 #include "defaultConfig.h"
-#include "DefUnitsPipe.h"
+#include "DefUnitsTungsten.h"
 #include "variableSetup.h"
 #include "ImportControl.h"
 #include "SourceCreate.h"
@@ -109,17 +109,17 @@ main(int argc,char* argv[])
       // PROCESS INPUT:
       InputControl::mainVector(argc,argv,Names);
       mainSystem::inputParam IParam;
-      createPipeInputs(IParam);
+      createTungstenInputs(IParam);
 
       SimPtr=createSimulation(IParam,Names,Oname);
       if (!SimPtr) return -1;
       
-      setVariable::PipeVariables(SimPtr->getDataBase());
+      setVariable::TungstenVariables(SimPtr->getDataBase());
       InputModifications(SimPtr,IParam,Names);
         
-      pipeSystem::makePipe pipeObj;
+      tungstenSystem::makeTungsten tungstenObj;
       World::createOuterObjects(*SimPtr);
-      pipeObj.build(SimPtr,IParam);
+      tungstenObj.build(SimPtr,IParam);
       
       mainSystem::buildFullSimulation(SimPtr,IParam,Oname);
       
