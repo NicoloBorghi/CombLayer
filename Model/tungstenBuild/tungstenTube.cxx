@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MCNP(X) Input builder
  
- * File:   pipeBuild/pipeTube.cxx
+ * File:   tungstenBuild/tungstenTube.cxx
  *
  * Copyright (c) 2004-2016 by Stuart Ansell
  *
@@ -78,12 +78,12 @@
 #include "CellMap.h"
 #include "surfDBase.h"
 #include "mergeTemplate.h"
-#include "pipeTube.h"
+#include "tungstenTube.h"
 
-namespace pipeSystem
+namespace tungstenSystem
 {
 
-pipeTube::pipeTube(const std::string& Key) :
+tungstenTube::tungstenTube(const std::string& Key) :
   attachSystem::ContainedComp(),
   attachSystem::FixedOffset(Key,6),
   tubeIndex(ModelSupport::objectRegister::Instance().cell(Key)),
@@ -94,7 +94,7 @@ pipeTube::pipeTube(const std::string& Key) :
   */
 {}
 
-pipeTube::pipeTube(const pipeTube& A) : 
+tungstenTube::tungstenTube(const tungstenTube& A) : 
   attachSystem::ContainedComp(A),
   attachSystem::FixedOffset(A),attachSystem::CellMap(A),
   tubeIndex(A.tubeIndex),cellIndex(A.cellIndex),
@@ -104,15 +104,15 @@ pipeTube::pipeTube(const pipeTube& A) :
   wallFracList(A.wallFracList),wallMatList(A.wallMatList)
   /*!
     Copy constructor
-    \param A :: pipeTube to copy
+    \param A :: tungstenTube to copy
   */
 {}
 
-pipeTube&
-pipeTube::operator=(const pipeTube& A)
+tungstenTube&
+tungstenTube::operator=(const tungstenTube& A)
   /*!
     Assignment operator
-    \param A :: pipeTube to copy
+    \param A :: tungstenTube to copy
     \return *this
   */
 {
@@ -135,7 +135,7 @@ pipeTube::operator=(const pipeTube& A)
   return *this;
 }
 
-pipeTube::~pipeTube()
+tungstenTube::~tungstenTube()
   /*!
     Destructor
   */
@@ -143,13 +143,13 @@ pipeTube::~pipeTube()
   
 
 void
-pipeTube::populate(const FuncDataBase& Control)
+tungstenTube::populate(const FuncDataBase& Control)
   /*!
     Populate all the variables
     \param Control :: Variable table to use
   */
 {
-  ELog::RegMethod RegA("pipeTube","populate");
+  ELog::RegMethod RegA("tungstenTube","populate");
 
   FixedOffset::populate(Control);
 
@@ -174,7 +174,7 @@ pipeTube::populate(const FuncDataBase& Control)
 }
 
 void
-pipeTube::createUnitVector(const attachSystem::FixedComp& FC,
+tungstenTube::createUnitVector(const attachSystem::FixedComp& FC,
 			   const long int sideIndex)
   /*!
     Create the unit vectors
@@ -182,7 +182,7 @@ pipeTube::createUnitVector(const attachSystem::FixedComp& FC,
     \param sideIndex :: link point
   */
 {
-  ELog::RegMethod RegA("pipeTube","createUnitVector");
+  ELog::RegMethod RegA("tungstenTube","createUnitVector");
   attachSystem::FixedComp::createUnitVector(FC,sideIndex);
   yStep+=length/2.0;
   FixedOffset::applyOffset();
@@ -191,12 +191,12 @@ pipeTube::createUnitVector(const attachSystem::FixedComp& FC,
 }
 
 void
-pipeTube::createSurfaces()
+tungstenTube::createSurfaces()
   /*!
     Create planes for system
   */
 {
-  ELog::RegMethod RegA("pipeTube","createSurfaces");
+  ELog::RegMethod RegA("tungstenTube","createSurfaces");
 
   ModelSupport::buildPlane(SMap,tubeIndex+1,Origin-Y*(length/2.0),Y);
   ModelSupport::buildPlane(SMap,tubeIndex+2,Origin+Y*(length/2.0),Y);  
@@ -214,13 +214,13 @@ pipeTube::createSurfaces()
 }
 
 void
-pipeTube::createObjects(Simulation& System)
+tungstenTube::createObjects(Simulation& System)
   /*!
     Create the vaned moderator
     \param System :: Simulation to add results
   */
 {
-  ELog::RegMethod RegA("pipeTube","createObjects");
+  ELog::RegMethod RegA("tungstenTube","createObjects");
 
   std::string Out;
 
@@ -241,7 +241,7 @@ pipeTube::createObjects(Simulation& System)
 }
 
 void
-pipeTube::createLinks()
+tungstenTube::createLinks()
   /*!
     Creates a full attachment set
     First two are in the -/+Y direction and have a divider
@@ -249,7 +249,7 @@ pipeTube::createLinks()
     The mid two are -/+Z direction
   */
 {  
-  ELog::RegMethod RegA("pipeTube","createLinks");
+  ELog::RegMethod RegA("tungstenTube","createLinks");
 
   FixedComp::setConnect(0,Origin-Y*(length/2.0),-Y);
   FixedComp::setLinkSurf(0,-SMap.realSurf(tubeIndex+1));
@@ -273,13 +273,13 @@ pipeTube::createLinks()
 }
 
 void 
-pipeTube::layerProcess(Simulation& System)
+tungstenTube::layerProcess(Simulation& System)
   /*!
     Processes the splitting of the surfaces into a multilayer system
     \param System :: Simulation to work on
   */
 {
-  ELog::RegMethod RegA("pipeTube","layerProcess");
+  ELog::RegMethod RegA("tungstenTube","layerProcess");
   // Steel layers
   //  layerSpecial(System);
 
@@ -325,7 +325,7 @@ pipeTube::layerProcess(Simulation& System)
 
   
 void
-pipeTube::createAll(Simulation& System,
+tungstenTube::createAll(Simulation& System,
 		    const attachSystem::FixedComp& FC,
 		    const long int sideIndex)
   /*!
@@ -335,7 +335,7 @@ pipeTube::createAll(Simulation& System,
     \param sideIndex :: sideIndex for link point
    */
 {
-  ELog::RegMethod RegA("pipeTube","createAll");
+  ELog::RegMethod RegA("tungstenTube","createAll");
 
   populate(System.getDataBase());
   createUnitVector(FC,sideIndex);
@@ -348,4 +348,4 @@ pipeTube::createAll(Simulation& System,
   return;
 }
 
-}  // NAMESPACE pipeSystem
+}  // NAMESPACE tungstenSystem

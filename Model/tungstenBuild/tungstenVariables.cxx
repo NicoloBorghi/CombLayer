@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   pipeBuild/pipeVariables.cxx
+ * File:   tungstenBuild/tungstenVariables.cxx
  *
  * Copyright (c) 2004-2015 by Stuart Ansell
  *
@@ -55,13 +55,13 @@ namespace setVariable
 
   
 void
-PipeVariables(FuncDataBase& Control)
+TungstenVariables(FuncDataBase& Control)
   /*!
     Create all the beamline variabes
     \param Control :: DataBase
   */
 {
-  ELog::RegMethod RegA("pipeVariables[F]","PipeVariables");
+  ELog::RegMethod RegA("tungstenVariables[F]","TungstenVariables");
   
   Control.addVariable("ATubeLength",350.0);
   Control.addVariable("ATubeWidth",100.0);

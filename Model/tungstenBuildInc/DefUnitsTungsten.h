@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   t1UpgradeInc/DefUnitsPipe.h
+ * File:   t1UpgradeInc/DefUnitsTungsten.h
  *
  * Copyright (c) 2004-2015 by Stuart Ansell
  *
@@ -19,8 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  ****************************************************************************/
-#ifndef mainSystem_DefUnitsPipe_h
-#define mainSystem_DefUnitsPipe_h
+#ifndef mainSystem_DefUnitsTungsten_h
+#define mainSystem_DefUnitsTungsten_h
 
 class Simulation;
 class FuncDataBase;

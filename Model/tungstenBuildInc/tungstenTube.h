@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   pipeInc/pipeTube.h
+ * File:   tungstenInc/tungstenTube.h
  *
  * Copyright (c) 2004-2015 by Stuart Ansell
  *
@@ -19,24 +19,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  ****************************************************************************/
-#ifndef pipeSystem_pipeTube_h
-#define pipeSystem_pipeTube_h
+#ifndef tungstenSystem_tungstenTube_h
+#define tungstenSystem_tungstenTube_h
 
 class Simulation;
 
-namespace pipeSystem
+namespace tungstenSystem
 {
 /*!
-  \class pipeTube
+  \class tungstenTube
   \author S. Ansell
   \version 1.0
   \date May 2015
-  \brief Simple pipe with layers
+  \brief Simple tungsten with layers
 
   Constructed from the front point
 */
 
-class pipeTube : public attachSystem::ContainedComp,
+class tungstenTube : public attachSystem::ContainedComp,
   public attachSystem::FixedOffset,
   public attachSystem::CellMap
 {
@@ -67,10 +67,10 @@ class pipeTube : public attachSystem::ContainedComp,
 
  public:
 
-  pipeTube(const std::string&);
-  pipeTube(const pipeTube&);
-  pipeTube& operator=(const pipeTube&);
-  ~pipeTube();
+  tungstenTube(const std::string&);
+  tungstenTube(const tungstenTube&);
+  tungstenTube& operator=(const tungstenTube&);
+  ~tungstenTube();
 
   void createAll(Simulation&,const attachSystem::FixedComp&,
 		 const long int);

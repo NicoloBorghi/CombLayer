@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MCNP(X) Input builder
  
- * File:   pipeBuild/makePipe.cxx
+ * File:   tungstenBuild/makeTungsten.cxx
  *
  * Copyright (c) 2004-2017 by Stuart Ansell
  *
@@ -74,17 +74,17 @@
 #include "GroupOrigin.h"
 #include "World.h"
 #include "AttachSupport.h"
-#include "pipeTube.h"
+#include "tungstenTube.h"
 
-#include "makePipe.h"
+#include "makeTungsten.h"
 
-namespace pipeSystem
+namespace tungstenSystem
 {
 
-makePipe::makePipe() :
-  ATube(new pipeSystem::pipeTube("ATube")),
-  BTube(new pipeSystem::pipeTube("BTube")),
-  CTube(new pipeSystem::pipeTube("CTube"))
+makeTungsten::makeTungsten() :
+  ATube(new tungstenSystem::tungstenTube("ATube")),
+  BTube(new tungstenSystem::tungstenTube("BTube")),
+  CTube(new tungstenSystem::tungstenTube("CTube"))
   /*!
     Constructor
   */
@@ -98,21 +98,21 @@ makePipe::makePipe() :
 
 }
 
-makePipe::makePipe(const makePipe& A) : 
-  ATube(new pipeSystem::pipeTube(*(A.ATube))),
-  BTube(new pipeSystem::pipeTube(*(A.BTube))),
-  CTube(new pipeSystem::pipeTube(*(A.CTube)))
+makeTungsten::makeTungsten(const makeTungsten& A) : 
+  ATube(new tungstenSystem::tungstenTube(*(A.ATube))),
+  BTube(new tungstenSystem::tungstenTube(*(A.BTube))),
+  CTube(new tungstenSystem::tungstenTube(*(A.CTube)))
   /*!
     Copy constructor
-    \param A :: makePipe to copy
+    \param A :: makeTungsten to copy
   */
 {}
 
-makePipe&
-makePipe::operator=(const makePipe& A)
+makeTungsten&
+makeTungsten::operator=(const makeTungsten& A)
   /*!
     Assignment operator
-    \param A :: makePipe to copy
+    \param A :: makeTungsten to copy
     \return *this
   */
 {
@@ -125,14 +125,14 @@ makePipe::operator=(const makePipe& A)
   return *this;
 }
 
-makePipe::~makePipe()
+makeTungsten::~makeTungsten()
   /*!
     Destructor
    */
 {}
 
 void 
-makePipe::build(Simulation* SimPtr,
+makeTungsten::build(Simulation* SimPtr,
 		       const mainSystem::inputParam&)
 /*!
   Carry out the full build
@@ -141,7 +141,7 @@ makePipe::build(Simulation* SimPtr,
 */
 {
   // For output stream
-  ELog::RegMethod RControl("makePipe","build");
+  ELog::RegMethod RControl("makeTungsten","build");
 
   int voidCell(74123);
 
@@ -157,5 +157,5 @@ makePipe::build(Simulation* SimPtr,
 }
 
 
-}   // NAMESPACE pipeSystem
+}   // NAMESPACE tungstenSystem
 

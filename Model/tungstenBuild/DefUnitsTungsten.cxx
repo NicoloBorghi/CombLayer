@@ -47,7 +47,7 @@
 #include "inputParam.h"
 #include "support.h"
 #include "defaultConfig.h"
-#include "DefUnitsPipe.h"
+#include "DefUnitsTungsten.h"
 
 namespace mainSystem
 {
@@ -61,7 +61,7 @@ setDefUnits(FuncDataBase& Control,
     \param IParam :: input system
   */
 {
-  ELog::RegMethod RegA("DefUnitsPipe[F]","setDefUnits");
+  ELog::RegMethod RegA("DefUnitsTungsten[F]","setDefUnits");
 
   defaultConfig A("");
   if (IParam.flag("defaultConfig"))

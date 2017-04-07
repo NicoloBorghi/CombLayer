@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   pipeInc/makePipe.h
+ * File:   tungstenInc/makeTungsten.h
  *
  * Copyright (c) 2004-2015 by Stuart Ansell
  *
@@ -19,45 +19,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  ****************************************************************************/
-#ifndef pipeSystem_makePipe_h
-#define pipeSystem_makePipe_h
+#ifndef tungstenSystem_makeTungsten_h
+#define tungstenSystem_makeTungsten_h
 
 
 /*!
-  \namespace pipeSystem
-  \brief simple pipemodl
+  \namespace tungstenSystem
+  \brief simple tungstenmodl
   \version 1.0
   \date May 2015
   \author S. Ansell
 */
 
-namespace pipeSystem
+namespace tungstenSystem
 {
-  class pipeTube;
+  class tungstenTube;
   /*!
-    \class makePipe
+    \class makeTungsten
     \version 1.0
     \author S. Ansell
     \date May 2015
-    \brief General pipe building system
+    \brief General tungsten building system
   */
 
-class makePipe
+class makeTungsten
 {
  private:
 
 
-  std::shared_ptr<pipeSystem::pipeTube> ATube;   ///< pre-tube
-  std::shared_ptr<pipeSystem::pipeTube> BTube;   ///< Main tube
-  std::shared_ptr<pipeSystem::pipeTube> CTube;   ///< collector tube
+  std::shared_ptr<tungstenSystem::tungstenTube> ATube;   ///< pre-tube
+  std::shared_ptr<tungstenSystem::tungstenTube> BTube;   ///< Main tube
+  std::shared_ptr<tungstenSystem::tungstenTube> CTube;   ///< collector tube
 
 
  public:
   
-  makePipe();
-  makePipe(const makePipe&);
-  makePipe& operator=(const makePipe&);
-  ~makePipe();
+  makeTungsten();
+  makeTungsten(const makeTungsten&);
+  makeTungsten& operator=(const makeTungsten&);
+  ~makeTungsten();
   
   void build(Simulation*,const mainSystem::inputParam&);
 
