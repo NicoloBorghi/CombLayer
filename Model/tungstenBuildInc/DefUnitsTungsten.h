@@ -25,13 +25,13 @@
 class Simulation;
 class FuncDataBase;
 
-namespace mainSystem
-{
-  class inputParam;
+namespace mainSystem {
 
-  void setDefUnits(FuncDataBase&,inputParam&);
+        class inputParam;
+
+        void setDefUnits(FuncDataBase&,inputParam&);
+
 }
-
 
 #endif
  

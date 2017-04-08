@@ -1,7 +1,7 @@
 /********************************************************************* 
   CombLayer : MNCPX Input builder
  
- * File:   tungstenBuildInc/tungstenTube.h
+ * File:   tungstenBuildInc/tungstenGammaCell.h
  *
  * Copyright (c) 2004-2015 by Stuart Ansell
  *
@@ -19,63 +19,69 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  ****************************************************************************/
-#ifndef tungstenSystem_tungstenTube_h
-#define tungstenSystem_tungstenTube_h
+#ifndef tungstenSystem_tungstenGammaCell_h
+#define tungstenSystem_tungstenGammaCell_h
 
 class Simulation;
 
-namespace tungstenSystem
-{
-/*!
-  \class tungstenTube
-  \author S. Ansell
-  \version 1.0
-  \date May 2015
-  \brief Simple tungsten with layers
+namespace tungstenSystem {
 
-  Constructed from the front point
-*/
+        /*!
+                \class tungstenGammaCell
+                \author N. Borghi
+                \version 1.0
+                \date April 2017
+                \brief Simple model of DTU GammaCellfor active sample analysis
+        */
 
-class tungstenTube : public attachSystem::ContainedComp,
-  public attachSystem::FixedOffset,
-  public attachSystem::CellMap
-{
- private:
+        class tungstenGammaCell : public attachSystem::ContainedComp,
+                                  public attachSystem::FixedOffset,
+                                  public attachSystem::CellMap {
+
+                private: // Variables
   
-  const int tubeIndex;             ///< Index of surface offset
-  int cellIndex;                  ///< Cell index
+                        const int gammaIndex;            ///< Index of surface offset
+                        int cellIndex;                   ///< Cell index
 
-  double length;            ///< Total length
-  double height;            ///< Total height 
-  double width;             ///< Total width
+                        double leftWallThickness;
+                        double rightWallThickness;
+                        double frontWallThickness;
+                        double backWallThickness;
+                        double topWallThickness;
+                        double bottomWallThickness;
 
-  double innerHeight;       ///< innerHeight
-  double innerWidth;        ///< innerWidth
+                        double leftPadding;
+                        double rightPadding;
+                        double fronntPadding;
+                        double backPadding;
+                        double topPadding;
+                        double bottomPadding;
 
-  int wallMat;              ///< wall material
+                        double totalCellVolume;
 
-  size_t nWallLayers;       ///< Layers in wall
-  std::vector<double> wallFracList;
-  std::vector<int> wallMatList; 
-  
-  void populate(const FuncDataBase&);
-  void createUnitVector(const attachSystem::FixedComp&,const long int);
-  void createSurfaces();
-  void createObjects(Simulation&);
-  void createLinks();
-  void layerProcess(Simulation&);
+                        double cellAtmosphereGas;
+                        double cellAtmospherePressure;
+                        double cellWallMaterial1;
+                        double cellWallMaterial2;
 
- public:
+                private: // Methods
 
-  tungstenTube(const std::string&);
-  tungstenTube(const tungstenTube&);
-  tungstenTube& operator=(const tungstenTube&);
-  ~tungstenTube();
+                        void populate(const FuncDataBase&);
+                        void createUnitVector(const attachSystem::FixedComp&,const long int);
+                        void createSurfaces();
+                        void createObjects(Simulation&);
+                        void createLinks();
 
-  void createAll(Simulation&,const attachSystem::FixedComp&,
-		 const long int);
+                public: // Methods
+
+                        tungstenGammaCell(const std::string&);
+                        tungstenGammaCell(const tungstenGammaCell&);
+                        tungstenGammaCell& operator=(const tungstenGammaCell&);
+                       ~tungstenGammaCell();
+
+                        void createAll(Simulation&,const attachSystem::FixedComp&, const long int);
     
-};
+        };
 
 }
 

@@ -25,44 +25,46 @@
 
 /*!
   \namespace tungstenSystem
-  \brief simple tungstenmodl
+  \brief simple tungsten model
   \version 1.0
-  \date May 2015
-  \author S. Ansell
+  \date April 2017
+  \author N. Borghi
 */
 
-namespace tungstenSystem
-{
-  class tungstenTube;
-  /*!
-    \class makeTungsten
-    \version 1.0
-    \author S. Ansell
-    \date May 2015
-    \brief General tungsten building system
-  */
+namespace tungstenSystem {
 
-class makeTungsten
-{
- private:
+        class tungstenGammaCell;
+        class tungstenSample;
+
+        /*!
+                \class makeTungsten
+                \version 1.0
+                \author N. Borghi
+                \date April 2017
+                \brief Irradiation of ESS tungsten bricks at ISOLDE
+        */
+
+        class makeTungsten {
+
+                private:
+
+                        std::shared_ptr<tungstenSystem::tungstenGammaCell> GammaCell;   ///< DTU Gamma Cell
+                        std::shared_ptr<tungstenSystem::tungstenSample>    Sample;      ///< Sample
 
 
-  std::shared_ptr<tungstenSystem::tungstenTube> ATube;   ///< pre-tube
-  std::shared_ptr<tungstenSystem::tungstenTube> BTube;   ///< Main tube
-  std::shared_ptr<tungstenSystem::tungstenTube> CTube;   ///< collector tube
-
-
- public:
+                public:
   
-  makeTungsten();
-  makeTungsten(const makeTungsten&);
-  makeTungsten& operator=(const makeTungsten&);
-  ~makeTungsten();
+                        makeTungsten();
+                        makeTungsten(const makeTungsten&);
+                        makeTungsten& operator=(const makeTungsten&);
+                        ~makeTungsten();
   
-  void build(Simulation*,const mainSystem::inputParam&);
+                        void build(Simulation*,const mainSystem::inputParam&);
 
-};
+        };
 
 }
 
 #endif
+
+

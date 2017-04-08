@@ -74,88 +74,87 @@
 #include "GroupOrigin.h"
 #include "World.h"
 #include "AttachSupport.h"
-#include "tungstenTube.h"
+
+#include "tungstenGammaCell.h"
+#include "tungstenSample.h"
 
 #include "makeTungsten.h"
 
-namespace tungstenSystem
-{
+namespace tungstenSystem {
 
-makeTungsten::makeTungsten() :
-  ATube(new tungstenSystem::tungstenTube("ATube")),
-  BTube(new tungstenSystem::tungstenTube("BTube")),
-  CTube(new tungstenSystem::tungstenTube("CTube"))
-  /*!
-    Constructor
-  */
-{
-  ModelSupport::objectRegister& OR=
-    ModelSupport::objectRegister::Instance();
+        makeTungsten::makeTungsten() : GammaCell(new tungstenSystem::tungstenGammaCell("GammaCell")),
+                                       Sample(new tungstenSystem::tungstenSample("Sample")) {
 
-  OR.addObject(ATube);
-  OR.addObject(BTube);
-  OR.addObject(CTube);
+        /*!
+               Constructor
+        */
 
-}
+                ModelSupport::objectRegister& OR = ModelSupport::objectRegister::Instance();
 
-makeTungsten::makeTungsten(const makeTungsten& A) : 
-  ATube(new tungstenSystem::tungstenTube(*(A.ATube))),
-  BTube(new tungstenSystem::tungstenTube(*(A.BTube))),
-  CTube(new tungstenSystem::tungstenTube(*(A.CTube)))
-  /*!
-    Copy constructor
-    \param A :: makeTungsten to copy
-  */
-{}
+                OR.addObject(GammaCell);
+                OR.addObject(Sample);
 
-makeTungsten&
-makeTungsten::operator=(const makeTungsten& A)
-  /*!
-    Assignment operator
-    \param A :: makeTungsten to copy
-    \return *this
-  */
-{
-  if (this!=&A)
-    {
-      *ATube=*A.ATube;
-      *BTube=*A.BTube;
-      *CTube=*A.CTube;
-    }
-  return *this;
-}
+        }
 
-makeTungsten::~makeTungsten()
-  /*!
-    Destructor
-   */
-{}
+        makeTungsten::makeTungsten(const makeTungsten &A) : GammaCell(new tungstenSystem::tungstenGammaCell(*(A.GammaCell))),
+                                                            Sample(new tungstenSystem::tungstenSample(*(A.Sample))) {
 
-void 
-makeTungsten::build(Simulation* SimPtr,
-		       const mainSystem::inputParam&)
-/*!
-  Carry out the full build
-  \param SimPtr :: Simulation system
-  \param :: Input parameters
-*/
-{
-  // For output stream
-  ELog::RegMethod RControl("makeTungsten","build");
+        /*!
+                Copy constructor
+                \param A :: makeTungsten to copy
+        */
 
-  int voidCell(74123);
+        }
 
-  ATube->addInsertCell(voidCell);
-  ATube->createAll(*SimPtr,World::masterOrigin(),0);
+        makeTungsten &makeTungsten::operator=(const makeTungsten& A) {
 
-  BTube->addInsertCell(voidCell);
-  BTube->createAll(*SimPtr,*ATube,2);
+        /*!
+                Assignment operator
+                \param A :: makeTungsten to copy
+                \return *this
+        */
 
-  CTube->addInsertCell(voidCell);
-  CTube->createAll(*SimPtr,*BTube,2);
-  return;
-}
+                if (this!=&A) {
 
+                        *GammaCell = *A.GammaCell;
+                        *Sample = *A.Sample;
+
+                }
+
+                return *this;
+
+        }
+
+        makeTungsten::~makeTungsten() {
+
+        /*!
+                Destructor
+        */
+
+        }
+
+        void makeTungsten::build(Simulation* SimPtr, const mainSystem::inputParam&) {
+
+        /*!
+                Carry out the full build
+                \param SimPtr :: Simulation system
+                \param :: Input parameters
+        */
+
+                // For output stream
+                ELog::RegMethod RControl("makeTungsten","build");
+
+                int voidCell(74123);
+
+                GammaCell->addInsertCell(voidCell);
+                GammaCell->createAll(*SimPtr,World::masterOrigin(),0);
+
+                Sample->addInsertCell(voidCell);
+                Sample->createAll(*SimPtr,*GammaCell,2);
+
+                return;
+
+        }
 
 }   // NAMESPACE tungstenSystem
 
