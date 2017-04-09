@@ -62,27 +62,38 @@ namespace setVariable {
 
                 // GammaCell
 
-                Control.addVariable("LeftWallThickness",0.0);
-                Control.addVariable("RightWallThickness",0.0);
-                Control.addVariable("FrontWallThickness",0.0);
-                Control.addVariable("BackWallThickness",0.0);
-                Control.addVariable("TopWallThickness",0.0);
-                Control.addVariable("BottomWallThickness",0.0);
-                Control.addVariable("LeftPadding",0.0);
-                Control.addVariable("RightPadding",0.0);
-                Control.addVariable("FrontPadding",0.0);
-                Control.addVariable("BackPadding",0.0);
-                Control.addVariable("TopPadding",0.0);
-                Control.addVariable("BottomPadding",0.0);
-                Control.addVariable("TotalCellVolume",0.0);
-                Control.addVariable("CellAtmosphereGas",0.0);
-                Control.addVariable("CellAtmospherePressure",0.0);
-                Control.addVariable("CellWallMaterial1",0.0);
-                Control.addVariable("CellWallMaterial2",0.0);
+                Control.addVariable("GammaCellLeftWallThickness",50.0);       ///< Left wall thickness
+                Control.addVariable("GammaCellRightWallThickness",50.0);      ///< Right wall thickness
+                Control.addVariable("GammaCellFrontWallThickness",50.0);      ///< Front wall thickness
+                Control.addVariable("GammaCellBackWallThickness",50.0);       ///< Back wall thickness
+                Control.addVariable("GammaCellTopWallThickness",50.0);        ///< Top wall thickness
+                Control.addVariable("GammaCellBottomWallThickness",50.0);     ///< Bottom wall thickness
+                Control.addVariable("GammaCellInnerWidth",18.0);              ///< Cell width (Y)
+                Control.addVariable("GammaCellInnerHeight",13.0);             ///< Cell height (Z)
+                Control.addVariable("GammaCellInnerDepth",8.55);              ///< Cell depth (X)
+                Control.addVariable("GammaCellTotalVolume",2.0);              ///< Total cell inner volume
+                Control.addVariable("GammaCellAtmosphereGas","Void");         ///< Gas for internal atmosphere
+                Control.addVariable("GammaCellAtmospherePressure",2.0E-3);    ///< Pressure in bar
+                Control.addVariable("GammaCellWallMaterial1","Void");         ///< Material for the walls
+                Control.addVariable("GammaCellWallMaterial2","Void");         ///< Material for front lid (may be different or absent)
 
                 // Tungsten sample
 
-                Control.addVariable("SampleMaterial1",0.0);
+                Control.addVariable("SampleBrickWidth",8.0);                  ///< Sample width (Y)
+                Control.addVariable("SampleBrickHeight",3.0);                 ///< Sample height (Z)
+                Control.addVariable("SampleBrickDepth",1.0);                  ///< Sample depth (X)
+
+                Control.addVariable("SampleLayerWidth",8.0);                  ///< Sample width (Y)
+                Control.addVariable("SampleLayerHeight",3.0);                 ///< Sample height (Z)
+                Control.addVariable("SampleLayerDepth",0.05);                 ///< Sample depth (X)
+
+                Control.addVariable("SampleLeftPadding",5.0);                 ///< Left padding
+                Control.addVariable("SampleRightPadding",5.0);                ///< Right padding
+                Control.addVariable("SampleFrontPadding",5.0);                ///< Front padding
+                Control.addVariable("SampleBackPadding",5.0);                 ///< Back padding
+                Control.addVariable("SampleTopPadding",5.0);                  ///< Top padding
+                Control.addVariable("SampleBottomPadding",5.0);               ///< Bottom padding
+                Control.addVariable("SampleMaterial1","Tungsten600K");        ///< Brick material (ESS Tungsten)
                 Control.addVariable("SampleMaterial2",0.0);
                 Control.addVariable("SampleMaterial3",0.0);
 

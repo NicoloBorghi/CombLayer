@@ -149,29 +149,39 @@ namespace tungstenSystem {
 
                 FixedOffset::populate(Control);
 
-                //length=Control.EvalVar<double>(keyName+"Length");
-                //wallMat=ModelSupport::EvalMat<int>(Control,keyName+"WallMat");
+                leftWallThickness = Control.EvalVar<double>(keyName+"LeftWallThickness");
+                rightWallThickness = Control.EvalVar<double>(keyName+"RightWallThickness");
+                frontWallThickness = Control.EvalVar<double>(keyName+"FrontWallThickness");
+                backWallThickness = Control.EvalVar<double>(keyName+"BackWallThickness");
+                topWallThickness = Control.EvalVar<double>(keyName+"TopWallThickness");
+                bottomWallThickness = Control.EvalVar<double>(keyName+"BottomWallThickness");
 
-                //ModelSupport::populateDivide(Control, nWallLayers, keyName+"WLayerMat", wallMat,wallMatList);
-                //ModelSupport::populateDivideLen(Control, nWallLayers, keyName+"WLayerThick", (height-innerHeight)/2.0, wallFracList);
+                innerWidth = Control.EvalVar<double>(keyName+"InnerWidth");
+                innerHeight = Control.EvalVar<double>(keyName+"InnerHeight");
+                innerDepth = Control.EvalVar<double>(keyName+"InnerDepth");
+
+                totalVolume = Control.EvalVar<double>(keyName+"TotalVolume");
+
+                atmosphereGas = ModelSupport::EvalMat<int>(Control,keyName+"AtmosphereGas");
+                atmospherePressure = Control.EvalVar<double>(keyName+"AtmospherePressure");
+
+                wallMaterial1 = ModelSupport::EvalMat<int>(Control,keyName+"WallMaterial1");
+                wallMaterial2 = ModelSupport::EvalMat<int>(Control,keyName+"WallMaterial2");
 
                 return;
 
         }
 
-        void tungstenGammaCell::createUnitVector(const attachSystem::FixedComp& FC, const long int sideIndex) {
+        void tungstenGammaCell::createUnitVector(const attachSystem::FixedComp& FC) {
 
         /*!
                 Create the unit vectors
                 \param FC :: Fixed Component
-                \param sideIndex :: link point
         */
 
                 ELog::RegMethod RegA("tungstenGammaCell","createUnitVector");
 
-                attachSystem::FixedComp::createUnitVector(FC,sideIndex);
-                //yStep+=length/2.0;
-                FixedOffset::applyOffset();
+                attachSystem::FixedComp::createUnitVector(FC);
 
                 return;
 
@@ -185,7 +195,19 @@ namespace tungstenSystem {
 
                 ELog::RegMethod RegA("tungstenGammaCell","createSurfaces");
 
-                //ModelSupport::buildPlane(SMap,gammaIndex+1,Origin-Y*(length/2.0),Y);
+                ModelSupport::buildPlane(SMap,gammaIndex+1,Origin-Y*(innerWidth/2.0),Y);
+                ModelSupport::buildPlane(SMap,gammaIndex+2,Origin+Y*(innerWidth/2.0),Y);
+                ModelSupport::buildPlane(SMap,gammaIndex+3,Origin-X*(innerDepth/2.0),X);
+                ModelSupport::buildPlane(SMap,gammaIndex+4,Origin+X*(innerDepth/2.0),X);
+                ModelSupport::buildPlane(SMap,gammaIndex+5,Origin-Z*(innerHeight/2.0),Z);
+                ModelSupport::buildPlane(SMap,gammaIndex+6,Origin+Z*(innerHeight/2.0),Z);
+
+                ModelSupport::buildPlane(SMap,gammaIndex+11,Origin-Y*(innerWidth/2.0 + leftWallThickness),Y);
+                ModelSupport::buildPlane(SMap,gammaIndex+12,Origin+Y*(innerWidth/2.0 + leftWallThickness),Y);
+                ModelSupport::buildPlane(SMap,gammaIndex+13,Origin-X*(innerDepth/2.0 + backWallThickness),X);
+                ModelSupport::buildPlane(SMap,gammaIndex+14,Origin+X*(innerDepth/2.0 + frontWallThickness),X);
+                ModelSupport::buildPlane(SMap,gammaIndex+15,Origin-Z*(innerHeight/2.0 + bottomWallThickness),Z);
+                ModelSupport::buildPlane(SMap,gammaIndex+16,Origin+Z*(innerHeight/2.0 + topWallThickness),Z);
 
                 return;
 
@@ -202,18 +224,31 @@ namespace tungstenSystem {
 
                 std::string Out;
 
-                // Inner 
-                //Out=ModelSupport::getComposite(SMap,gammaIndex," 1 -2 13 -14 15 -16 ");
-                //System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 5 -6");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+                CellMap::setCell("InnerCell",cellIndex-1);
 
-                //CellMap::setCell("Inner",cellIndex-1);
-                //Out=ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 5 -6 (-13:14:-15:16) ");
-  
-                //System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
-                //CellMap::setCell("Outer",cellIndex-1);
-  
-                //Out=ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 5 -6 ");
-                //addOuterSurf(Out);
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -1 13 -4 15 -16");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 2 -12 13 -4 15 -16");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 13 -3 15 -16");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 6 -16");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 15 -5");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 4 -14 15 -16");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+
+                // Outer
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 13 -14 15 -16");
+                addOuterSurf(Out);
 
                 return;
 
@@ -237,19 +272,18 @@ namespace tungstenSystem {
 
         }
 
-        void tungstenGammaCell::createAll(Simulation& System, const attachSystem::FixedComp& FC, const long int sideIndex) {
+        void tungstenGammaCell::createAll(Simulation& System, const attachSystem::FixedComp& FC) {
 
         /*!
                 External build everything
                 \param System :: Simulation
                 \param FC :: Attachment point
-                \param sideIndex :: sideIndex for link point
         */
 
                 ELog::RegMethod RegA("tungstenGammaCell","createAll");
 
                 populate(System.getDataBase());
-                createUnitVector(FC,sideIndex);
+                createUnitVector(FC);
 
                 createSurfaces();
                 createObjects(System);
@@ -261,3 +295,5 @@ namespace tungstenSystem {
         }
 
 }  // NAMESPACE tungstenSystem
+
+

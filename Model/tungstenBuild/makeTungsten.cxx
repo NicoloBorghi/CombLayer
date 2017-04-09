@@ -147,10 +147,10 @@ namespace tungstenSystem {
                 int voidCell(74123);
 
                 GammaCell->addInsertCell(voidCell);
-                GammaCell->createAll(*SimPtr,World::masterOrigin(),0);
+                GammaCell->createAll(*SimPtr,World::masterOrigin());
 
-                Sample->addInsertCell(voidCell);
-                Sample->createAll(*SimPtr,*GammaCell,2);
+                //Sample->addInsertCell(voidCell);
+                //Sample->createAll(*SimPtr,*GammaCell,2);
 
                 return;
 

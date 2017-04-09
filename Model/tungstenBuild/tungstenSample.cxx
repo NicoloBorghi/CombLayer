@@ -149,6 +149,8 @@ namespace tungstenSystem {
 
                 FixedOffset::populate(Control);
 
+                brickWidth = Control.EvalVar<double>(keyName + "BrickWidth");
+
                 //length=Control.EvalVar<double>(keyName+"Length");
                 //wallMat=ModelSupport::EvalMat<int>(Control,keyName+"WallMat");
 
@@ -159,7 +161,7 @@ namespace tungstenSystem {
 
         }
 
-        void tungstenSample::createUnitVector(const attachSystem::FixedComp& FC, const long int sideIndex) {
+        void tungstenSample::createUnitVector(const attachSystem::FixedComp& FC) {
 
         /*!
                 Create the unit vectors
@@ -169,9 +171,7 @@ namespace tungstenSystem {
 
                 ELog::RegMethod RegA("tungstenSample","createUnitVector");
 
-                attachSystem::FixedComp::createUnitVector(FC,sideIndex);
-                //yStep+=length/2.0;
-                FixedOffset::applyOffset();
+                attachSystem::FixedComp::createUnitVector(FC);
 
                 return;
 
@@ -237,7 +237,7 @@ namespace tungstenSystem {
 
         }
 
-        void tungstenSample::createAll(Simulation& System, const attachSystem::FixedComp& FC, const long int sideIndex) {
+        void tungstenSample::createAll(Simulation& System, const attachSystem::FixedComp& FC) {
 
         /*!
                 External build everything
@@ -249,7 +249,7 @@ namespace tungstenSystem {
                 ELog::RegMethod RegA("tungstenSample","createAll");
 
                 populate(System.getDataBase());
-                createUnitVector(FC,sideIndex);
+                createUnitVector(FC);
 
                 createSurfaces();
                 createObjects(System);

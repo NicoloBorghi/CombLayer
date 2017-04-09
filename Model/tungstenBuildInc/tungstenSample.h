@@ -40,29 +40,44 @@ namespace tungstenSystem {
 
                 private: // Variables
   
-                        const int sampleIndex;            ///< Index of surface offset
-                        int cellIndex;                    ///< Cell index
+                        const int   sampleIndex;        ///< Index of surface offset
+                              int   cellIndex;          ///< Cell index
 
-                        doulbe sampleMaterial1;
-                        doulbe sampleMaterial2;
-                        doulbe sampleMaterial3;
+                           double   brickWidth;         ///< Sample width (Y)
+                           double   brickHeight;        ///< Sample height (Z)
+                           double   brickDepth;         ///< Sample depth (X)
+
+                           double   layerWidth;         ///< Layer width (Y)
+                           double   layerHeight;        ///< Layer height (Z)
+                           double   layerDepth;         ///< Layer depth (X)
+
+                           double   leftPadding;        ///< Left padding
+                           double   rightPadding;       ///< Right padding
+                           double   frontPadding;       ///< Front padding
+                           double   backPadding;        ///< Back padding
+                           double   topPadding;         ///< Top padding
+                           double   bottomPadding;      ///< Bottom padding
+
+                           double   sampleMaterial1;    ///< Sample material 1
+                           double   sampleMaterial2;    ///< Sample material 2
+                           double   sampleMaterial3;    ///< Sample material 3
 
                 private: // Methods
 
-                        void populate(const FuncDataBase&);
-                        void createUnitVector(const attachSystem::FixedComp&,const long int);
-                        void createSurfaces();
-                        void createObjects(Simulation&);
-                        void createLinks();
+                             void   populate(const FuncDataBase&);
+                             void   createUnitVector(const attachSystem::FixedComp&);
+                             void   createSurfaces();
+                             void   createObjects(Simulation&);
+                             void   createLinks();
 
                 public: // Methods
 
-                        tungstenSample(const std::string&);
-                        tungstenSample(const tungstenSample&);
-                        tungstenSample& operator=(const tungstenSample&);
-                       ~tungstenSample();
+                                    tungstenSample(const std::string&);
+                                    tungstenSample(const tungstenSample&);
+                                    tungstenSample& operator=(const tungstenSample&);
+                                   ~tungstenSample();
 
-                        void createAll(Simulation&,const attachSystem::FixedComp&, const long int);
+                             void   createAll(Simulation&,const attachSystem::FixedComp&);
     
         };
 

@@ -39,48 +39,45 @@ namespace tungstenSystem {
                                   public attachSystem::CellMap {
 
                 private: // Variables
-  
-                        const int gammaIndex;            ///< Index of surface offset
-                        int cellIndex;                   ///< Cell index
 
-                        double leftWallThickness;
-                        double rightWallThickness;
-                        double frontWallThickness;
-                        double backWallThickness;
-                        double topWallThickness;
-                        double bottomWallThickness;
+                        const int   gammaIndex;            ///< Index of surface offset
+                              int   cellIndex;             ///< Cell index
 
-                        double leftPadding;
-                        double rightPadding;
-                        double fronntPadding;
-                        double backPadding;
-                        double topPadding;
-                        double bottomPadding;
+                           double   leftWallThickness;     ///< Left wall thickness
+                           double   rightWallThickness;    ///< Right wall thickness
+                           double   frontWallThickness;    ///< Front wall thickness
+                           double   backWallThickness;     ///< Back wall thickness
+                           double   topWallThickness;      ///< Top wall thickness
+                           double   bottomWallThickness;   ///< Bottom wall thickness
 
-                        double totalCellVolume;
+                           double   innerWidth;            ///< Cell width (Y)
+                           double   innerHeight;           ///< Cell height (Z)
+                           double   innerDepth;            ///< Cell depth (X)
 
-                        double cellAtmosphereGas;
-                        double cellAtmospherePressure;
-                        double cellWallMaterial1;
-                        double cellWallMaterial2;
+                           double   totalVolume;           ///< Total cell inner volume
+
+                              int   atmosphereGas;         ///< Gas for internal atmosphere
+                           double   atmospherePressure;    ///< Pressure in bar
+                              int   wallMaterial1;         ///< Material for the walls
+                              int   wallMaterial2;         ///< Material for front lid (may be different or absent)
 
                 private: // Methods
 
-                        void populate(const FuncDataBase&);
-                        void createUnitVector(const attachSystem::FixedComp&,const long int);
-                        void createSurfaces();
-                        void createObjects(Simulation&);
-                        void createLinks();
+                             void   populate(const FuncDataBase&);
+                             void   createUnitVector(const attachSystem::FixedComp&);
+                             void   createSurfaces();
+                             void   createObjects(Simulation&);
+                             void   createLinks();
 
                 public: // Methods
 
-                        tungstenGammaCell(const std::string&);
-                        tungstenGammaCell(const tungstenGammaCell&);
-                        tungstenGammaCell& operator=(const tungstenGammaCell&);
-                       ~tungstenGammaCell();
+                                    tungstenGammaCell(const std::string&);
+                                    tungstenGammaCell(const tungstenGammaCell&);
+                                    tungstenGammaCell& operator=(const tungstenGammaCell&);
+                                   ~tungstenGammaCell();
 
-                        void createAll(Simulation&,const attachSystem::FixedComp&, const long int);
-    
+                             void   createAll(Simulation&,const attachSystem::FixedComp&);
+
         };
 
 }
