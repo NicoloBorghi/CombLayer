@@ -150,12 +150,23 @@ namespace tungstenSystem {
                 FixedOffset::populate(Control);
 
                 brickWidth = Control.EvalVar<double>(keyName + "BrickWidth");
+                brickHeight = Control.EvalVar<double>(keyName + "BrickHeight");
+                brickDepth = Control.EvalVar<double>(keyName + "BrickDepth");
 
-                //length=Control.EvalVar<double>(keyName+"Length");
-                //wallMat=ModelSupport::EvalMat<int>(Control,keyName+"WallMat");
+                layerWidth = Control.EvalVar<double>(keyName + "LayerWidth");
+                layerHeight = Control.EvalVar<double>(keyName + "LayerHeight");
+                layerDepth = Control.EvalVar<double>(keyName + "LayerDepth");
 
-                //ModelSupport::populateDivide(Control, nWallLayers, keyName+"WLayerMat", wallMat,wallMatList);
-                //ModelSupport::populateDivideLen(Control, nWallLayers, keyName+"WLayerThick", (height-innerHeight)/2.0, wallFracList);
+                leftPadding = Control.EvalVar<double>(keyName + "LeftPadding");
+                rightPadding = Control.EvalVar<double>(keyName + "RightPadding");
+                frontPadding = Control.EvalVar<double>(keyName + "FrontPadding");
+                backPadding = Control.EvalVar<double>(keyName + "BackPadding");
+                topPadding = Control.EvalVar<double>(keyName + "TopPadding");
+                bottomPadding = Control.EvalVar<double>(keyName + "BottomPadding");
+
+                material1 = ModelSupport::EvalMat<int>(Control,keyName + "Material1");
+                material2 = ModelSupport::EvalMat<int>(Control,keyName + "Material2");
+                material3 = ModelSupport::EvalMat<int>(Control,keyName + "Material3");
 
                 return;
 
@@ -185,7 +196,12 @@ namespace tungstenSystem {
 
                 ELog::RegMethod RegA("tungstenSample","createSurfaces");
 
-                //ModelSupport::buildPlane(SMap,sampleIndex+1,Origin-Y*(length/2.0),Y);
+                ModelSupport::buildPlane(SMap,sampleIndex+1,Origin - Y*(brickWidth/2.0),Y);
+                ModelSupport::buildPlane(SMap,sampleIndex+2,Origin + Y*(brickWidth/2.0),Y);
+                ModelSupport::buildPlane(SMap,sampleIndex+3,Origin - X*(brickDepth/2.0),X);
+                ModelSupport::buildPlane(SMap,sampleIndex+4,Origin + X*(brickDepth/2.0),X);
+                ModelSupport::buildPlane(SMap,sampleIndex+5,Origin - Z*(brickHeight/2.0),Z);
+                ModelSupport::buildPlane(SMap,sampleIndex+6,Origin + Z*(brickHeight/2.0),Z);
 
                 return;
 
@@ -202,18 +218,14 @@ namespace tungstenSystem {
 
                 std::string Out;
 
-                // Inner 
-                //Out=ModelSupport::getComposite(SMap,sampleIndex," 1 -2 13 -14 15 -16 ");
-                //System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+                // Brick
 
-                //CellMap::setCell("Inner",cellIndex-1);
-                //Out=ModelSupport::getComposite(SMap,sampleIndex," 1 -2 3 -4 5 -6 (-13:14:-15:16) ");
-  
-                //System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
-                //CellMap::setCell("Outer",cellIndex-1);
-  
+                Out = ModelSupport::getComposite(SMap,sampleIndex," 1 -2 3 -4 5 -6");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+                CellMap::setCell("Brick",cellIndex-1);
+                
                 //Out=ModelSupport::getComposite(SMap,sampleIndex," 1 -2 3 -4 5 -6 ");
-                //addOuterSurf(Out);
+                addOuterSurf(Out);
 
                 return;
 

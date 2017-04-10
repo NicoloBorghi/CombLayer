@@ -58,9 +58,9 @@ namespace tungstenSystem {
                            double   topPadding;         ///< Top padding
                            double   bottomPadding;      ///< Bottom padding
 
-                           double   sampleMaterial1;    ///< Sample material 1
-                           double   sampleMaterial2;    ///< Sample material 2
-                           double   sampleMaterial3;    ///< Sample material 3
+                              int   material1;          ///< Sample material 1
+                              int   material2;          ///< Sample material 2
+                              int   material3;          ///< Sample material 3
 
                 private: // Methods
 

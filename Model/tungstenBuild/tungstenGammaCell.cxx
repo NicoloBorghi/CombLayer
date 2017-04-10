@@ -209,6 +209,8 @@ namespace tungstenSystem {
                 ModelSupport::buildPlane(SMap,gammaIndex+15,Origin-Z*(innerHeight/2.0 + bottomWallThickness),Z);
                 ModelSupport::buildPlane(SMap,gammaIndex+16,Origin+Z*(innerHeight/2.0 + topWallThickness),Z);
 
+                ModelSupport::buildCylinder(SMap,gammaIndex+7,Origin,X,15.0);
+
                 return;
 
         }
@@ -224,6 +226,7 @@ namespace tungstenSystem {
 
                 std::string Out;
 
+/*
                 Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 5 -6");
                 System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
                 CellMap::setCell("InnerCell",cellIndex-1);
@@ -241,6 +244,20 @@ namespace tungstenSystem {
                 System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
 
                 Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 15 -5");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 4 -14 15 -16");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+*/
+
+                Out = ModelSupport::getComposite(SMap,gammaIndex," -7 3 -4");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+                CellMap::setCell("InnerCell",cellIndex-1);
+
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 13 -3 15 -16");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 7 11 -12 3 -4 15 -16");
                 System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
 
                 Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 4 -14 15 -16");
