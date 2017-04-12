@@ -62,19 +62,19 @@ namespace setVariable {
 
                 // GammaCell
 
-                Control.addVariable("GammaCellLeftWallThickness",50.0);       ///< Left wall thickness
-                Control.addVariable("GammaCellRightWallThickness",50.0);      ///< Right wall thickness
-                Control.addVariable("GammaCellFrontWallThickness",50.0);      ///< Front wall thickness
-                Control.addVariable("GammaCellBackWallThickness",50.0);       ///< Back wall thickness
-                Control.addVariable("GammaCellTopWallThickness",50.0);        ///< Top wall thickness
-                Control.addVariable("GammaCellBottomWallThickness",50.0);     ///< Bottom wall thickness
+                Control.addVariable("GammaCellLeftWallThickness",20.0);       ///< Left wall thickness
+                Control.addVariable("GammaCellRightWallThickness",20.0);      ///< Right wall thickness
+                Control.addVariable("GammaCellFrontWallThickness",20.0);      ///< Front wall thickness
+                Control.addVariable("GammaCellBackWallThickness",20.0);       ///< Back wall thickness
+                Control.addVariable("GammaCellTopWallThickness",20.0);        ///< Top wall thickness
+                Control.addVariable("GammaCellBottomWallThickness",20.0);     ///< Bottom wall thickness
                 Control.addVariable("GammaCellInnerWidth",18.0);              ///< Cell width (Y)
                 Control.addVariable("GammaCellInnerHeight",13.0);             ///< Cell height (Z)
                 Control.addVariable("GammaCellInnerDepth",8.55);              ///< Cell depth (X)
                 Control.addVariable("GammaCellTotalVolume",2.0);              ///< Total cell inner volume
                 Control.addVariable("GammaCellAtmosphereGas","Void");         ///< Gas for internal atmosphere
                 Control.addVariable("GammaCellAtmospherePressure",2.0E-3);    ///< Pressure in bar
-                Control.addVariable("GammaCellWallMaterial1","Void");         ///< Material for the walls
+                Control.addVariable("GammaCellWallMaterial1","Aluminium");    ///< Material for the walls
                 Control.addVariable("GammaCellWallMaterial2","Void");         ///< Material for front lid (may be different or absent)
 
                 // Tungsten sample

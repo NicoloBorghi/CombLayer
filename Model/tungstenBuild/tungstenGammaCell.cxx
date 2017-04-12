@@ -255,10 +255,10 @@ namespace tungstenSystem {
                 CellMap::setCell("InnerCell",cellIndex-1);
 
                 Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 13 -3 15 -16");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+                System.addCell(MonteCarlo::Qhull(cellIndex++,wallMaterial1,0.0,Out));
 
                 Out = ModelSupport::getComposite(SMap,gammaIndex," 7 11 -12 3 -4 15 -16");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+                System.addCell(MonteCarlo::Qhull(cellIndex++,wallMaterial1,0.0,Out));
 
                 Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 4 -14 15 -16");
                 System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));

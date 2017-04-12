@@ -221,7 +221,7 @@ namespace tungstenSystem {
                 // Brick
 
                 Out = ModelSupport::getComposite(SMap,sampleIndex," 1 -2 3 -4 5 -6");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+                System.addCell(MonteCarlo::Qhull(cellIndex++,material1,0.0,Out));
                 CellMap::setCell("Brick",cellIndex-1);
                 
                 //Out=ModelSupport::getComposite(SMap,sampleIndex," 1 -2 3 -4 5 -6 ");
