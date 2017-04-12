@@ -1,7 +1,7 @@
 /*********************************************************************
   CombLayer : MCNP(X) Input builder
 
- * File:   essBuildInc/FaradayCup.h
+ * File:   essBuildInc/DTL.h
  *
  * Copyright (c) 2004-2017 by Konstantin Batkov
  *
@@ -19,8 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  ****************************************************************************/
-#ifndef essSystem_FaradayCup_h
-#define essSystem_FaradayCup_h
+#ifndef essSystem_DTL_h
+#define essSystem_DTL_h
 
 class Simulation;
 
@@ -28,47 +28,35 @@ namespace essSystem
 {
 
 /*!
-  \class FaradayCup
+  \class DTL
   \version 1.0
   \author Konstantin Batkov
-  \date 14 Mar 2017
-  \brief Faraday Cup - based on SNS design
+  \date 28 Mar 2017
+  \brief Drift Tube Linac section
 */
 
-class FaradayCup : public attachSystem::ContainedComp,
-  public attachSystem::FixedOffset
+class DTL : public attachSystem::ContainedComp,
+  public attachSystem::FixedOffset,
+  public attachSystem::CellMap
 {
  private:
 
-  const std::string baseName; ///< base name (e.g. Linac)
+  const std::string baseName; ///< Base name (e.g. Linac)
+  const std::string extraName; ///< extra name (e.g. DTL)
   const int surfIndex;             ///< Index of surface offset
   int cellIndex;                ///< Cell index
 
-  int active; ///< On/Off switch
   int engActive;                ///< Engineering active flag
 
   double length;                ///< Total length including void
-  double outerRadius;           ///< Outer radius (d2/2)
-  double innerRadius;           ///< Inner radius (d1/2)
-
-  double faceLength;             ///< Collimator length (face plate)
-  double faceRadius; ///< Collimator inner radius
-
-  double absLength; ///< Absorber length
-  int absMat; ///< Absorber material
-  double baseLength; ///< Base length (e1)
-
-  double colLength; ///< Collector length
-  int colMat;                   ///< collector material
-
-  int wallMat;                   ///< wall material
+  double itLength; ///< intertank length
+  double itRadius; ///< intertank pipe radius
+  double itWallThick; ///< intertank pipe wall thick
+  size_t nLayers;                   ///< number of layers
+  std::vector<double> radius;   ///< Radii of each layer
+  double coverThick;                ///< cover thickness
+  std::vector<int> mat; ///< materials
   int airMat; ///< air material
-
-  double shieldRadius; ///< shield radius
-  double shieldInnerRadius; ///< shielding inner radius
-  double shieldLength; ///< shield length
-  double shieldInnerLength; ///< shielding inner length
-  int shieldMat; ///< shielding material
 
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,
@@ -80,11 +68,11 @@ class FaradayCup : public attachSystem::ContainedComp,
 
  public:
 
-  FaradayCup(const std::string&,const std::string&);
-  FaradayCup(const FaradayCup&);
-  FaradayCup& operator=(const FaradayCup&);
-  virtual FaradayCup* clone() const;
-  virtual ~FaradayCup();
+  DTL(const std::string&,const std::string&,const size_t);
+  DTL(const DTL&);
+  DTL& operator=(const DTL&);
+  virtual DTL* clone() const;
+  virtual ~DTL();
 
   void createAll(Simulation&,const attachSystem::FixedComp&,const long int);
 

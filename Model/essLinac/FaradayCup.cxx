@@ -86,10 +86,11 @@
 namespace essSystem
 {
 
-FaradayCup::FaradayCup(const std::string& Key)  :
+FaradayCup::FaradayCup(const std::string &Base,const std::string& Key)  :
   attachSystem::ContainedComp(),
-  attachSystem::FixedOffset(Key,6),
-  surfIndex(ModelSupport::objectRegister::Instance().cell(Key)),
+  attachSystem::FixedOffset(Base+Key,3),
+  baseName(Base),
+  surfIndex(ModelSupport::objectRegister::Instance().cell(keyName)),
   cellIndex(surfIndex+1)
   /*!
     Constructor BUT ALL variable are left unpopulated.
@@ -100,6 +101,7 @@ FaradayCup::FaradayCup(const std::string& Key)  :
 FaradayCup::FaradayCup(const FaradayCup& A) :
   attachSystem::ContainedComp(A),
   attachSystem::FixedOffset(A),
+  baseName(A.baseName),
   surfIndex(A.surfIndex),cellIndex(A.cellIndex),
   active(A.active),
   engActive(A.engActive),
@@ -161,12 +163,12 @@ FaradayCup::operator=(const FaradayCup& A)
 
 FaradayCup*
 FaradayCup::clone() const
-  /*!
-    Clone self
-    \return new (this)
-  */
+/*!
+  Clone self
+  \return new (this)
+ */
 {
-  return new FaradayCup(*this);
+    return new FaradayCup(*this);
 }
 
 FaradayCup::~FaradayCup()
@@ -186,7 +188,7 @@ FaradayCup::populate(const FuncDataBase& Control)
 
   FixedOffset::populate(Control);
   active=Control.EvalDefVar<int>(keyName+"Active", 1);
-  engActive=Control.EvalPair<int>(keyName,"","EngineeringActive");
+  engActive=Control.EvalTriple<int>(keyName,baseName,"","EngineeringActive");
 
   length=Control.EvalVar<double>(keyName+"Length");
   outerRadius=Control.EvalVar<double>(keyName+"OuterRadius");
@@ -200,7 +202,7 @@ FaradayCup::populate(const FuncDataBase& Control)
   colMat=ModelSupport::EvalMat<int>(Control,keyName+"CollectorMat");
 
   wallMat=ModelSupport::EvalMat<int>(Control,keyName+"WallMat");
-  airMat=ModelSupport::EvalMat<int>(Control,keyName+"AirMat");
+  airMat=ModelSupport::EvalMat<int>(Control,keyName+"AirMat",baseName+"AirMat");
 
   shieldRadius=Control.EvalVar<double>(keyName+"ShieldRadius");
   shieldInnerRadius=Control.EvalVar<double>(keyName+"ShieldInnerRadius");
@@ -269,47 +271,45 @@ FaradayCup::createObjects(Simulation& System)
   */
 {
   ELog::RegMethod RegA("FaradayCup","createObjects");
+  if (!active) return;
 
-  if (active)
-    {
+  std::string Out;
+  // collimator
+  Out=ModelSupport::getComposite(SMap,surfIndex," 1 -11 -27 ");
+  System.addCell(MonteCarlo::Qhull(cellIndex++,airMat,0.0,Out));
 
-      std::string Out;
-      // collimator
-      Out=ModelSupport::getComposite(SMap,surfIndex," 1 -11 -27 ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,airMat,0.0,Out));
-      
-      Out=ModelSupport::getComposite(SMap,surfIndex," 1 -11 27 -17 ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
-      
-      // absorber
-      Out=ModelSupport::getComposite(SMap,surfIndex," 11 -21 -17 ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,absMat,0.0,Out));
-      
-      // base
-      Out=ModelSupport::getComposite(SMap,surfIndex," 21 -31 -7 ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
-      
-      Out=ModelSupport::getComposite(SMap,surfIndex," 21 -41 7 -17 ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
-      
-      // collector
-      Out=ModelSupport::getComposite(SMap,surfIndex," 31 -41 -7 ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,colMat,0.0,Out));
-      
-      // back plane
-      Out=ModelSupport::getComposite(SMap,surfIndex," 41 -2 -17 ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
-      
-      // shielding
-      Out=ModelSupport::getComposite(SMap,surfIndex," 1 -102 -107 (-1:2:17) ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,airMat,0.0,Out));
-      
-      Out=ModelSupport::getComposite(SMap,surfIndex," 1 -112 -117 (-1:102:107) ");
-      System.addCell(MonteCarlo::Qhull(cellIndex++,shieldMat,0.0,Out));
-      
-      Out=ModelSupport::getComposite(SMap,surfIndex," 1 -112 -117 ");
-      addOuterSurf(Out);
-    }
+  Out=ModelSupport::getComposite(SMap,surfIndex," 1 -11 27 -17 ");
+  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
+
+  // absorber
+  Out=ModelSupport::getComposite(SMap,surfIndex," 11 -21 -17 ");
+  System.addCell(MonteCarlo::Qhull(cellIndex++,absMat,0.0,Out));
+
+  // base
+  Out=ModelSupport::getComposite(SMap,surfIndex," 21 -31 -7 ");
+  System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+
+  Out=ModelSupport::getComposite(SMap,surfIndex," 21 -41 7 -17 ");
+  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
+
+  // collector
+  Out=ModelSupport::getComposite(SMap,surfIndex," 31 -41 -7 ");
+  System.addCell(MonteCarlo::Qhull(cellIndex++,colMat,0.0,Out));
+
+  // back plane
+  Out=ModelSupport::getComposite(SMap,surfIndex," 41 -2 -17 ");
+  System.addCell(MonteCarlo::Qhull(cellIndex++,wallMat,0.0,Out));
+
+  // shielding
+  Out=ModelSupport::getComposite(SMap,surfIndex," 1 -102 -107 (-1:2:17) ");
+  System.addCell(MonteCarlo::Qhull(cellIndex++,airMat,0.0,Out));
+
+  Out=ModelSupport::getComposite(SMap,surfIndex," 1 -112 -117 (-1:102:107) ");
+  System.addCell(MonteCarlo::Qhull(cellIndex++,shieldMat,0.0,Out));
+
+  Out=ModelSupport::getComposite(SMap,surfIndex," 1 -112 -117 ");
+  addOuterSurf(Out);
+
   return;
 }
 
@@ -324,6 +324,16 @@ FaradayCup::createLinks()
 
   //  FixedComp::setConnect(0,Origin,-Y);
   //  FixedComp::setLinkSurf(0,-SMap.realSurf(surfIndex+1));
+
+  FixedComp::setConnect(0,Origin+Y,Y);
+  FixedComp::setLinkSurf(0,-SMap.realSurf(surfIndex+1));
+
+  FixedComp::setConnect(1,Origin+Y*(shieldLength),Y);
+  FixedComp::setLinkSurf(1,SMap.realSurf(surfIndex+112));
+
+  FixedComp::setConnect(2,Origin+Z*(shieldRadius),Z);
+  FixedComp::setLinkSurf(2,SMap.realSurf(surfIndex+117));
+
 
   return;
 }

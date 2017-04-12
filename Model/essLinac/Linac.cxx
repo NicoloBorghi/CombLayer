@@ -86,6 +86,7 @@
 #include "CellMap.h"
 #include "BeamDump.h"
 #include "FaradayCup.h"
+#include "DTL.h"
 #include "Linac.h"
 
 namespace essSystem
@@ -97,7 +98,7 @@ Linac::Linac(const std::string& Key)  :
   surfIndex(ModelSupport::objectRegister::Instance().cell(Key)),
   cellIndex(surfIndex+1),
   beamDump(new BeamDump(Key,"BeamDump")),
-  faradayCup(new FaradayCup(Key+"FaradayCup"))
+  faradayCup(new FaradayCup(Key,"FaradayCup"))
   /*!
     Constructor BUT ALL variable are left unpopulated.
     \param Key :: Name for item in search
@@ -131,7 +132,9 @@ Linac::Linac(const Linac& A) :
   tswOffsetY(A.tswOffsetY),
   tswNLayers(A.tswNLayers),
   beamDump(new BeamDump(*A.beamDump)),
-  faradayCup(new FaradayCup(*A.faradayCup))
+  faradayCup(new FaradayCup(*A.faradayCup)),
+  nDTL(A.nDTL),
+  dtl(A.dtl)
   /*!
     Copy constructor
     \param A :: Linac to copy
@@ -172,6 +175,8 @@ Linac::operator=(const Linac& A)
       tswNLayers=A.tswNLayers;
       *beamDump=*A.beamDump;
       *faradayCup=*A.faradayCup;
+      nDTL=A.nDTL;
+      dtl=A.dtl;
     }
   return *this;
 }
@@ -214,6 +219,8 @@ Linac::populate(const FuncDataBase& Control)
   tswGap=Control.EvalVar<double>(keyName+"TSWGap");
   tswOffsetY=Control.EvalVar<double>(keyName+"TSWOffsetY");
   tswNLayers=Control.EvalDefVar<int>(keyName+"TSWNLayers", 1);
+  
+  nDTL=Control.EvalDefVar<size_t>(keyName+"NDTLTanks", 5);
 
   return;
 }
@@ -266,8 +273,8 @@ Linac::layerProcess(Simulation& System, const std::string& cellName,
 	  }
 
 	if (!wallObj)
-	  throw ColErr::InContainerError<int>
-            (wallCell,"Cell '"+cellName+"' not found");
+	  throw ColErr::InContainerError<int>(wallCell,
+					      "Cell '" + cellName + "' not found");
 
 	double baseFrac = 1.0/nLayers;
 	ModelSupport::surfDivide DA;
@@ -301,6 +308,37 @@ Linac::layerProcess(Simulation& System, const std::string& cellName,
       }
   }
 
+
+void
+Linac::createDTL(Simulation& System, const long int lp)
+{
+  /*!
+    Create the DTL tanks
+    \param lp :: link point for the origin of the 1st DTL tank
+   */
+  ELog::RegMethod RegA("Linac","createDTL");
+
+  ModelSupport::objectRegister& OR=
+    ModelSupport::objectRegister::Instance();
+
+  for (size_t i=0; i<nDTL; i++)
+    {
+      std::shared_ptr<DTL> d(new DTL(keyName,"DTL",i+1));
+      OR.addObject(d);
+      if (i==0)
+      	{
+      	  ELog::EM << "Why +1?" << ELog::endDiag;
+      	  d->createAll(System, *this, lp+1);
+      	} else
+      	{
+      	  ELog::EM << "Why +1?" << ELog::endDiag;
+      	  d->createAll(System, *dtl[i-1],1+1);
+      	}
+
+      attachSystem::addToInsertControl(System,*this,*d); // works
+      dtl.push_back(d);
+    }
+}
 
 void
 Linac::createSurfaces()
@@ -485,7 +523,9 @@ Linac::createAll(Simulation& System,
   attachSystem::addToInsertLineCtrl(System,*this,*beamDump);
 
   faradayCup->createAll(System,*this,0);
-  attachSystem::addToInsertForced(System,*this,*faradayCup);
+  attachSystem::addToInsertControl(System,*this,*faradayCup);
+
+  createDTL(System, 10);
 
   return;
 }

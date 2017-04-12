@@ -186,14 +186,54 @@ EssLinacVariables(FuncDataBase& Control)
   Control.addVariable("LinacFaradayCupCollectorMat", "Graphite");
 
   Control.addVariable("LinacFaradayCupWallMat", "Copper");
-  Control.addVariable("LinacFaradayCupAirMat","Air");
 
   Control.addVariable("LinacFaradayCupShieldMat","SkanskaConcrete");
   Control.addVariable("LinacFaradayCupShieldRadius",100.0);
   Control.addVariable("LinacFaradayCupShieldLength",100.0);
   Control.addVariable("LinacFaradayCupShieldInnerRadius",10.0);
   Control.addVariable("LinacFaradayCupShieldInnerLength",10.0);
+
+  // DTL
+  Control.addVariable("LinacNDTLTanks", 5);
+  // DTL lengths are from Google drive / ESS DTL
+  // 02 - Mechanical development and prototype construction.pdf
+  // page 21
+  Control.addVariable("LinacDTL1YStep", 950.0);  // an arbitrary number
+
+  Control.addVariable("LinacDTL1Length", 768.76);
+  Control.addVariable("LinacDTL1IntertankLength", 10.83);
+  Control.addVariable("LinacDTL2Length", 717.11);
+  Control.addVariable("LinacDTL2IntertankLength", 16.84);
+  Control.addVariable("LinacDTL3Length", 765.26);
+  Control.addVariable("LinacDTL3IntertankLength", 21.85);
+  Control.addVariable("LinacDTL4Length", 791.71);
+  Control.addVariable("LinacDTL4IntertankLength", 24.91);
+  Control.addVariable("LinacDTL5Length", 775.79);
+  Control.addVariable("LinacDTL5IntertankLength", 100.0);
   
+  Control.addVariable("LinacDTLNLayers", 3);
+  Control.addVariable("LinacDTLRadius1", 25.95);  // DTL_model_picture.png - email from RB 14 Mar 2017
+  Control.addVariable("LinacDTLRadius2", 26);  // MARS
+  Control.addVariable("LinacDTLRadius3", 31);  // MARS
+  Control.addVariable("LinacDTLMat1", "Void"); 
+  Control.addVariable("LinacDTLMat2", "Copper"); 
+  Control.addVariable("LinacDTLMat3", "SS304L");
+  Control.addVariable("LinacDTLCoverThick", 3.6); // MARS
+
+  Control.addVariable("LinacDTLIntertankRadius", 2.8); // MARS
+  Control.addVariable("LinacDTLIntertankWallThick", 0.2); // MARS
+
+  
+  // Control.addVariable("LinacDTLRadius1", 1.0); 
+  // Control.addVariable("LinacDTLRadius2", 1.15); 
+  // Control.addVariable("LinacDTLRadius3", 2.90); 
+  // Control.addVariable("LinacDTLRadius4", 4.50); 
+  // Control.addVariable("LinacDTLRadius5", 26.0); 
+  // Control.addVariable("LinacDTLMat3", "Void"); 
+  // Control.addVariable("LinacDTLMat5", "Void"); 
+  // Control.addVariable("LinacDTLMat6", "H2O"); 
+  // Control.addVariable("LinacDTLMat7", "SS316L"); 
+ 
   return;
 }
 

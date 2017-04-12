@@ -3,7 +3,7 @@
 
  * File:   essBuildInc/Linac.h
  *
- * Copyright (c) 2004-2017 by Konstantin Batkov
+ * Copyright (c) 2016 by Konstantin Batkov
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ namespace essSystem
 
   class BeamDump;
   class FaradayCup;
+  class DTL;
 
   /*!
     \class Linac
@@ -65,17 +66,21 @@ class Linac : public attachSystem::ContainedComp,
   int airMat;                    ///< air material
   int wallMat;                   ///< wall material
 
-  double tswLength;              ///< Temporary shielding wall length
-  double tswWidth;               ///< Temporary shielding wall width
-  double tswGap;                 ///< Distance between Temporary shielding walls
-  double tswOffsetY;             ///< TSW location on the Y-axis
-  int tswNLayers;                ///< number of layers in a TSW wall
+  double tswLength; ///< Temporary shielding wall length
+  double tswWidth; ///< Temporary shielding wall width
+  double tswGap; ///< Distance between Temporary shielding walls
+  double tswOffsetY; ///< TSW location on the Y-axis
+  int tswNLayers; ///< number of layers in a TSW wall
 
   std::shared_ptr<BeamDump> beamDump; ///< linac 4 commissionning dump
   std::shared_ptr<FaradayCup> faradayCup; ///< Faraday Cup
-  void layerProcess(Simulation&,const std::string&,
-		    const size_t&, const size_t&,
-		    const int&, const int&);
+  size_t nDTL; ///< number of DTL tanks
+  std::vector<std::shared_ptr<DTL> > dtl; ///< array of DTL sections
+
+  void layerProcess(Simulation& System, const std::string& cellName,
+		    const size_t& lpS, const size_t& lsS, const int&, const int&);
+
+  void createDTL(Simulation&, const long int);
 
   void populate(const FuncDataBase&);
   void createUnitVector(const attachSystem::FixedComp&,
