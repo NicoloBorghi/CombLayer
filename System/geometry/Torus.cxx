@@ -67,6 +67,15 @@ Torus::Torus(const Torus& A) : Surface(A),
   */
 {}
 
+Torus::Torus(const int N,const int T) :
+  Surface(N,T), Normal(1,0,0), Iradius(0),Oradius(0)
+  /*
+    Constructor
+    \param N :: Name
+    \param T :: Transform number
+  */
+{}
+
 Torus*
 Torus::clone() const
   /*! 
@@ -393,7 +402,7 @@ Torus::write(std::ostream& OX) const
     }
   std::ostringstream cx;
   Surface::writeHeader(cx);
-  cx<<" t"<<Tailends[Ndir+3]<<" ";
+  cx<<"t"<<Tailends[Ndir+3]<<" ";
   cx.precision(Geometry::Nprecision);
   // Name and transform 
    

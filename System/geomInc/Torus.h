@@ -60,6 +60,7 @@ class Torus : public Surface
 
 
   Torus();
+  Torus(const int, const int); ///< New constructor (NB)
   Torus(const Torus&);
   Torus* clone() const;
   Torus& operator=(const Torus&);
