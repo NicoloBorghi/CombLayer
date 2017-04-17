@@ -53,6 +53,7 @@
 #include "EllipticCyl.h"
 #include "Sphere.h"
 #include "Line.h"
+#include "Torus.h"
 #include "generateSurf.h"
 
 namespace ModelSupport
@@ -219,6 +220,39 @@ buildPlane(surfRegister& SMap,const int N,
   const int NFound=SMap.registerSurf(N,PX);
 
   return SMap.realPtr<Geometry::Plane>(NFound);
+}
+
+Geometry::Torus*
+buildTorus(surfRegister& SMap, const int N,
+           const Geometry::Vec3D& Centre, const Geometry::Vec3D& Norm,
+           const double Orad, const double IradMaj, const double IradMin)
+  /*!
+    Simple constructor to build a torus [type torus]
+    \param SMap :: Surface Map
+    \param N :: Surface number
+    \param Centre :: Torus center
+    \param Norm :: Normal
+    \param Orad :: Torus radius
+    \param IradMaj, IradMin :: Tube radii (if equal, cylindrical tube; if different, elliptical torus)
+  */
+{
+  ELog::RegMethod("generateSurf","buildTorus(N,Centre,Norm,Orad,IradMaj,IradMin");
+
+  ModelSupport::surfIndex& SurI=ModelSupport::surfIndex::Instance();
+
+  Geometry::Torus* TX=SurI.createUniqSurf<Geometry::Torus>(N);
+  TX->setCentre(Centre);
+  TX->setNormal(Norm);
+  TX->setORad(Orad);
+
+  if (IradMaj==IradMin)
+    TX->setIRad(IradMaj);
+  else
+    TX->setIRad(IradMaj,IradMin);
+  const int NFound=SMap.registerSurf(N,TX);
+
+  return SMap.realPtr<Geometry::Torus>(NFound);
+
 }
 
 Geometry::Plane*

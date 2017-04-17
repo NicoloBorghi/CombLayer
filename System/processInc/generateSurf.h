@@ -59,6 +59,11 @@ Geometry::Plane*
 buildPlane(surfRegister&,const int,const Geometry::Vec3D&,
 	   const double&);
 
+Geometry::Torus*
+buildTorus(surfRegister&,const int,
+           const Geometry::Vec3D&,const Geometry::Vec3D&,
+           const double, const double, const double);
+
 Geometry::Cylinder* 
 buildCylinder(surfRegister&,const int,const Geometry::Vec3D&,
 	      const Geometry::Vec3D&,const double);
