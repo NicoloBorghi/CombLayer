@@ -447,8 +447,37 @@ Torus::writePOVRay(std::ostream&) const
     \param  :: Output Stream (required for multiple std::endl)
   */
 {
-  ELog::EM<<"Torus::writePOVRay: Unsupported output"<<ELog::endErr;
+  ELog::EM<<"Unsupported output"<<ELog::endErr;
+  return;
+
+/*  ELog::RegMethod RegA("Torus","writePOVRay");
+
+  masterWrite& MW=masterWrite::Instance();
+
+  OX << "#declare t"<<getName()
+     << " = torus { ";
+
+  return;*/
+}
+
+/*
+
+void
+Sphere::writePOVRay(std::ostream& OX) const
+{
+  ELog::RegMethod RegA("Sphere","writePOVRay");
+
+  masterWrite& MW=masterWrite::Instance();
+
+  OX << "#declare s"<<getName()
+     <<" = sphere { <"<<MW.NumComma(Centre)<< ">, "
+     << MW.Num(Radius)<<"}"<<std::endl;
   return;
 }
+
+
+*/
+
+
 
 }  // NAMESPACE Geometry
