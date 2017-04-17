@@ -45,6 +45,7 @@
 #include "surfIndex.h"
 #include "surfEqual.h"
 #include "surfRegister.h"
+#include "Quaternion.h"
 #include "Surface.h"
 #include "Quadratic.h"
 #include "Plane.h"
@@ -52,6 +53,7 @@
 #include "Cone.h"
 #include "Cylinder.h"
 #include "EllipticCyl.h"
+#include "Torus.h"
 
 namespace ModelSupport
 {
@@ -315,6 +317,7 @@ template Geometry::Cone* surfRegister::realPtr(const int) const;
 template Geometry::Cylinder* surfRegister::realPtr(const int) const;
 template Geometry::EllipticCyl* surfRegister::realPtr(const int) const;
 template Geometry::Sphere* surfRegister::realPtr(const int) const;
+template Geometry::Torus* surfRegister::realPtr(const int) const;
 
 template const Geometry::Plane* surfRegister::realPtr(const int) const;
 template const Geometry::Cone* surfRegister::realPtr(const int) const;
@@ -322,6 +325,7 @@ template const Geometry::Cylinder* surfRegister::realPtr(const int) const;
 template const Geometry::EllipticCyl* surfRegister::realPtr(const int) const;
 template const Geometry::Sphere* surfRegister::realPtr(const int) const;
 template const Geometry::Quadratic* surfRegister::realPtr(const int) const;
+template const Geometry::Torus* surfRegister::realPtr(const int) const;
 
 template const Geometry::Plane* surfRegister::findPtr<const Geometry::Plane>
 (const Geometry::Vec3D&,const Geometry::Vec3D&,const Geometry::Vec3D&) const;
