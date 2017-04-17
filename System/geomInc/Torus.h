@@ -50,6 +50,7 @@ class Torus : public Surface
   Vec3D Normal;                  ///< Normal
 
   double Iradius;                ///< Inner radius
+  double IradiusMin;             ///< Inner radius (minor axis, needed for elliptical torus)
   double Oradius;                ///< Outer radius
 
   void rotate(const Geometry::Matrix<double>&);
@@ -81,8 +82,9 @@ class Torus : public Surface
 
   void setCentre(const Vec3D&);
   void setNormal(const Vec3D&);
-  void setIRad(const double);
-  void setORad(const double);
+  void setIRad(const double);                   ///< Tube radii (for cylindrical torus)
+  void setIRad(const double, const double);     ///< Tube radii (for elliptical torus)
+  void setORad(const double);                   ///< Torus radius
   //  void setDisplace(const double);
 
   /// Return centre point

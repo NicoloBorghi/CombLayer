@@ -51,7 +51,7 @@ namespace Geometry
 {
 
 Torus::Torus() : Surface(),
-		 Normal(1,0,0),Iradius(0),Oradius(0)
+		 Normal(1,0,0),Iradius(0),IradiusMin(0),Oradius(0)
   /*!
     Constructor with centre line along X axis 
     and centre on origin
@@ -60,7 +60,7 @@ Torus::Torus() : Surface(),
  
 Torus::Torus(const Torus& A) : Surface(A),
   Centre(A.Centre), RotPhase(A.RotPhase),Normal(A.Normal), 
-  Iradius(A.Iradius), Oradius(A.Oradius)
+  Iradius(A.Iradius), IradiusMin(A.IradiusMin), Oradius(A.Oradius)
   /*!
     Standard Copy Constructor
     \param A :: Torus to copy
@@ -68,7 +68,7 @@ Torus::Torus(const Torus& A) : Surface(A),
 {}
 
 Torus::Torus(const int N,const int T) :
-  Surface(N,T), Normal(1,0,0), Iradius(0),Oradius(0)
+  Surface(N,T), Normal(1,0,0), Iradius(0),IradiusMin(0),Oradius(0)
   /*
     Constructor
     \param N :: Name
@@ -101,6 +101,7 @@ Torus::operator=(const Torus& A)
       RotPhase=A.RotPhase;
       Normal=A.Normal;
       Iradius=A.Iradius;
+      IradiusMin=A.IradiusMin;
       Oradius=A.Oradius;
     }
   return *this;
@@ -126,6 +127,7 @@ Torus::operator==(const Torus& A) const
     return 1;
 
   if ( (fabs(Iradius-A.Iradius)>Geometry::zeroTol) ||
+       (fabs(IradiusMin-A.IradiusMin)>Geometry::zeroTol) ||
        (fabs(Oradius-A.Oradius)>Geometry::zeroTol) )
     return 0;
   if (RotPhase!=A.RotPhase)
@@ -184,13 +186,26 @@ Torus::setNormal(const Vec3D& N)
 }
 
 void
+Torus::setIRad(const double D, const double d)
+  /*!
+    Set the inner radii (tube major and minor axes)
+    \param D :: Radius (major axis)
+    \param d :: Radius (minor axis)
+  */
+{
+  Iradius=D;
+  IradiusMin=d;
+  return;
+}
+
+void
 Torus::setIRad(const double D)
   /*!
     Set the inner radius
     \param D :: Radius
    */
 {
-  Iradius=D;
+  setIRad(D,D);
   return;
 }
 
@@ -406,7 +421,8 @@ Torus::write(std::ostream& OX) const
   cx.precision(Geometry::Nprecision);
   // Name and transform 
    
-  cx<<Centre<<" "<<" "<<Oradius<<" "<<Iradius<<std::endl;
+  cx<<Centre<<" "<<Oradius<<" ";
+  cx<<Iradius<<" "<<IradiusMin<<std::endl;
   StrFunc::writeMCNPX(cx.str(),OX);
   return;
 }
