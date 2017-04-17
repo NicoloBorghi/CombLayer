@@ -62,15 +62,12 @@ namespace setVariable {
 
                 // GammaCell
 
-                Control.addVariable("GammaCellLeftWallThickness",20.0);       ///< Left wall thickness
-                Control.addVariable("GammaCellRightWallThickness",20.0);      ///< Right wall thickness
-                Control.addVariable("GammaCellFrontWallThickness",20.0);      ///< Front wall thickness
-                Control.addVariable("GammaCellBackWallThickness",20.0);       ///< Back wall thickness
-                Control.addVariable("GammaCellTopWallThickness",20.0);        ///< Top wall thickness
-                Control.addVariable("GammaCellBottomWallThickness",20.0);     ///< Bottom wall thickness
-                Control.addVariable("GammaCellInnerWidth",18.0);              ///< Cell width (Y)
-                Control.addVariable("GammaCellInnerHeight",13.0);             ///< Cell height (Z)
-                Control.addVariable("GammaCellInnerDepth",8.55);              ///< Cell depth (X)
+                Control.addVariable("GammaCellBarrelDepth",20.0);             ///< Barrel depth
+                Control.addVariable("GammaCellBarrelWallThickness",1.0);      ///< Barrel wall thickness
+                Control.addVariable("GammaCellBarrelInnerRadius",15.0);       ///< Barrel inner radius
+                Control.addVariable("GammaCellBarrelCapRadius1",0.0);         ///< Barrel cap radius1 (ext. torus)
+                Control.addVariable("GammaCellBarrelCapRadius2",0.0);         ///< Barrel cap radius2 (int. torus)
+
                 Control.addVariable("GammaCellTotalVolume",2.0);              ///< Total cell inner volume
                 Control.addVariable("GammaCellAtmosphereGas","Void");         ///< Gas for internal atmosphere
                 Control.addVariable("GammaCellAtmospherePressure",2.0E-3);    ///< Pressure in bar

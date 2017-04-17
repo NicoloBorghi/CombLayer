@@ -43,16 +43,11 @@ namespace tungstenSystem {
                         const int   gammaIndex;            ///< Index of surface offset
                               int   cellIndex;             ///< Cell index
 
-                           double   leftWallThickness;     ///< Left wall thickness
-                           double   rightWallThickness;    ///< Right wall thickness
-                           double   frontWallThickness;    ///< Front wall thickness
-                           double   backWallThickness;     ///< Back wall thickness
-                           double   topWallThickness;      ///< Top wall thickness
-                           double   bottomWallThickness;   ///< Bottom wall thickness
-
-                           double   innerWidth;            ///< Cell width (Y)
-                           double   innerHeight;           ///< Cell height (Z)
-                           double   innerDepth;            ///< Cell depth (X)
+                           double   barrelDepth;           ///< Barrel depth
+                           double   barrelWallThickness;   ///< Barrel wall thickness
+                           double   barrelInnerRadius;     ///< Barrel inner radius
+                           double   barrelCapRadius1;      ///< Barrel cap radius 1 (ext. torus)
+                           double   barrelCapRadius2;      ///< Barrel cap radius 2 (int. torus)
 
                            double   totalVolume;           ///< Total cell inner volume
 

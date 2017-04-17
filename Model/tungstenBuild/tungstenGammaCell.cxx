@@ -149,16 +149,11 @@ namespace tungstenSystem {
 
                 FixedOffset::populate(Control);
 
-                leftWallThickness = Control.EvalVar<double>(keyName+"LeftWallThickness");
-                rightWallThickness = Control.EvalVar<double>(keyName+"RightWallThickness");
-                frontWallThickness = Control.EvalVar<double>(keyName+"FrontWallThickness");
-                backWallThickness = Control.EvalVar<double>(keyName+"BackWallThickness");
-                topWallThickness = Control.EvalVar<double>(keyName+"TopWallThickness");
-                bottomWallThickness = Control.EvalVar<double>(keyName+"BottomWallThickness");
-
-                innerWidth = Control.EvalVar<double>(keyName+"InnerWidth");
-                innerHeight = Control.EvalVar<double>(keyName+"InnerHeight");
-                innerDepth = Control.EvalVar<double>(keyName+"InnerDepth");
+                barrelDepth = Control.EvalVar<double>(keyName+"BarrelDepth");
+                barrelWallThickness = Control.EvalVar<double>(keyName+"BarrelWallThickness");
+                barrelInnerRadius = Control.EvalVar<double>(keyName+"BarrelInnerRadius");
+                barrelCapRadius1 = Control.EvalVar<double>(keyName+"BarrelCapRadius1");
+                barrelCapRadius2 = Control.EvalVar<double>(keyName+"BarrelCapRadius2");
 
                 totalVolume = Control.EvalVar<double>(keyName+"TotalVolume");
 
@@ -195,22 +190,14 @@ namespace tungstenSystem {
 
                 ELog::RegMethod RegA("tungstenGammaCell","createSurfaces");
 
-                ModelSupport::buildPlane(SMap,gammaIndex+1,Origin-Y*(innerWidth/2.0),Y);
-                ModelSupport::buildPlane(SMap,gammaIndex+2,Origin+Y*(innerWidth/2.0),Y);
-                ModelSupport::buildPlane(SMap,gammaIndex+3,Origin-X*(innerDepth/2.0),X);
-                ModelSupport::buildPlane(SMap,gammaIndex+4,Origin+X*(innerDepth/2.0),X);
-                ModelSupport::buildPlane(SMap,gammaIndex+5,Origin-Z*(innerHeight/2.0),Z);
-                ModelSupport::buildPlane(SMap,gammaIndex+6,Origin+Z*(innerHeight/2.0),Z);
+                ModelSupport::buildCylinder(SMap,gammaIndex+7,Origin,X,barrelInnerRadius);
+                ModelSupport::buildCylinder(SMap,gammaIndex+8,Origin,X,barrelInnerRadius + barrelWallThickness);
 
-                ModelSupport::buildPlane(SMap,gammaIndex+11,Origin-Y*(innerWidth/2.0 + leftWallThickness),Y);
-                ModelSupport::buildPlane(SMap,gammaIndex+12,Origin+Y*(innerWidth/2.0 + leftWallThickness),Y);
-                ModelSupport::buildPlane(SMap,gammaIndex+13,Origin-X*(innerDepth/2.0 + backWallThickness),X);
-                ModelSupport::buildPlane(SMap,gammaIndex+14,Origin+X*(innerDepth/2.0 + frontWallThickness),X);
-                ModelSupport::buildPlane(SMap,gammaIndex+15,Origin-Z*(innerHeight/2.0 + bottomWallThickness),Z);
-                ModelSupport::buildPlane(SMap,gammaIndex+16,Origin+Z*(innerHeight/2.0 + topWallThickness),Z);
+                ModelSupport::buildPlane(SMap,gammaIndex+13,Origin-X*(barrelDepth/2.0 + barrelWallThickness),X);
+                ModelSupport::buildPlane(SMap,gammaIndex+3,Origin - X*(barrelDepth/2.0),X);
+                ModelSupport::buildPlane(SMap,gammaIndex+4,Origin + X*(barrelDepth/2.0),X);
 
-                ModelSupport::buildCylinder(SMap,gammaIndex+7,Origin,X,15.0);
-
+                ModelSupport::buildTorus(SMap,gammaIndex+17,Origin - X*(barrelDepth/2.0),X,barrelInnerRadius,barrelWallThickness,barrelWallThickness);
                 return;
 
         }
@@ -226,45 +213,21 @@ namespace tungstenSystem {
 
                 std::string Out;
 
-/*
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 5 -6");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
-                CellMap::setCell("InnerCell",cellIndex-1);
-
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -1 13 -4 15 -16");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
-
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 2 -12 13 -4 15 -16");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
-
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 13 -3 15 -16");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
-
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 6 -16");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
-
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 1 -2 3 -4 15 -5");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
-
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 4 -14 15 -16");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
-*/
-
                 Out = ModelSupport::getComposite(SMap,gammaIndex," -7 3 -4");
                 System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
                 CellMap::setCell("InnerCell",cellIndex-1);
 
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 13 -3 15 -16");
+                Out = ModelSupport::getComposite(SMap,gammaIndex," -17 7 -3");
                 System.addCell(MonteCarlo::Qhull(cellIndex++,wallMaterial1,0.0,Out));
 
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 7 11 -12 3 -4 15 -16");
+                Out = ModelSupport::getComposite(SMap,gammaIndex," 7 -8 3 -4");
                 System.addCell(MonteCarlo::Qhull(cellIndex++,wallMaterial1,0.0,Out));
 
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 4 -14 15 -16");
-                System.addCell(MonteCarlo::Qhull(cellIndex++,0,0.0,Out));
+                Out = ModelSupport::getComposite(SMap,gammaIndex," -7 13 -3");
+                System.addCell(MonteCarlo::Qhull(cellIndex++,wallMaterial1,0.0,Out));
 
                 // Outer
-                Out = ModelSupport::getComposite(SMap,gammaIndex," 11 -12 13 -14 15 -16");
+                Out = ModelSupport::getComposite(SMap,gammaIndex," ( -17 7 -3 ) : ( -8 -4 3 ) : ( -7 13 -4 )");
                 addOuterSurf(Out);
 
                 return;
