@@ -68,6 +68,9 @@ namespace essSystem {
                                            double   claddingRadius;                                       ///< Radius of the cladding
                                            double   claddingSeparation;                                   ///< Separation between the cladding (radial)
                                            double   claddingDepth;                                        ///< Depth of the center for cladding housing (transversal)
+                                           double   activationLayerThick1;                                ///< Thickness of the first layer for activation calculation
+                                           double   activationLayerThick2;                                ///< Thickness of the second layer for activation calculation
+                                           double   activationLayerThick3;                                ///< Thickness of the third layer for activation calculation
 
                                         const int   scintIndex;                                           ///< Index of surface offset
                                               int   nScint;                                               ///< Number of scintillators to match the straw grid

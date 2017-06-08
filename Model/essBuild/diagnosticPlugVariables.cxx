@@ -129,6 +129,9 @@ namespace setVariable {
                         /* +->*/Control.addVariable("ScintillatorBlockCladdingDepth",0.35); //cm
                         /* +->*/Control.addVariable("ScintillatorBlockFiberMaterial","PMMA"); //TO BE DEFINED
                         /* +->*/Control.addVariable("ScintillatorBlockEpoxyMaterial","Epoxy"); //TO BE DEFINED
+                        /* +->*/Control.addVariable("ScintillatorBlockActivationLayerThick1",1.0);
+                        /* +->*/Control.addVariable("ScintillatorBlockActivationLayerThick2",2.0);
+                        /* +->*/Control.addVariable("ScintillatorBlockActivationLayerThick3",5.0);
 
                 return;
 

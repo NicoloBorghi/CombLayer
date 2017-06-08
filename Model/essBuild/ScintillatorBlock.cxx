@@ -182,6 +182,13 @@ namespace essSystem {
                 fiberMat  = ModelSupport::EvalMat<int>(Control,keyName+"FiberMaterial");
                 //epoxyMat = ModelSupport::EvalMat<int>(Control,keyName+"EpoxyMaterial");
 
+                //activationLayerThick1 = Control.EvalVar<double>(keyName+"ActivationLayerThick1");
+                //activationLayerThick2 = Control.EvalVar<double>(keyName+"ActivationLayerThick2");
+                //activationLayerThick3 = Control.EvalVar<double>(keyName+"ActivationLayerThick3");
+                activationLayerThick1 = Control.EvalVar<double>(keyName+"ActivationLayerThick1");
+                activationLayerThick2 = Control.EvalVar<double>(keyName+"ActivationLayerThick2") + activationLayerThick1;
+                activationLayerThick3 = Control.EvalVar<double>(keyName+"ActivationLayerThick3") + activationLayerThick2;
+
                 return;
 
         }
@@ -215,6 +222,11 @@ namespace essSystem {
 
                 // Top of scintillator block
                 ModelSupport::buildPlane(SMap,scintIndex+5,Origin+Z*zBlockTop,Z);
+
+                // Activation layers
+                ModelSupport::buildPlane(SMap,scintIndex+105,Origin+Z*(zBlockTop+activationLayerThick1),Z);
+                ModelSupport::buildPlane(SMap,scintIndex+115,Origin+Z*(zBlockTop+activationLayerThick2),Z);
+                ModelSupport::buildPlane(SMap,scintIndex+125,Origin+Z*(zBlockTop+activationLayerThick3),Z);
 
                 // Top of scintillators
                 ModelSupport::buildPlane(SMap,scintIndex+15,Origin+Z*zScintillatorTop,Z);
@@ -344,7 +356,18 @@ namespace essSystem {
 
                 std::string Out;
 
-                Out = strRoof + ModelSupport::getComposite(SMap,scintIndex," 5") + strBackWall + strFrontWall + strLeftWall + strRightWall;
+                // Adding activation layers
+
+                Out = strRoof + ModelSupport::getComposite(SMap,scintIndex," 125") + strBackWall + strFrontWall + strLeftWall + strRightWall;
+                System.addCell(MonteCarlo::Qhull(cellIndex++, topMat, 0.0, Out));
+
+                Out = ModelSupport::getComposite(SMap,scintIndex," -125 115") + strBackWall + strFrontWall + strLeftWall + strRightWall;
+                System.addCell(MonteCarlo::Qhull(cellIndex++, topMat, 0.0, Out));
+
+                Out = ModelSupport::getComposite(SMap,scintIndex," -115 105") + strBackWall + strFrontWall + strLeftWall + strRightWall;
+                System.addCell(MonteCarlo::Qhull(cellIndex++, topMat, 0.0, Out));
+
+                Out = ModelSupport::getComposite(SMap,scintIndex," -105 5") + strBackWall + strFrontWall + strLeftWall + strRightWall;
                 System.addCell(MonteCarlo::Qhull(cellIndex++, topMat, 0.0, Out));
 
                 // Central structure
